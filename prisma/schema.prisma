@@ -1,0 +1,76 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("AWS_DATABASE_URL")
+}
+
+
+model Item { 
+  id        Int      @default(autoincrement()) @id @unique
+
+  name     String
+  image_urls String[]
+  price   Int?
+  availability Boolean?
+  description   String?
+  createdAt    DateTime   
+  updatedAt    DateTime?
+  address1            String?        
+  address2            String?       
+  city                String?        
+  state               String?        
+  zipCode             Int?       
+  phone               String?  
+  makeYear     String?
+  registrationYear String?
+  hoursDriven  Int?
+  no_of_owners Int?
+  vehicleNo Int?
+  insurance_validity String?
+  enquiries Enquiry[]
+  order Order?
+  @@map("item")
+}
+
+model Enquiry {
+  id    Int     @default(autoincrement()) @id
+  name                String
+  address1            String?        
+  address2            String?       
+  city                String?        
+  state               String?        
+  zipCode             Int?       
+  phone               String  
+  email               String? 
+  item   Item @relation(fields: [itemId], references: [id])
+  itemId Int 
+  createdAt    DateTime   
+  updatedAt    DateTime?
+  @@map("enquiry")
+}
+model Order {
+  id    Int     @default(autoincrement()) @id
+  name                String
+  address1            String?        
+  address2            String?       
+  city                String?        
+  state               String?        
+  zipCode             Int?       
+  phone               String  
+  email               String? 
+  item   Item @relation(fields: [itemId], references: [id])
+  itemId Int @unique
+  createdAt    DateTime   
+  updatedAt    DateTime?
+  @@map("order")
+}
+model People {
+  id    Int     @default(autoincrement()) @id
+  firstName  String?
+  lastName  String?
+  @@map("people")
+}
