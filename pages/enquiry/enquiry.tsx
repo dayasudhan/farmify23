@@ -5,7 +5,8 @@ import { useContext } from 'react';
 import 'semantic-ui-css/semantic.css';
 import Header2 from '../common/header';
 import Footer from '../common/footer';
-//import { AuthContext } from './../authContext';
+// import { AuthContext } from './../authContext';
+import { useAuth } from './../authContext';
 //import './table.css'
 function CustomerListComponent() {
   const [data, setData] = useState([]);
@@ -13,19 +14,16 @@ function CustomerListComponent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState(data);
   const [searchKey, setSearchKey] = useState('name');
-  const user = "daya";
-  const token = "123";
+  //const { user } = useContext(AuthContext);
+  const { user } = useAuth();
+
   useEffect(() => {
     console.log("user123",user)
-    console.log("token123",token)
+
     console.log("data",data.length)
-    if(token && data.length == 0)
+    if(data.length == 0)
     {
-    axios.get('/enquiries',{
-      headers:{
-          'Authorization': `Bearer ${token}`
-      }
-      })
+    axios.get('/enquiries')
       .then(response => {
         if(response.status != 401)
         {

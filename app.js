@@ -9,16 +9,18 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const enquiryService = require('./server/enquiryService')
 const sellerService = require('./server/sellerService')
-// import * as multerS3 from 'multer-s3-transform';
-// import * as AWS from 'aws-sdk';
-// import * as sharp from 'sharp';
+
 const AWS = require('aws-sdk');
- const multer = require('multer');
+const multer = require('multer');
 const multerS3 = require('multer-s3-transform');
 const sharp = require('sharp');
 
+const passport = require('passport')
+const session = require('express-session')
+const LocalStrategy = require('passport-local').Strategy
+const flash = require('connect-flash');
 
- const storage= multerS3({
+const storage= multerS3({
   s3: new AWS.S3({
     accessKeyId: process.env.ACCESSKEYID,
     secretAccessKey: process.env.SECRETACCESSKEY,
@@ -55,7 +57,69 @@ server.prepare().then(() => {
   const app = express()
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
+
+  app.use(session({
+    secret: "secret",
+    resave: false ,
+    saveUninitialized: true ,
+  }))
+
+  app.use(passport.initialize()) // init passport on every route call
+  app.use(passport.session())    //allow passport to use "express-session"
   
+  const users = [
+    { id: 1, username: 'user1', password: 'password1' },
+    { id: 2, username: 'user2', password: 'password2' },
+    { id: 3, username: 'daya', password: 'sudhan' },
+  ];
+
+  passport.use(new LocalStrategy((username, password, done) => {
+    console.log("inside local stratergy")
+    const user = users.find(u => u.username === username && u.password === password);
+    if (user) {
+      console.log("inside local stratergy 2")
+      return done(null, user);
+    }
+    console.log("inside local stratergy 3")
+    return done(null, false, { message: 'Incorrect username or password' });
+  }));
+  
+  passport.serializeUser((user, done) => {
+    done(null, user.id);
+  });
+  
+  passport.deserializeUser((id, done) => {
+    const user = users.find(u => u.id === id);
+    done(null, user);
+  });
+  // app.get('/login', (req, res) => {
+  //   res.render('login');
+  // });
+  
+  app.post('/login', (req, res, next) => {
+    console.log("login",req.body)
+    passport.authenticate('local', (err, user, info) => {
+      console.log("login2")
+      if (err) {
+        console.log("login3")
+        return next(err);
+      }
+      if (!user) {
+        console.log("login4")
+        //req.flash('info', 'Authentication failed.'); // Set a flash message
+        return res.redirect({status:"failed"});
+      }
+      console.log("login5")
+      // Successful login logic
+      return res.send({name:user.username,status:"success"})
+    })(req, res, next);
+    
+  });
+  
+  app.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/');
+  });
   app.get('/hello', (req, res) => res.send('Namaste Home Page'));
   app.get("/items", async (req, res) => {
     res.send(await sellerService.getAllItems());
