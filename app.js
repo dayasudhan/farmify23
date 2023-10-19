@@ -17,6 +17,7 @@ const sharp = require('sharp');
 
 const passport = require('passport')
 const session = require('express-session')
+const cookieParser = require('cookie-parser');
 const LocalStrategy = require('passport-local').Strategy
 const flash = require('connect-flash');
 
@@ -57,20 +58,29 @@ server.prepare().then(() => {
   const app = express()
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-
+  app.use(cookieParser());
   app.use(session({
     secret: "secret",
     resave: false ,
     saveUninitialized: true ,
   }))
-
+  passport.serializeUser((user, done) => {
+    console.log("passport serializeUser",user)
+    done(null, user.username);
+  });
+  
+  passport.deserializeUser((id, done) => {
+    const user = users.find(u => u.id === id);
+    console.log("passport deserializeUser",user)
+    done(null, user.username);
+  });
   app.use(passport.initialize()) // init passport on every route call
   app.use(passport.session())    //allow passport to use "express-session"
   
   const users = [
     { id: 1, username: 'user1', password: 'password1' },
     { id: 2, username: 'user2', password: 'password2' },
-    { id: 3, username: 'daya', password: 'sudhan' },
+    { id: 3, username: 'daya',  password: 'sudhan' },
   ];
 
   passport.use(new LocalStrategy((username, password, done) => {
@@ -84,17 +94,7 @@ server.prepare().then(() => {
     return done(null, false, { message: 'Incorrect username or password' });
   }));
   
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
-  
-  passport.deserializeUser((id, done) => {
-    const user = users.find(u => u.id === id);
-    done(null, user);
-  });
-  // app.get('/login', (req, res) => {
-  //   res.render('login');
-  // });
+
   
   app.post('/login', (req, res, next) => {
     console.log("login",req.body)
@@ -110,6 +110,17 @@ server.prepare().then(() => {
         return res.redirect({status:"failed"});
       }
       console.log("login5")
+      req.logIn(user, function(err) {})
+      res.cookie('user', 'admin', {signed: false})
+      req.session.user = {username : user.username ,'auntheticated':true};
+      req.session.save(function (err) {
+        if (err) {
+            console.log( 'registerCustomer save error' );
+           next(err);
+        }
+        console.log( 'registerCustomer save complete' );
+      });
+      console.log( 'Dayasudhan' ,req.session);
       // Successful login logic
       return res.send({name:user.username,status:"success"})
     })(req, res, next);
@@ -117,8 +128,11 @@ server.prepare().then(() => {
   });
   
   app.get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/');
+    console.log("logout")
+    req.logout(()=>{
+      console.log("logout inside")
+    });
+    res.send('logout_success');
   });
   app.get('/hello', (req, res) => res.send('Namaste Home Page'));
   app.get("/items", async (req, res) => {
@@ -128,7 +142,15 @@ server.prepare().then(() => {
     res.send(await sellerService.getItem(parseInt(req.params.id)));
   });
   app.get("/enquiries", async (req, res) => {
-    res.send(await enquiryService.getAllEnquiries());
+
+    if (req.session?.user?.auntheticated ) {
+
+      res.send({'enquiries':await enquiryService.getAllEnquiries(),'user':req.session?.user});
+    } else {
+
+      res.status(403).send('Access Denied: You are not authenticated.');
+    }
+   
   });
   app.get("/enquiries/:id", async (req, res) => {
     console.log("req",req.params.id)

@@ -7,15 +7,15 @@ import Header2 from '../common/header';
 import Footer from '../common/footer';
 // import { AuthContext } from './../authContext';
 import { useAuth } from './../authContext';
-//import './table.css'
+import { useRouter } from 'next/router';
 function CustomerListComponent() {
   const [data, setData] = useState([]);
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState(data);
   const [searchKey, setSearchKey] = useState('name');
-  //const { user } = useContext(AuthContext);
-  const { user } = useAuth();
+  const router = useRouter();
+  const { user,loginUser } = useAuth();
 
   useEffect(() => {
     console.log("user123",user)
@@ -25,10 +25,12 @@ function CustomerListComponent() {
     {
     axios.get('/enquiries')
       .then(response => {
-        if(response.status != 401)
+        console.log("response",response)
+        if(response.status != 403)
         {
-          setData(response.data);
-          setFilteredData(response.data);
+          setData(response.data?.enquiries);
+          setFilteredData(response.data?.enquiries);
+          loginUser(response.data?.user)
         }
         else
         {
@@ -39,17 +41,12 @@ function CustomerListComponent() {
       })
       .catch(error => {
         console.log(error);
+        alert(error.response.data)
+        router.push('/');
       });
     }
   });
 
-  const  handleDetailButtonClick = (id) => {
-    // Make API call using fetch
-   console.log("handleDetailButtonClick",id)
-   const queryString = `?id=${id}`;
-   const newPageUrl = '/agreement' + queryString;
-   window.open(newPageUrl, '_blank');
-  };
   const handleRowClick = (index) => {
     setExpandedRowIndex((prevIndex) => (prevIndex === index ? null : index));
   };
