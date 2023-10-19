@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table,Button,Input,Segment ,Header,Dropdown} from 'semantic-ui-react';
-import { useContext } from 'react';
 import 'semantic-ui-css/semantic.css';
 import Header2 from '../common/header';
 import Footer from '../common/footer';
-// import { AuthContext } from './../authContext';
-import { useAuth } from './../authContext';
 import { useRouter } from 'next/router';
 function CustomerListComponent() {
   const [data, setData] = useState([]);
@@ -15,11 +12,8 @@ function CustomerListComponent() {
   const [filteredData, setFilteredData] = useState(data);
   const [searchKey, setSearchKey] = useState('name');
   const router = useRouter();
-  const { user,loginUser } = useAuth();
 
   useEffect(() => {
-    console.log("user123",user)
-
     console.log("data",data.length)
     if(data.length == 0)
     {
@@ -28,9 +22,8 @@ function CustomerListComponent() {
         console.log("response",response)
         if(response.status != 403)
         {
-          setData(response.data?.enquiries);
-          setFilteredData(response.data?.enquiries);
-          loginUser(response.data?.user)
+          setData(response.data);
+          setFilteredData(response.data);
         }
         else
         {
@@ -55,7 +48,6 @@ function CustomerListComponent() {
      setSearchQuery(value);
     console.log("value",value,data)
 
-    //Filter the data based on the search query
     const filteredResults = data.filter((item) =>{
       if( searchKey == 'name')
       {

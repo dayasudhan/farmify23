@@ -1,4 +1,4 @@
-  import React, { useState } from 'react';
+  import React, { useState, useEffect } from 'react';
   import { Menu, Modal, Form, Button } from 'semantic-ui-react';
   import { useAuth } from './../authContext';
   import axios from 'axios';
@@ -13,6 +13,25 @@
     const [loginData, setLoginData] = useState({ username: '', password: '' });
     const router = useRouter();
     console.log("user",user)
+    useEffect(() => {
+      try {
+        axios.get('/session').then(response => {
+          setTimeout(() => {
+            console.log("session response",response)
+            if(response?.data?.user?.auntheticated)
+            {
+              const userData =  response?.data?.user ; 
+              loginUser(userData);
+            }
+          }, 1000); 
+        })
+        .catch(error => {
+          console.error("error",error);
+        });
+      } catch (error) {
+        console.error('Error', error);
+      }
+    },[]);
     const handleItemClick = (e, { name, href }) => {
       setActiveItem(name);
       console.log('Navigating to:', href);
@@ -82,7 +101,7 @@
        
               <Menu.Item
               position="right"
-                name="Logout"
+                name={`${user.username} logout`}
                 onClick={handleLogout}
               />
             </>
