@@ -11,6 +11,7 @@
     const [enquiryrefLink] = useState('/enquiry/enquiry');
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [loginData, setLoginData] = useState({ username: '', password: '' });
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const router = useRouter();
     console.log("user",user)
     useEffect(() => {
@@ -35,6 +36,9 @@
     const handleItemClick = (e, { name, href }) => {
       setActiveItem(name);
       console.log('Navigating to:', href);
+    };
+    const handleOk = async (e) => {
+      router.push('/');
     };
     const handleLogin = async (e) => {
       e.preventDefault();
@@ -62,7 +66,8 @@
           setTimeout(() => {
             console.log("handleLogout successfully",response)
             logoutUser();
-            router.push('/');
+            setIsLogoutModalOpen(true); 
+            
           }, 1000); 
         })
         .catch(error => {
@@ -97,14 +102,14 @@
         )}
         
           {user ? (
-           <>
-       
+           <>      
+
               <Menu.Item
               position="right"
                 name={`${user.username} logout`}
                 onClick={handleLogout}
               />
-            </>
+          </>
           ) : (
             <Modal
               trigger={
@@ -146,7 +151,20 @@
               </Modal.Actions>
             </Modal>
           )}
-        
+              <Modal
+                open={isLogoutModalOpen}
+                onClose={() => setIsLogoutModalOpen(false)}
+              >
+              <Modal.Header>Logout Successful</Modal.Header>
+              <Modal.Content>
+                <p>You have been successfully logged out.</p>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button primary onClick={handleOk}>
+                  Ok
+                </Button>
+              </Modal.Actions>
+            </Modal>
       </Menu>
     );
   }
