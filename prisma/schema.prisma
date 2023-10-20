@@ -33,6 +33,8 @@ model Item {
   insurance_validity String?
   enquiries Enquiry[]
   order Order?
+  dealer   Dealer @relation(fields: [dealerId], references: [id])
+  dealerId Int 
   @@map("item")
 }
 
@@ -68,9 +70,16 @@ model Order {
   updatedAt    DateTime?
   @@map("order")
 }
-model People {
+model Dealer {
   id    Int     @default(autoincrement()) @id
-  firstName  String?
-  lastName  String?
-  @@map("people")
+  username  String
+  password  String
+  phone     String
+  address   String?
+  city      String? 
+  createdAt DateTime   
+  updatedAt DateTime?
+  items Item[]
+  @@map("dealer")
 }
+

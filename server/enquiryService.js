@@ -16,6 +16,20 @@ class EnquiryService {
     // console.log('result', result);
     return result;
   }
+  async getEnquiriesByDealer(dealerId) {
+    const result = await this.db.enquiry.findMany({
+      where: {
+        item: {
+          dealerId: dealerId,
+        },
+      },
+      include:{
+        item:true
+      }
+    });
+    console.log("Result equiries",result)
+    return result;
+  }
   async getEnquiry(id) {
     const result = await this.db.enquiry.findUnique({
       where: {

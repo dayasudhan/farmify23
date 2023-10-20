@@ -9,7 +9,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const enquiryService = require('./server/enquiryService')
 const sellerService = require('./server/sellerService')
-
+const adminService = require('./server/adminService')
 const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3-transform');
@@ -65,27 +65,23 @@ server.prepare().then(() => {
     saveUninitialized: true ,
   }))
   passport.serializeUser((user, done) => {
-    console.log("passport serializeUser",user)
     done(null, user.username);
   });
   
-  passport.deserializeUser((id, done) => {
+  passport.deserializeUser(async (id, done) => {
+   
     const user = users.find(u => u.id === id);
-    console.log("passport deserializeUser",user)
-    done(null, user.username);
+     done(null, user.username);
   });
   app.use(passport.initialize()) // init passport on every route call
   app.use(passport.session())    //allow passport to use "express-session"
   
-  const users = [
-    { id: 1, username: 'user1', password: 'password1' },
-    { id: 2, username: 'user2', password: 'password2' },
-    { id: 3, username: 'daya',  password: 'sudhan' },
-  ];
 
-  passport.use(new LocalStrategy((username, password, done) => {
-    console.log("inside local stratergy")
+ passport.use(new LocalStrategy(async (username, password, done) => {
+       
+    const users =  await adminService.getAllDealers();
     const user = users.find(u => u.username === username && u.password === password);
+    console.log("inside local stratergy",user)
     if (user) {
       console.log("inside local stratergy 2")
       return done(null, user);
@@ -106,13 +102,12 @@ server.prepare().then(() => {
       }
       if (!user) {
         console.log("login4")
-        //req.flash('info', 'Authentication failed.'); // Set a flash message
         return res.redirect({status:"failed"});
       }
       console.log("login5")
       req.logIn(user, function(err) {})
       res.cookie('user', 'admin', {signed: false})
-      req.session.user = {username : user.username ,'auntheticated':true};
+      req.session.user = {username : user.username ,'auntheticated':true,id:user.id};
       req.session.save(function (err) {
         if (err) {
             console.log( 'registerCustomer save error' );
@@ -121,7 +116,6 @@ server.prepare().then(() => {
         console.log( 'registerCustomer save complete' );
       });
       console.log( 'Dayasudhan' ,req.session);
-      // Successful login logic
       return res.send({name:user.username,status:"success"})
     })(req, res, next);
     
@@ -149,26 +143,36 @@ server.prepare().then(() => {
     }
     
   });
-  app.get("/enquiries", async (req, res) => {
-
+  app.get("/enquiriesall", async (req, res) => {
     if (req.session?.user?.auntheticated ) {
-
       res.send(await enquiryService.getAllEnquiries());
     } else {
-
       res.status(403).send('Access Denied: You are not authenticated.');
     }
+  });
+  app.get("/enquiries", async (req, res) => {
+    console.log("req.session?.user.id",req.session?.user?.id)
+    if (req.session?.user?.auntheticated ) {
+      res.send(await enquiryService.getEnquiriesByDealer(req.session?.user?.id));
+    } else {
+      res.status(403).send('Access Denied: You are not authenticated.');
+    }
+  });
 
-  });
-  app.get("/enquiries/:id", async (req, res) => {
-    console.log("req",req.params.id)
-    res.send(await enquiryService.getEnquiry(parseInt(req.params.id)));
-  });
   app.post("/enquiry", async (req, res) => {
     console.log('enquery request body', req.body);
     const ret = await enquiryService.insertEnuiry(req.body);
     console.log('return', ret);
     res.send(ret);
+  });
+  app.post("/dealer", async (req, res) => {
+    console.log('dealer request body', req.body);
+    const ret = await adminService.insertDealer(req.body);
+    console.log('return', ret);
+    res.send(ret);
+  });
+  app.get("/dealers", async (req, res) => {
+      res.send(await adminService.getAllDealers());
   });
  app.post('/upload', upload.array('images',10), async (req, res) => {
   //app.post("/upload", async (req, res) => {

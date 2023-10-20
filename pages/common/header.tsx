@@ -52,10 +52,11 @@
           }, 1000); 
         })
         .catch(error => {
-          console.error("error",error);
+          //console.error("error",error);
+          alert("Not auntheticated")
         });
       } catch (error) {
-        console.error('Error uploading images: ', error);
+        alert("Not auntheticated")
       }
     };
     const handleLogout = async (e) => {

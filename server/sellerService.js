@@ -43,8 +43,8 @@ class SellerService {
         hoursDriven: null,
         no_of_owners: null,
         vehicleNo: null,
-        insurance_validity: null
-        // Other fields from your User model
+        insurance_validity: null,
+        dealerId:1
       },
     });
     return item;
