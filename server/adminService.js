@@ -11,14 +11,14 @@ class AdminService {
     console.log('result', result);
     return result;
   }
-  async getDealer(id) {
-    const result = await this.db.dealer.findUnique({
+  async getDealerByDistrict(district) {
+    const result = await this.db.dealer.findMany({
       where: {
-        id,
+        district:district
       },
     });
     console.log('result', result);
-    return result;
+    return result[0];
   }
   async  insertDealer(data) {
     console.log("insertDealer data",data)
@@ -31,6 +31,8 @@ class AdminService {
         createdAt:new Date(),
         updatedAt:new Date(),
         address:data.address,
+        district:data.district,
+        state:data.state,
         city: data.city
       },
     });

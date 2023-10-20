@@ -28,7 +28,7 @@ const Items = () => {
      {
       return (item?.['name']?.toLowerCase().includes(value.toLowerCase()) ||
        item?.['description']?.toLowerCase().includes(value.toLowerCase())||  
-       item?.['address1']?.toLowerCase().includes(value.toLowerCase())|| 
+       item?.['address']?.toLowerCase().includes(value.toLowerCase())|| 
        item?.['city']?.toLowerCase().includes(value.toLowerCase()))
     }
    );

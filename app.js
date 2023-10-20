@@ -10,6 +10,7 @@ const prisma = new PrismaClient();
 const enquiryService = require('./server/enquiryService')
 const sellerService = require('./server/sellerService')
 const adminService = require('./server/adminService')
+const statesService = require('./server/statesService')
 const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3-transform');
@@ -184,12 +185,17 @@ server.prepare().then(() => {
         return file.transforms[0].location;
       });
   
-      const inputData = { ...req.body, image_urls: images };
+      const dealer  = await adminService.getDealerByDistrict(req.body.district)
+     
+      const inputData = { ...req.body, image_urls: images ,dealerId:dealer.id};
+
       const ret = await sellerService.insertItem(inputData);
       console.log('return', ret);
       res.send(ret);
     });
-
+    app.get('/states', async (req, res) => {
+        res.send(await statesService.getStates());
+    });
   app.get('*', (req, res) => {
     return handle(req, res)
   })

@@ -49,7 +49,7 @@ class EnquiryService {
         createdAt:new Date(),
         updatedAt:new Date(),
         itemId: parseInt(data.itemId),
-        address1:data.address,
+        address:data.address,
         city:data.city,
         state:data.state,
         zipCode:data.zipcode

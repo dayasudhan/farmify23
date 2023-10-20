@@ -140,7 +140,7 @@ function CustomerListComponent() {
                   <p><b>ID</b>: &nbsp;  &nbsp;  &nbsp;{ item.id}</p>
                   <p><b>name</b>: {item.name}</p>
                   <p><b>phone</b>: {item.phone}</p>
-                  <p><b>address</b>: {item.address1}</p>
+                  <p><b>address</b>: {item.address}</p>
                   <p><b>state</b>: {item.state}</p>
                   <p><b>createdAt</b>: {item.createdAt}</p>
                 </Table.Cell>

@@ -34,17 +34,17 @@ class SellerService {
         price: parseInt(data.item_price),
         availability: true,
         description: data.description,
-        address1:data.address,
-        address2: data.item_place,
+        address:data.address,
         city: data.city,
-        state: 'Karnataka',
+        state: data.state,
+        district:data.district,
         zipCode: 577230,
         registrationYear: null,
         hoursDriven: null,
         no_of_owners: null,
         vehicleNo: null,
         insurance_validity: null,
-        dealerId:1
+        dealerId:data.dealerId
       },
     });
     return item;
