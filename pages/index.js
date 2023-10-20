@@ -1,4 +1,10 @@
 import { React } from 'react';
-import LandingPage from './buyer/landing/landing';
-const Index = () => <LandingPage></LandingPage>
+import Link from 'next/link';
+import Landing from './buyer/landing/landing'
+const Index = () => {
+    return (
+
+          <Landing></Landing>
+
+      );}
 export default Index

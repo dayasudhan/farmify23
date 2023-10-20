@@ -1,33 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table,Button,Input,Segment ,Header,Dropdown} from 'semantic-ui-react';
-import { useContext } from 'react';
 import 'semantic-ui-css/semantic.css';
 import Header2 from '../common/header';
 import Footer from '../common/footer';
-//import { AuthContext } from './../authContext';
-//import './table.css'
+import { useRouter } from 'next/router';
 function CustomerListComponent() {
   const [data, setData] = useState([]);
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState(data);
   const [searchKey, setSearchKey] = useState('name');
-  const user = "daya";
-  const token = "123";
+  const router = useRouter();
+
   useEffect(() => {
-    console.log("user123",user)
-    console.log("token123",token)
     console.log("data",data.length)
-    if(token && data.length == 0)
+    if(data.length == 0)
     {
-    axios.get('/enquiries',{
-      headers:{
-          'Authorization': `Bearer ${token}`
-      }
-      })
+    axios.get('/enquiries')
       .then(response => {
-        if(response.status != 401)
+        console.log("response",response)
+        if(response.status != 403)
         {
           setData(response.data);
           setFilteredData(response.data);
@@ -41,17 +34,12 @@ function CustomerListComponent() {
       })
       .catch(error => {
         console.log(error);
+        alert(error.response.data)
+        router.push('/');
       });
     }
   });
 
-  const  handleDetailButtonClick = (id) => {
-    // Make API call using fetch
-   console.log("handleDetailButtonClick",id)
-   const queryString = `?id=${id}`;
-   const newPageUrl = '/agreement' + queryString;
-   window.open(newPageUrl, '_blank');
-  };
   const handleRowClick = (index) => {
     setExpandedRowIndex((prevIndex) => (prevIndex === index ? null : index));
   };
@@ -60,7 +48,6 @@ function CustomerListComponent() {
      setSearchQuery(value);
     console.log("value",value,data)
 
-    //Filter the data based on the search query
     const filteredResults = data.filter((item) =>{
       if( searchKey == 'name')
       {
@@ -153,7 +140,7 @@ function CustomerListComponent() {
                   <p><b>ID</b>: &nbsp;  &nbsp;  &nbsp;{ item.id}</p>
                   <p><b>name</b>: {item.name}</p>
                   <p><b>phone</b>: {item.phone}</p>
-                  <p><b>address</b>: {item.address1}</p>
+                  <p><b>address</b>: {item.address}</p>
                   <p><b>state</b>: {item.state}</p>
                   <p><b>createdAt</b>: {item.createdAt}</p>
                 </Table.Cell>

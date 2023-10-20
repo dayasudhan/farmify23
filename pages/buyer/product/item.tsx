@@ -121,7 +121,7 @@ console.log("saveData",formData,enquiryURL)
               <br />      
               Phone: {data?.phone} 
               <br />          
-              Address: {data?.address1} 
+              Address: {data?.address} 
               <br />     
               city: {data?.city} 
               <br />

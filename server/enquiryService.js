@@ -13,7 +13,21 @@ class EnquiryService {
         item:true
       }
     });
-    console.log('result', result);
+    // console.log('result', result);
+    return result;
+  }
+  async getEnquiriesByDealer(dealerId) {
+    const result = await this.db.enquiry.findMany({
+      where: {
+        item: {
+          dealerId: dealerId,
+        },
+      },
+      include:{
+        item:true
+      }
+    });
+    console.log("Result equiries",result)
     return result;
   }
   async getEnquiry(id) {
@@ -35,7 +49,7 @@ class EnquiryService {
         createdAt:new Date(),
         updatedAt:new Date(),
         itemId: parseInt(data.itemId),
-        address1:data.address,
+        address:data.address,
         city:data.city,
         state:data.state,
         zipCode:data.zipcode
