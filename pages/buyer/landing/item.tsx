@@ -20,23 +20,16 @@ const Item = (props) => {
             <Link href={baseURL + props.data.id}>
              {props.data?.name}
             </Link>
-
             <div className="sub header">{props.data?.description}</div>
           </h3>
-          <Rating icon="star" defaultRating={5} maxRating={5} />
-          <br />
-          <br />
-          <div className="price">{props.data?.price}</div>
+          <div className="price">Rate:{props.data?.price} , {props.data?.district}</div>
+          
         </div>
         <List className="social" horizontal>
           <List.Item>
-            <List.Icon circular name="eye" size="large" />
-          </List.Item>
-          <List.Item>
-            <List.Icon circular name="heart" size="large" />
-          </List.Item>
-          <List.Item>
+          <Link href={baseURL + props.data.id}>
             <List.Icon circular name="cart arrow down" size="large" />
+            </Link>
           </List.Item>
         </List>
       </div>

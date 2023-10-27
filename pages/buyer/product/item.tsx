@@ -107,18 +107,13 @@ if(!isFormValid)
     <Grid divided="vertically">
       <Grid.Row columns={2}>
         <Grid.Column>
-          {/* {imageUrl && (
-            <Image src={imageUrl} />
-          )} */}
-   
+  
            <ImageGallery2 imageUrls={imageUrls}/>
       
         </Grid.Column>
         <Grid.Column>
           <div>
-            {/* <Link href="/buyer/cart/cart">
-              {data?.name}
-            </Link> */}
+
             <h1 className="ui header">
               <div href="#" className="header">
                 {data?.name}
@@ -137,18 +132,18 @@ if(!isFormValid)
               <br />
               <b>Seller Details: </b>
               <br />
-              Name: {data?.price} 
+              Name: {data?.name} 
               <br />      
               Phone: {data?.phone} 
               <br />          
               Address: {data?.address} 
               <br />     
-              city: {data?.city} 
+              District: {data?.district} 
               <br />
-              state: {data?.state} 
+              State: {data?.state} 
               <br />
             </div>
-            <Rating icon="star" defaultRating={5} maxRating={5} />
+            <Rating icon="star" defaultRating={4} maxRating={5} />
             <h3 className="ui header">
 
               <div>
