@@ -21,7 +21,7 @@ const Item = () => {
     address: '',
     itemId: '',
     city:'',
-    state:'Karnataka',
+    state:'',
     zipCode:''
   });
  const [data, setData] = useState(null) 
@@ -58,6 +58,26 @@ const closeSuccessModal = () => {
 };
 const saveData = () => {
 console.log("saveData",formData,enquiryURL)
+let isFormValid = true;
+if (formData.name.trim() === '') {
+  alert('Your Name is required');
+  isFormValid = false;
+}
+if (formData.phone.trim() === '') {
+  alert('Phone number is required');
+  isFormValid = false;
+} else if (!/^\d{10}$/.test(formData.phone)) {
+  alert('Invalid phone number format');
+  isFormValid = false;
+}
+if (formData.address.trim() === '') {
+  alert('Address is required');
+  isFormValid = false;
+}
+if(!isFormValid)
+{
+  return;
+}
   // Perform Axios POST request here
   axios.post(enquiryURL, formData).then(response => {
       console.log('Data saved successfully:', response.data);
@@ -78,7 +98,7 @@ console.log("saveData",formData,enquiryURL)
    
   })}
 },[id]);
-  console.log("Dayasudhan",router)
+
 
   return (
     <div>

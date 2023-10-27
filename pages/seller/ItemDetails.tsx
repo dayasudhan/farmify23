@@ -2,14 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Segment, Input, Form, Button, TextArea, Modal, Select } from 'semantic-ui-react';
 
-// const states = ['Karnataka', 'Maharashtra', 'Tamil Nadu', 'Andhra Pradesh'];
-// const districts = {
-//   Karnataka: ['Bangalore', 'Mysore', 'Mangalore'],
-//   Maharashtra: ['Mumbai', 'Pune', 'Nagpur'],
-//   'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai'],
-//   'Andhra Pradesh': ['Hyderabad', 'Vijayawada', 'Visakhapatnam'],
-// };
-
 const SegmentExampleNestedSegments = () => {
   const [showModal, setShowModal] = useState(false);
   const [responseText, setResponseText] = useState('');
@@ -17,7 +9,6 @@ const SegmentExampleNestedSegments = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
-  // const [districtOptions, setDistrictOptions] = useState([]);
   const [formData, setFormData] = useState({
     name: 'Devraj',
     phone: '956629075',
@@ -33,7 +24,8 @@ const SegmentExampleNestedSegments = () => {
     district: '',
     state: '',
   });
-
+  const [nameError, setNameError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   useEffect(() => {
     // Fetch states and districts from the backend API here
     // Replace the following with your actual API endpoint
@@ -45,11 +37,18 @@ const SegmentExampleNestedSegments = () => {
       .catch((error) => {
         console.error('Error fetching states:', error);
       });
+      
   }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
+    if (name === 'name') {
+      setNameError('');
+    }
+    if (name === 'phone') {
+      setPhoneError('');
+    }
   };
 
   const handleStateChange = (_, data) => {
@@ -69,6 +68,54 @@ const SegmentExampleNestedSegments = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let isFormValid = true;
+
+    if (formData.item_name.trim() === '') {
+      alert('Seller Item Name is required');
+      isFormValid = false;
+    }
+
+    if (formData.item_price.trim() === '') {
+      alert('Seller Item Price/Rate is required');
+      isFormValid = false;
+    }
+
+    if (formData.name.trim() === '') {
+      alert('Seller Name is required');
+      isFormValid = false;
+    }
+    if (formData.phone.trim() === '') {
+      alert('Phone number is required');
+      isFormValid = false;
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      alert('Invalid phone number format');
+      isFormValid = false;
+    }
+    if (formData.address.trim() === '') {
+      alert('Seller Address is required');
+      isFormValid = false;
+    }
+    if (formData.state.trim() === '') {
+      alert('Seller state is required');
+      isFormValid = false;
+    }
+    if (formData.district.trim() === '') {
+      alert('Seller district is required');
+      isFormValid = false;
+    }
+
+    if (selectedFiles.length == 0) {
+      alert('At least add One Image');
+      isFormValid = false;
+    }
+
+
+
+    if (!isFormValid) {
+      return; // Prevent form submission if there are errors
+    }
+
     const formDataFinal = new FormData();
     selectedFiles.forEach((file, i) => {
       formDataFinal.append('images', file);
@@ -163,6 +210,7 @@ const SegmentExampleNestedSegments = () => {
                 defaultValue={formData.name}
                 onChange={handleInputChange}
               />
+              {nameError && <div className="error">{nameError}</div>}
             </Form.Field>
             <p />
             <Form.Field>
@@ -174,6 +222,7 @@ const SegmentExampleNestedSegments = () => {
                 defaultValue={formData.phone}
                 onChange={handleInputChange}
               />
+               
             </Form.Field>
             <p />
             <Form.Field>

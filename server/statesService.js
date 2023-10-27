@@ -45,7 +45,7 @@ class StatesService {
       };
   }
   async getStates() {
-    console.log("states", this.states);
+    // console.log("states", this.states);
     return this.states;
   }
   async getDistricts(id) {
