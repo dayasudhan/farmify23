@@ -175,11 +175,11 @@ server.prepare().then(() => {
   app.get("/dealers", async (req, res) => {
       res.send(await adminService.getAllDealers());
   });
-  app.post('/upload',  async (req, res) => {
-    console.log("upload",req.body);
-    res.send("return");
-  });
- app.post('/upload2', upload.array('images',10), async (req, res) => {
+  // app.post('/upload',  async (req, res) => {
+  //   console.log("upload",req.body);
+  //   res.send("return");
+  // });
+ app.post('/upload', upload.array('images',10), async (req, res) => {
   //app.post("/upload", async (req, res) => {
       console.log("i am inside upload")
       if (!req.files || req.files.length === 0) {
