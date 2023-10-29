@@ -21,7 +21,7 @@ const session = require('express-session')
 const cookieParser = require('cookie-parser');
 const LocalStrategy = require('passport-local').Strategy
 const flash = require('connect-flash');
-
+const cors = require('cors');
 const storage= multerS3({
   s3: new AWS.S3({
     accessKeyId: process.env.ACCESSKEYID,
@@ -57,6 +57,7 @@ const upload = multer({ storage: storage });
 
 server.prepare().then(() => {
   const app = express()
+  app.use(cors());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieParser());

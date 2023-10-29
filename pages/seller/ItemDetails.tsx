@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Segment, Input, Form, Button, TextArea, Modal, Select } from 'semantic-ui-react';
 
-const SegmentExampleNestedSegments = () => {
+const  SegmentExampleNestedSegments = () => {
   const [showModal, setShowModal] = useState(false);
   const [responseText, setResponseText] = useState('');
   const formRef = useRef(null);
