@@ -8,8 +8,28 @@ class SellerService {
   }
   async getAllItems() {
     const result = await this.db.item.findMany({});
-    console.log('result', result);
-    return result;
+    // console.log('result', result);
+    return result.reverse();
+  }
+  async getAllItems_by_page(page, pageSize) {
+    try {
+      const skip = (page - 1) * pageSize; // Calculate the number of records to skip
+      const take = parseInt(pageSize); // Define the number of records to retrieve per page
+  
+      const result = await this.db.item.findMany({
+        skip: skip, // Skip the specified number of records
+        take: take, // Retrieve the specified number of records
+        orderBy: {
+          id: 'desc', // Order the items by ID in descending order
+        },
+      });
+  
+      // console.log('result', result);
+      return result
+    } catch (error) {
+      console.error('Error fetching items:', error);
+      throw error;
+    }
   }
   async getItem(id) {
     const result = await this.db.item.findUnique({

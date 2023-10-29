@@ -134,6 +134,10 @@ server.prepare().then(() => {
   app.get("/items", async (req, res) => {
     res.send(await sellerService.getAllItems());
   });
+  app.get("/items_by_page", async (req, res) => {
+    console.log("req.query",req.query)
+    res.send(await sellerService.getAllItems_by_page(req.query.page, req.query.pageSize));
+  });
   app.get('/items/:id', async (req, res) => {
     res.send(await sellerService.getItem(parseInt(req.params.id)));
   });
@@ -157,7 +161,7 @@ server.prepare().then(() => {
     if (req.session?.user?.auntheticated ) {
       res.send(await enquiryService.getEnquiriesByDealer(req.session?.user?.id));
     } else {
-      res.status(403).send('Access Denied: You are not authenticated.');
+    res.status(403).send('Access Denied: You are not authenticated.');
     }
   });
 
