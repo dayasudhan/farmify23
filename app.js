@@ -31,7 +31,7 @@ const storage= multerS3({
   shouldTransform: true,
   transforms: [
     {
-      id: 'thumbnail',
+      id: 'fe',
       key: (req, file, cb) => 
       {
         let fileFormat = '.jpg'; 
@@ -42,12 +42,20 @@ const storage= multerS3({
         }
         const randomString = Math.round(Math.random() * 1E9); // Generate a random string
         const timestamp = Date.now(); // Get the current timestamp
-        const filename = `${randomString}-${timestamp}-${fileFormat}`;
-        cb(null, `thumbnail-${filename}`);
+        const filename = `${randomString}-${timestamp}${fileFormat}`;
+        cb(null, `fe-${filename}`);
         // cb(null, `thumbnail-${file.originalname}`)
       },
-      transform: (req, file, cb) =>
-        cb(null, sharp().jpeg({ quality: 100 })),
+      transform: (req, file, cb) =>{
+        const maxSizeInBytes = 1 * 1024 * 1024;
+        if(file.size > maxSizeInBytes){
+         return cb(null, sharp().jpeg({ quality: 90 }))
+        }
+        else
+        {
+          return cb(null, sharp().jpeg({ quality: 100 }))
+        }
+      }
     },
   ],
   acl: 'public-read',
