@@ -47,7 +47,7 @@ const storage= multerS3({
         // cb(null, `thumbnail-${file.originalname}`)
       },
       transform: (req, file, cb) =>
-        cb(null, sharp().resize(200, 200).jpeg({ quality: 90 })),
+        cb(null, sharp().jpeg({ quality: 100 })),
     },
   ],
   acl: 'public-read',
