@@ -26,6 +26,7 @@ const  SegmentExampleNestedSegments = () => {
   });
   const [nameError, setNameError] = useState('');
   const [phoneError, setPhoneError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     // Fetch states and districts from the backend API here
     // Replace the following with your actual API endpoint
@@ -71,7 +72,7 @@ const  SegmentExampleNestedSegments = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (isSubmitting) return; 
     let isFormValid = true;
 
     if (formData.item_name.trim() === '') {
@@ -118,7 +119,7 @@ const  SegmentExampleNestedSegments = () => {
     if (!isFormValid) {
       return; // Prevent form submission if there are errors
     }
-
+    setIsSubmitting(true);
     const formDataFinal = new FormData();
     selectedFiles.forEach((file, i) => {
       formDataFinal.append('images', file);
@@ -144,6 +145,9 @@ const  SegmentExampleNestedSegments = () => {
       });
     } catch (error) {
       console.error('Error uploading images: ', error);
+    }
+    finally {
+      setIsSubmitting(false); // Reset the submitting state after submission
     }
   };
 
@@ -279,7 +283,7 @@ const  SegmentExampleNestedSegments = () => {
               />
             </div>
             <div style={{ display: 'flex' }}>
-              <Button primary style={{ marginLeft: 'auto' }}>
+              <Button primary style={{ marginLeft: 'auto' }} disabled={isSubmitting}>
                 Submit
               </Button>
             </div>
