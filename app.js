@@ -31,7 +31,7 @@ const storage= multerS3({
   shouldTransform: true,
   transforms: [
     {
-      id: 'fe',
+      id: 'thumbnail',
       key: (req, file, cb) => 
       {
         let fileFormat = '.jpg'; 
@@ -42,27 +42,42 @@ const storage= multerS3({
         }
         const randomString = Math.round(Math.random() * 1E9); // Generate a random string
         const timestamp = Date.now(); // Get the current timestamp
-        const filename = `${randomString}-${timestamp}${fileFormat}`;
-        cb(null, `fe-${filename}`);
+        const filename = `${randomString}-${timestamp}-${fileFormat}`;
+        cb(null, `thumbnail-${filename}`);
         // cb(null, `thumbnail-${file.originalname}`)
       },
-      transform: (req, file, cb) =>{
-        const maxSizeInBytes = 1 * 1024 * 1024;
-        if(file.size > maxSizeInBytes){
-         return cb(null, sharp().jpeg({ quality: 90 }))
-        }
-        else
-        {
-          return cb(null, sharp().jpeg({ quality: 100 }))
-        }
-      }
+      transform: (req, file, cb) =>
+        cb(null),
     },
   ],
   acl: 'public-read',
 });
-//});
-const upload = multer({ storage: storage });
+const s3 = new AWS.S3({
+  accessKeyId: process.env.ACCESSKEYID,
+  secretAccessKey: process.env.SECRETACCESSKEY,
+});
+// Function for uploading files to S3
+async function uploadToS3(buffer,key) {
+  const params = {
+    Bucket: process.env.S3BUCKET, // Replace with your bucket name
+    Key: key,
+    Body: buffer, // Specify the buffer containing the file data
+    ACL: 'public-read', // Set the ACL as per your requirements
+  };
 
+  // Upload the file to the S3 bucket
+  try {
+    const data = await s3.upload(params).promise();
+    console.log('File uploaded successfully:', data.Location);
+    return data.Location; // Return the location of the uploaded file
+  } catch (err) {
+    console.error('Error uploading file:', err);
+    throw err; // Throw the error for error handling
+  }
+}
+const mstorage = multer.memoryStorage();
+const upload = multer({ storage: mstorage });
+const upload2 = multer({ storage: storage });
 server.prepare().then(() => {
   const app = express()
   app.use(cors());
@@ -188,28 +203,81 @@ server.prepare().then(() => {
   app.get("/dealers", async (req, res) => {
       res.send(await adminService.getAllDealers());
   });
-  // app.post('/upload',  async (req, res) => {
-  //   console.log("upload",req.body);
-  //   res.send("return");
-  // });
- app.post('/upload', upload.array('images',10), async (req, res) => {
-  //app.post("/upload", async (req, res) => {
-      console.log("i am inside upload")
-      if (!req.files || req.files.length === 0) {
-        return res.status(400).json({ message: 'No images uploaded' });
-      }
-      const images = req.files.map((file) => {
-        return file.transforms[0].location;
-      });
-  
-      const dealer  = await adminService.getDealerByDistrict(req.body.district)
-     
-      const inputData = { ...req.body, image_urls: images ,dealerId:dealer.id};
 
-      const ret = await sellerService.insertItem(inputData);
-      console.log('return', ret);
-      res.send(ret);
-    });
+async function processAndCompressImages(req, res, next) {
+  upload.array('images', 5)(req, res, async (err) => { // 'files' is the field name for multiple files
+    if (err) {
+      return res.status(500).send('Error uploading files.');
+    }
+
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).send('No files uploaded.');
+    }
+
+    // Process and compress each image using sharp
+    const processedFiles = await Promise.all(
+      req.files.map(async (file) => {
+        console.log("file",file )
+        // Check if the file size is greater than 1MB
+        if (file.size > 1024 * 1024) {
+          // If it's larger than 1MB, process and compress it to 0.5MB
+          const processedBuffer = await sharp(file.buffer)
+            //  .resize({ width: 500, height: 500 }) // Adjust dimensions as needed
+            .jpeg({ quality: 70 }) // Adjust quality as needed
+            .toBuffer();
+            console.log("file process",file.buffer.length,file.size /(1024 * 1024), processedBuffer.length /(1024 ),processedBuffer.length /(1024* 1024 ))
+          return {
+            buffer: processedBuffer,
+            size: processedBuffer.length,
+          };
+        } else {
+          return {
+            buffer: file.buffer,
+            size: file.size,
+          };
+        }
+      })
+    );
+    req.processedFiles = processedFiles;
+    next();
+  });
+}
+    app.post('/upload', processAndCompressImages, async (req, res) => {
+          console.log("processedFiles",req.processedFiles )
+          const uploadedFiles = await Promise.all(
+                req.processedFiles.map(async (file) => {
+                try {
+                let fileFormat = '.jpg'; 
+                if (file.mimetype === 'image/png') {
+                  fileFormat = '.png';
+                } else if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg') {
+                  fileFormat = '.jpeg';
+                }
+                const randomString = Math.round(Math.random() * 1E9); // Generate a random string
+                const timestamp = Date.now(); // Get the current timestamp
+                const filename = `Bhoomi-${randomString}-${timestamp}${fileFormat}`;          
+                const  uploadedLocation = await uploadToS3(file.buffer,
+                filename
+                    );
+                  return uploadedLocation;
+                } catch (err) {
+                  // Handle errors if necessary
+                  return null;
+                }
+              })
+          );
+
+          // Log the uploaded file locations
+          console.log('Uploaded file locations:', uploadedFiles);
+          if (!uploadedFiles || uploadedFiles.length === 0) {
+            return res.status(400).json({ message: 'No images uploaded' });
+          }
+          const dealer  = await adminService.getDealerByDistrict(req.body.district)
+          const inputData = { ...req.body, image_urls: uploadedFiles ,dealerId:dealer.id};
+          const ret = await sellerService.insertItem(inputData);
+          console.log('return', ret);
+          res.send(ret);
+        });
   app.get('/states', async (req, res) => {
       res.send(await statesService.getStates());
   });

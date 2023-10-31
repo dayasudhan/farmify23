@@ -8,7 +8,7 @@ class AdminService {
   }
   async getAllDealers() {
     const result = await this.db.dealer.findMany({});
-    console.log('result', result);
+    //console.log('result', result);
     return result;
   }
   async getDealerByDistrict(district) {
@@ -17,7 +17,7 @@ class AdminService {
         district:district
       },
     });
-    console.log('result', result);
+    //console.log('result', result);
     return result[0];
   }
   async  insertDealer(data) {

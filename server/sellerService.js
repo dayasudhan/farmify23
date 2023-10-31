@@ -37,11 +37,11 @@ class SellerService {
         id,
       },
     });
-    console.log('result', result);
+    //console.log('result', result);
     return result;
   }
   async  insertItem(data) {
-    console.log("insertItem data",data)
+    // console.log("insertItem data",data)
     try{
     const item = await this.db.item.create({
       data: {

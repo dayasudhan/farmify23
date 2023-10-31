@@ -11,7 +11,7 @@ const  SegmentExampleNestedSegments = () => {
   const [districts, setDistricts] = useState([]);
   const [formData, setFormData] = useState({
     name: 'Devraj',
-    phone: '956629075',
+    phone: '9566229075',
     address: 'Kuruva, Honnali, Davangere, Karnataka',
     email: 'dayasudhankg@gmail.com',
     landMark: '',
@@ -33,6 +33,9 @@ const  SegmentExampleNestedSegments = () => {
       .then((response) => {
         setStates(response.data?.states); // Assuming the API response is an array of state options
         setDistricts(response.data?.districts);
+        setFormData({ ...formData, state: response.data?.states[0] ,
+          district: response.data?.districts[response.data?.states[0]][0]});
+      
       })
       .catch((error) => {
         console.error('Error fetching states:', error);
@@ -252,7 +255,7 @@ const  SegmentExampleNestedSegments = () => {
               <Select
                 name="state"
                 options={states.map((state) => ({ key: state, text: state, value: state }))}
-                value={formData.state}
+                value={formData.state || (states.length > 0 ? states[0] : '')}
                 onChange={handleStateChange}
               />
             </Form.Field>
@@ -261,7 +264,7 @@ const  SegmentExampleNestedSegments = () => {
               <Select
                 name="district"
                 options={formData.state ? districts[formData.state].map((district) => ({ key: district, text: district, value: district })) : []}
-                value={formData.district}
+                value={formData.district || (formData.state && districts[formData.state].length > 0 ? districts[formData.state][0] : '')}
                 onChange={handleDistrictChange}
               />
             </Form.Field>
