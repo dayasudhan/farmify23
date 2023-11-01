@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Image, List, Rating, Segment, Grid, Form, Button, Modal } from 'semantic-ui-react';
+import { Image, List, Rating, Segment, Grid, Form, Button, Modal, Icon } from 'semantic-ui-react';
 import Link from 'next/link';
 import Header from '../../common/header';
 import Footer from '../../common/footer';
-import ImageGallery2 from './horizontalgalley';
+import ImageGallery2 from './horizontalgallery';
 import 'semantic-ui-css/semantic.css';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -17,6 +17,8 @@ const Item = () => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareableLink, setShareableLink] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -90,6 +92,12 @@ const Item = () => {
       });
   };
 
+  const generateShareableLink = () => {
+    // Modify this to create the shareable link as per your routing structure
+    const itemLink = `https://example.com/items/${id}`;
+    setShareableLink(itemLink);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const url = baseURL + id;
@@ -144,6 +152,13 @@ const Item = () => {
                 <div>
                   <Button primary onClick={openModal}>
                     Contact / Enquiry
+                  </Button>
+                  <Button icon labelPosition='left' onClick={() => {
+                    generateShareableLink();
+                    setShareModalOpen(true);
+                  }}>
+                    <Icon name='share' />
+                    Share
                   </Button>
                 </div>
               </div>
@@ -204,6 +219,25 @@ const Item = () => {
         </Modal.Content>
         <Modal.Actions>
           <Button positive onClick={closeSuccessModal}>
+            Close
+          </Button>
+        </Modal.Actions>
+      </Modal>
+
+      {/* Share Modal */}
+      <Modal open={shareModalOpen} onClose={() => setShareModalOpen(false)}>
+        <Modal.Header>Share this item</Modal.Header>
+        <Modal.Content>
+          <p>Share this item with others using the link below:</p>
+          <input
+            type="text"
+            value={shareableLink}
+            readOnly
+            onClick={(e) => e.target.select()}
+          />
+        </Modal.Content>
+        <Modal.Actions>
+          <Button positive onClick={() => setShareModalOpen(false)}>
             Close
           </Button>
         </Modal.Actions>

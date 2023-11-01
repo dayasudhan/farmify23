@@ -4,7 +4,7 @@ class StatesService {
   constructor() 
   {
     this.states = {
-        "states":['Karnataka'],
+        "states":['Andhra Pradesh','Karnataka','Kerala'],
         "districts":{
         "Karnataka": [
             // "Bagalkot",
@@ -12,6 +12,7 @@ class StatesService {
             // "Belagavi (Belgaum)",
             // "Bengaluru (Bangalore) Rural",
             // "Bengaluru (Bangalore) Urban",
+            "Bengaluru Urban",
             // "Bidar",
             // "Chamarajanagar",
             // "Chikballapur",
@@ -31,7 +32,7 @@ class StatesService {
             // "Mysuru (Mysore)",
             // "Raichur",
             // "Ramanagara",
-            "Shivamogga (Shimoga)",
+            "Shimoga",
             // "Tumakuru (Tumkur)",
             // "Udupi",
             // "Uttara Kannada (Karwar)",

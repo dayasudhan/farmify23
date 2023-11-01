@@ -9,34 +9,37 @@ datasource db {
 }
 
 
-model Item { 
-  id        Int      @default(autoincrement()) @id @unique
-
-  name     String
-  image_urls String[]
-  price   Int?
-  availability Boolean?
-  description   String?
-  createdAt    DateTime   
-  updatedAt    DateTime?
-  address            String?        
-  district            String?       
-  city                String?        
-  state               String?        
-  zipCode             Int?       
-  phone               String?  
-  makeYear     String?
+model Item {
+  id              Int       @default(autoincrement()) @id @unique
+  name            String
+  image_urls      String[]
+  price           Int?
+  availability    Boolean?
+  description     String?
+  createdAt       DateTime
+  updatedAt       DateTime?
+  seller_name     String?
+  address         String?
+  district        String?
+  city            String?
+  state           String?
+  zipCode         Int?
+  phone           String?
+  makeYear        String?
   registrationYear String?
-  hoursDriven  Int?
-  no_of_owners Int?
-  vehicleNo Int?
+  hoursDriven     Int?
+  no_of_owners    Int?
+  vehicleNo       Int?
   insurance_validity String?
-  enquiries Enquiry[]
-  order Order?
-  dealer   Dealer @relation(fields: [dealerId], references: [id])
-  dealerId Int 
+  enquiries        Enquiry[]
+  order           Order?
+  dealer          Dealer    @relation(fields: [dealerId], references: [id])
+  dealerId        Int
+  latitude        Float?
+  longitude       Float?
   @@map("item")
 }
+
 
 model Enquiry {
   id    Int     @default(autoincrement()) @id

@@ -8,6 +8,8 @@
     const [activeItem, setActiveItem] = useState('home');
     const [sellerrefLink] = useState('/seller/post');
     const [homerefLink] = useState('/buyer/landing/landing');
+    const [locationfLink] = useState('/buyer/checkout/CurrentLocation');
+    const [location2fLink] = useState('/buyer/checkout/location');
     const [enquiryrefLink] = useState('/enquiry/enquiry');
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [loginData, setLoginData] = useState({ username: '', password: '' });
@@ -91,6 +93,18 @@
           name="Sell"
           active={activeItem === 'sell'}
           href={sellerrefLink}
+          onClick={handleItemClick}
+        />
+        <Menu.Item
+          name="location"
+          active={activeItem === 'location'}
+          href={locationfLink}
+          onClick={handleItemClick}
+        />
+        <Menu.Item
+          name="location2"
+          active={activeItem === 'location2'}
+          href={location2fLink}
           onClick={handleItemClick}
         />
         {user && (

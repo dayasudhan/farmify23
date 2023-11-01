@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Item from './item';
 import { Grid, Segment, Input } from 'semantic-ui-react';
 import axios from 'axios';
-
+import { useAuth } from './../../authContext';
 const baseURL = '/items';
 const Items = () => {
   const [items, setItems] = useState([]);
   const [filteredData, setFilteredData] = useState(items);
   const [searchQuery, setSearchQuery] = useState('');
-
+  const { location } = useAuth();
   useEffect(() => {
-    console.log('reacteffect');
-
+    console.log('reacteffect',location);
     axios.get(baseURL).then((response) => {
       setItems(response.data);
       setFilteredData(response.data);
