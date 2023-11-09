@@ -22,9 +22,12 @@ class SellerService {
         orderBy: {
           id: 'desc', // Order the items by ID in descending order
         },
+        include:{
+          dealer:true
+        }
       });
   
-      // console.log('result', result);
+      console.log('result', result);
       return result
     } catch (error) {
       console.error('Error fetching items:', error);
