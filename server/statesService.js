@@ -4,41 +4,13 @@ class StatesService {
   constructor() 
   {
     this.states = {
-        "states":['Andhra Pradesh','Karnataka','Kerala'],
+        "states":['Karnataka'],
         "districts":{
-        "Karnataka": [
-            // "Bagalkot",
-            // "Ballari (Bellary)",
-            // "Belagavi (Belgaum)",
-            // "Bengaluru (Bangalore) Rural",
-            // "Bengaluru (Bangalore) Urban",
-            "Bengaluru Urban",
-            // "Bidar",
-            // "Chamarajanagar",
-            // "Chikballapur",
-            // "Chikkamagaluru (Chikmagalur)",
-            // "Chitradurga",
-            // "Dakshina Kannada",
-            "Davanagere",
-            // "Dharwad",
-            // "Gadag",
-            // "Hassan",
-            // "Haveri",
-            // "Kalaburagi (Gulbarga)",
-            // "Kodagu",
-            // "Kolar",
-            // "Koppal",
-            // "Mandya",
-            // "Mysuru (Mysore)",
-            // "Raichur",
-            // "Ramanagara",
-            "Shimoga",
-            // "Tumakuru (Tumkur)",
-            // "Udupi",
-            // "Uttara Kannada (Karwar)",
-            // "Vijayapura (Bijapur)",
-            // "Yadgir"
-          ],
+        "Karnataka": ["Davanagere","Shimoga", "Bagalkote", "Ballari", "Belagavi", "Bengaluru Urban", "Bengaluru Rural",
+         "Bidar", "Chamarajanagar", "Chikkaballapura", "Chikkamagaluru", "Chitradurga", 
+         "Dakshina Kannada",  "Dharwad", "Gadag", "Hassan", "Haveri", 
+         "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysuru", "Raichur", 
+         "Ramanagara",  "Tumakuru", "Udupi", "Uttara Kannada", "Vijayapura", "Yadgir"],
         "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
         "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
         "Andhra Pradesh": ["Hyderabad", "Vijayawada", "Visakhapatnam"]
@@ -46,10 +18,10 @@ class StatesService {
       };
   }
   async getStates() {
-    // console.log("states", this.states);
     return this.states;
   }
   async getDistricts(id) {
+
   }
 
 
