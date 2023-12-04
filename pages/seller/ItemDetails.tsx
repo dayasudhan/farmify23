@@ -76,6 +76,8 @@ const  SegmentExampleNestedSegments = () => {
             },
             (error) => {
               console.error('Error getting location:', error.message);
+              setFormData({ ...formData, state: response.data?.states[0] ,
+                district: response.data?.districts[response.data?.states[0]][0]});
             }
           );
         } else {
