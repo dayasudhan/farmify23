@@ -94,7 +94,7 @@ const Item = () => {
 
   const generateShareableLink = () => {
     // Modify this to create the shareable link as per your routing structure
-    const itemLink = `http://tractree.in/buyer/product/item?${id}`;
+    const itemLink = `http://tractree.in/buyer/product/item?id=${id}`;
     setShareableLink(itemLink);
   };
 
