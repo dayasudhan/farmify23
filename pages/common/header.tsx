@@ -95,7 +95,7 @@
           href={sellerrefLink}
           onClick={handleItemClick}
         />
-        <Menu.Item
+        {/* <Menu.Item
           name="location"
           active={activeItem === 'location'}
           href={locationfLink}
@@ -106,7 +106,7 @@
           active={activeItem === 'location2'}
           href={location2fLink}
           onClick={handleItemClick}
-        />
+        /> */}
         {user && (
           <Menu.Item
             name="Enquiry"
