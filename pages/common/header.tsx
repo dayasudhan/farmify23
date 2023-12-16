@@ -10,7 +10,8 @@
     const [homerefLink] = useState('/buyer/landing/landing');
     const [locationfLink] = useState('/buyer/checkout/CurrentLocation');
     const [location2fLink] = useState('/buyer/checkout/location');
-    const [enquiryrefLink] = useState('/enquiry/enquiry');
+    const [enquiryrefLink] = useState('/dealer/enquiry');
+    const [myitemsrefLink] = useState('/dealer/myitems');
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [loginData, setLoginData] = useState({ username: '', password: '' });
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -108,19 +109,27 @@
           onClick={handleItemClick}
         /> */}
         {user && (
+           <>
           <Menu.Item
             name="Enquiry"
             active={activeItem === 'enquiry'}
             href={enquiryrefLink}
             onClick={handleItemClick}
           />
+          <Menu.Item
+            name="My Items"
+            active={activeItem === 'myitems'}
+            href={myitemsrefLink}
+            onClick={handleItemClick}
+          />
+          </>
         )}
         
           {user ? (
            <>      
 
               <Menu.Item
-              position="right"
+                position="right"
                 name={`${user.username} logout`}
                 onClick={handleLogout}
               />

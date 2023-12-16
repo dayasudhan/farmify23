@@ -164,6 +164,10 @@ server.prepare().then(() => {
   app.get('/items/:id', async (req, res) => {
     res.send(await sellerService.getItem(parseInt(req.params.id)));
   });
+  app.patch('/dealer/markitemsold/:id', async (req, res) => {
+    console.log("/dealer/markitemsold",req.params.id)
+    res.send(await sellerService.markitemsold(parseInt(req.params.id)));
+  });
   app.get('/session', async (req, res) => {
     if (req.session?.user?.auntheticated ) {
       res.send({'user':req.session?.user});
@@ -179,7 +183,7 @@ server.prepare().then(() => {
       res.status(403).send('Access Denied: You are not authenticated.');
     }
   });
-  app.get("/enquiries", async (req, res) => {
+  app.get("/dealer/enquiries", async (req, res) => {
     console.log("req.session?.user.id",req.session?.user?.id)
     if (req.session?.user?.auntheticated ) {
       res.send(await enquiryService.getEnquiriesByDealer(req.session?.user?.id));
@@ -187,7 +191,14 @@ server.prepare().then(() => {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
   });
-
+  app.get("/dealer/items", async (req, res) => {
+    console.log("req.session?.user.id",req.session?.user?.id)
+    if (req.session?.user?.auntheticated ) {
+      res.send(await sellerService.getAllItemsByDealer(req.session?.user?.id));
+    } else {
+    res.status(403).send('Access Denied: You are not authenticated.');
+    }
+  });
   app.post("/enquiry", async (req, res) => {
     console.log('enquery request body', req.body);
     const ret = await enquiryService.insertEnuiry(req.body);

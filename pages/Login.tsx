@@ -16,7 +16,7 @@ function LoginPage() {
           console.log("loggedin successfully",response)
           const userData = { username: response?.data?.name }; 
           loginUser(userData);
-          router.push('/enquiry/enquiry');
+          router.push('/dealer/enquiry');
         }, 1000); 
       })
       .catch(error => {

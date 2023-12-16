@@ -21,6 +21,7 @@ class EnquiryService {
       where: {
         item: {
           dealerId: dealerId,
+          availability:true,
         },
       },
       include:{

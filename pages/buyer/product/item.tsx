@@ -137,16 +137,19 @@ const Item = () => {
                   <p>
                     <b>Seller Details:</b>
                     <br />
-                    Name: {data?.name}
+                    Name: {data?.dealer.username}
                     <br />
-                    Phone: {data?.phone}
+                    Phone: {data?.dealer.phone}
                     <br />
                     Address: {data?.address}
                     <br />
                     District: {data?.district}
                     <br />
                     State: {data?.state}
+                    <br />
+                    Posted On: {new Date(data?.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' })}
                   </p>
+                  
                 </div>
                 <Rating icon="star" defaultRating={4} maxRating={5} />
                 <div>

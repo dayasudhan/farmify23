@@ -17,7 +17,7 @@ function CustomerListComponent() {
     console.log("data",data.length)
     if(data.length == 0)
     {
-    axios.get('/enquiries')
+    axios.get('/dealer/enquiries')
       .then(response => {
         console.log("response",response)
         if(response.status != 403)

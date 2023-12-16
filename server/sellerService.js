@@ -7,10 +7,25 @@ class SellerService {
     this.db = new PrismaClient()
   }
   async getAllItems() {
-    const result = await this.db.item.findMany({});
-    // console.log('result', result);
+    const result = await this.db.item.findMany({
+      where:{
+        availability:true
+      },
+    });
+    console.log('result', result[81]);
     return result.reverse();
   }
+  async getAllItemsByDealer(dealerId) {
+    const result = await this.db.item.findMany({
+      where: {
+          dealerId: dealerId,
+          availability:true
+      },
+    });
+    console.log("Result getAllItemsByDealer",result)
+    return result.reverse();
+  }
+
   async getAllItems_by_page(page, pageSize) {
     try {
       const skip = (page - 1) * pageSize; // Calculate the number of records to skip
@@ -19,12 +34,16 @@ class SellerService {
       const result = await this.db.item.findMany({
         skip: skip, // Skip the specified number of records
         take: take, // Retrieve the specified number of records
+        where:{
+          availability:true
+        },
         orderBy: {
           id: 'desc', // Order the items by ID in descending order
         },
         include:{
-          dealer:true
+          dealer:true,
         }
+
       });
   
       console.log('result', result.map(e=>e.id));
@@ -38,6 +57,27 @@ class SellerService {
     const result = await this.db.item.findUnique({
       where: {
         id,
+      },
+      include:{
+        dealer:{
+          select: {
+            phone: true,
+            username:true
+          }
+        }
+       //dealer:true,
+      }
+    });
+    //console.log('result', result);
+    return result;
+  }
+  async markitemsold(id) {
+    const result = await this.db.item.update({
+      where: {
+        id,
+      },
+      data: {
+        availability: false,
       },
     });
     //console.log('result', result);

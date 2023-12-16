@@ -84,6 +84,7 @@ model Dealer {
   state     String        
   createdAt DateTime   
   updatedAt DateTime?
+  name  String
   items Item[]
   @@map("dealer")
 }
