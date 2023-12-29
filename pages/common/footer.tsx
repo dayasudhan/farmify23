@@ -74,7 +74,7 @@ export default class Footer extends Component {
             <List.Item as="a" href="#">
               Terms and Conditions
             </List.Item>
-            <List.Item as="a" href="#">
+            <List.Item as="a" href="/tractree/apppolicy">
               Privacy Policy
             </List.Item>
           </List>

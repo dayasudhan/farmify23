@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table,Button,Input,Segment ,Header,Dropdown} from 'semantic-ui-react';
+import { Table,Button,Input,Segment ,Header,Dropdown,Modal } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.css';
 import Header2 from '../common/header';
 import Footer from '../common/footer';
@@ -12,6 +12,8 @@ function CustomerListComponent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState(data);
   const [searchKey, setSearchKey] = useState('name');
+  const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -73,9 +75,12 @@ function CustomerListComponent() {
 
   };
   const markSoldItem = (id) => {
-    // 'data.value' contains the selected value
-    console.log('markSoldItem:', id);
-    const url  = '/dealer/markitemsold/' + id;
+    setModalOpen(true);
+    setSelectedItemId(id);
+  } 
+  const handleModalConfirm = () => {
+    console.log('markSoldItem:', selectedItemId);
+    const url  = '/dealer/markitemsold/' + selectedItemId;
     console.log("url",url)
     axios
     .patch(url)
@@ -87,6 +92,10 @@ function CustomerListComponent() {
     });
    
 
+  };
+  const handleModalCancel = () => {
+    // Close the modal if the user cancels the action
+    setModalOpen(false);
   };
   const searchOptions = [
     { key: 1, text: 'Item Name', value: 'name' },
@@ -117,6 +126,20 @@ function CustomerListComponent() {
        <Header as='h2' floated='right'>
       Enquiry Table
     </Header>
+    <Modal open={modalOpen} onClose={handleModalCancel}>
+          <Modal.Header>Confirm Action</Modal.Header>
+          <Modal.Content>
+            <p>Are you sure you want to mark this item as sold?</p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button negative onClick={handleModalCancel}>
+              No
+            </Button>
+            <Button positive onClick={handleModalConfirm}>
+              Yes
+            </Button>
+          </Modal.Actions>
+        </Modal>
   </Segment>
  
 
@@ -167,7 +190,7 @@ function CustomerListComponent() {
                    Open Detail
                   </Button>
                   </Link>
-                  <Button primary onClick={()=>markSoldItem(item.id)}>
+                  <Button primary onClick={()=> markSoldItem(item.id)}>
                    Mark Sold
                   </Button>
                 </div>
