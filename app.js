@@ -316,7 +316,7 @@ async function processAndCompressImages(req, res, next) {
             return res.status(400).json({ message: 'No images uploaded' });
           }
           const dealer  = await adminService.getDealerByDistrict(req.body.district)
-          const dealerId = dealer?dealer.id:4; //dealer defalt to davanagere
+          const dealerId = dealer?dealer.id:1; //dealer default to admin
           const inputData = { ...req.body, image_urls: uploadedFiles ,dealerId};
           //console.log("inputData",inputData,dealerId)
           const ret = await sellerService.insertItem(inputData);
