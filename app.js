@@ -15,13 +15,23 @@ const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3-transform');
 const sharp = require('sharp');
-
+const bcrypt = require('bcrypt');
 const passport = require('passport')
 const session = require('express-session')
 const cookieParser = require('cookie-parser');
 const LocalStrategy = require('passport-local').Strategy
 const flash = require('connect-flash');
 const cors = require('cors');
+async function hashPassword(password) {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
+}
+// Function to verify a password
+async function verifyPassword(password, hashedPassword) {
+  const isMatch = await bcrypt.compare(password, hashedPassword);
+  return isMatch;
+}
 const storage= multerS3({
   s3: new AWS.S3({
     accessKeyId: process.env.ACCESSKEYID,
@@ -105,14 +115,29 @@ server.prepare().then(() => {
  passport.use(new LocalStrategy(async (username, password, done) => {
        
     const users =  await adminService.getAllDealers();
-    const user = users.find(u => u.username === username && u.password === password);
-    console.log("inside local stratergy",user)
-    if (user) {
-      console.log("inside local stratergy 2")
-      return done(null, user);
-    }
-    console.log("inside local stratergy 3")
-    return done(null, false, { message: 'Incorrect username or password' });
+
+    const user = users.find(u => u.username === username /*&& u.password === password*/);
+    verifyPassword(password, user.password)
+    .then(isMatch => {
+        if (isMatch) {
+            console.log("Password is correct. User authenticated successfully.");
+            if (user) {
+              console.log("inside local stratergy 2")
+              return done(null, user);
+            }
+        } else {
+            console.log("Password is incorrect. Authentication failed.");
+            return done(null, false, { message: 'Incorrect username or password' });
+        }
+    })
+    .catch(err => 
+      {
+      console.error(err)
+      return done(null, false, { message: 'Incorrect username or password' });;
+     
+ })
+ 
+  
   }));
   
 
@@ -207,6 +232,13 @@ server.prepare().then(() => {
   });
   app.post("/dealer", async (req, res) => {
     console.log('dealer request body', req.body);
+    const hashedPassword = await hashPassword(req.body.password)
+    console.log("Hashed Password:", hashedPassword);
+    // .then(hashedPassword => {
+    //     console.log("Hashed Password:", hashedPassword);
+    // })
+    // .catch(err => console.error(err));
+    req.body['hashedPassword'] = hashedPassword;
     const ret = await adminService.insertDealer(req.body);
     console.log('return', ret);
     res.send(ret);

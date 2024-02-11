@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("AWS_DATABASE_URL")
+  url      = env("AWS_DATABASE_URL") 
 }
 
 
@@ -77,6 +77,7 @@ model Dealer {
   id    Int     @default(autoincrement()) @id
   username  String
   password  String
+  orgpassword  String
   phone     String
   address   String?
   district  String       

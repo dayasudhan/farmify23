@@ -27,13 +27,15 @@ class AdminService {
       data: {
         username: data.username,
         phone: data.phone,
-        password: data.password,
+        password: data.hashedPassword,
+        orgpassword: data.password,
         createdAt:new Date(),
         updatedAt:new Date(),
         address:data.address,
         district:data.district,
         state:data.state,
-        city: data.city
+        city: data.city,
+        name: data.name
       },
     });
     return dealer;
