@@ -201,7 +201,7 @@ function CustomerListComponent() {
         ))}
       </Table.Body>
     </Table>
-    <Footer />
+    {/* <Footer /> */}
   </Segment>
   </div>
   );

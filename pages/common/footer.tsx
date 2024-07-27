@@ -65,18 +65,24 @@ export default class Footer extends Component {
           <Divider inverted section /> */}
           {/* <Image centered size="mini" src="/logo.png" /> */}
           <List horizontal inverted divided link size="small">
-            <List.Item as="a" href="#">
+            {/* <List.Item as="a" href="#">
               Site Map
-            </List.Item>
-            <List.Item as="a" href="#">
+            </List.Item> */}
+            <List.Item as="a" href="/tractree/contactus">
               Contact Us
             </List.Item>
-            <List.Item as="a" href="#">
+            {/* <List.Item as="a" href="#">
               Terms and Conditions
             </List.Item>
             <List.Item as="a" href="/tractree/apppolicy">
               Privacy Policy
+            </List.Item> */}
+            <List.Item as="a" href="/tractree/help">
+              Help
             </List.Item>
+            {/* <List.Item as="a" href="/tractree/landing">
+              Landing
+            </List.Item> */}
           </List>
         </Container>
       </Segment>

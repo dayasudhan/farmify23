@@ -7,9 +7,10 @@
     const { user, loginUser, logoutUser } = useAuth();
     const [activeItem, setActiveItem] = useState('home');
     const [sellerrefLink] = useState('/seller/post');
+    const [helpreflink] = useState('/tractree/help');
     const [homerefLink] = useState('/buyer/landing/landing');
     const [locationfLink] = useState('/buyer/checkout/CurrentLocation');
-    const [location2fLink] = useState('/buyer/checkout/location');
+    const [contactusreflink] = useState('/tractree/contactus');
     const [enquiryrefLink] = useState('/dealer/enquiry');
     const [myitemsrefLink] = useState('/dealer/myitems');
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -83,7 +84,7 @@
     };
 
     return (
-      <Menu inverted secondary pointing size="mini" color="blue">
+      <Menu inverted secondary pointing color="blue">
         <Menu.Item
           name="Home"
           active={activeItem === 'home'}
@@ -96,18 +97,19 @@
           href={sellerrefLink}
           onClick={handleItemClick}
         />
-        {/* <Menu.Item
-          name="location"
-          active={activeItem === 'location'}
-          href={locationfLink}
+         <Menu.Item
+          name="Contact us"
+          active={activeItem === 'contactus'}
+          href={contactusreflink}
           onClick={handleItemClick}
         />
+          
         <Menu.Item
-          name="location2"
-          active={activeItem === 'location2'}
-          href={location2fLink}
+          name="Help"
+          active={activeItem === 'help'}
+          href={helpreflink}
           onClick={handleItemClick}
-        /> */}
+        />
         {user && (
            <>
           <Menu.Item

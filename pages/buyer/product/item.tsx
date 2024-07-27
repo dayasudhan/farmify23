@@ -168,7 +168,7 @@ const Item = () => {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-        <Footer />
+        {/*  <Footer /> */}
       </Segment>
 
       <Modal open={modalOpen} onClose={closeModal}>
