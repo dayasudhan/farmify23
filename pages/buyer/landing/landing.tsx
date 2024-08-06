@@ -13,7 +13,7 @@ export default class Landing extends Component {
         <Header />
         <Info />
         <Items />
-         {/* <Footer /> */} 
+         <Footer /> 
       </Segment>
     );
   }

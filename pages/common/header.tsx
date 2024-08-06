@@ -9,7 +9,7 @@
     const [sellerrefLink] = useState('/seller/post');
     const [helpreflink] = useState('/tractree/help');
     const [homerefLink] = useState('/buyer/landing/landing');
-    const [locationfLink] = useState('/buyer/checkout/CurrentLocation');
+    const [locationfLink] = useState('/buyer/checkout/Location2');
     const [contactusreflink] = useState('/tractree/contactus');
     const [enquiryrefLink] = useState('/dealer/enquiry');
     const [myitemsrefLink] = useState('/dealer/myitems');
@@ -108,6 +108,12 @@
           name="Help"
           active={activeItem === 'help'}
           href={helpreflink}
+          onClick={handleItemClick}
+        />
+        <Menu.Item
+          name="location"
+          active={activeItem === 'contactus'}
+          href={locationfLink}
           onClick={handleItemClick}
         />
         {user && (
