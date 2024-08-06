@@ -21,8 +21,11 @@ class SellerService {
           dealerId: dealerId,
           availability:true
       },
+      orderBy: {
+        id: 'desc', // Order the items by ID in descending order
+      },
     });
-    console.log("Result getAllItemsByDealer",result)
+    //console.log("Result getAllItemsByDealer",result)
     return result.reverse();
   }
 
