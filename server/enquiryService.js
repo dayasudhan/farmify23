@@ -31,7 +31,7 @@ class EnquiryService {
         id: 'desc', // Order the items by ID in descending order
       },
     });
-    console.log("Result equiries",result)
+    //console.log("Result equiries",result)
     return result;
   }
   async getEnquiry(id) {

@@ -64,6 +64,7 @@ class AdminService {
         username
       },
     });
+    console.log("getTokenByDealer",result);
     return result[0].deviceToken;
   }
 }
