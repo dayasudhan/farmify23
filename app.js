@@ -115,7 +115,8 @@ server.prepare().then(() => {
   passport.deserializeUser(async (id, done) => {
     const users =  await adminService.getAllDealers();
     const user = users.find(u => u.id === id);
-     done(null, user.username);
+    console.log("deserializeUser",user)
+     done(null, user?.username);
   });
   app.use(passport.initialize()) // init passport on every route call
   app.use(passport.session())    //allow passport to use "express-session"
@@ -175,7 +176,7 @@ server.prepare().then(() => {
         console.log( 'registerCustomer save complete' );
       });
       //const users =  await adminService.getAllDealers();
-      if(req.body.token && typeof req.body.token === 'string')
+      if(req.body.token && typeof text === 'string')
         await adminService.updateDealerDeviceToken(req.body.username,req.body.token)
       console.log( 'Dayasudhan' ,req.session);
       return res.send({name:user.username,status:"success"})
