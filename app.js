@@ -358,7 +358,9 @@ async function processAndCompressImages(req, res, next) {
           body: 'This is a test notification',
         },
       };
-      admin.messaging().sendToDevice("df6YmAJ8RDq0witjWlNXeT:APA91bECrhsPrIR0_YqmyInQ02Lh9raRg3ZwkeiAo-wud0Nm12K2ZulwS9sER5pnbE2hX7JH5X5ONHpEsvtBIaeC7b4FfJwTgpg1uCJ30F17CfGeqeoLrhVj6rVWaBg1fYBvrjwedZGk", message)
+      const token = await adminService.getTokenByDealer('admin')
+      console.log("tokennnn",token)
+      admin.messaging().sendToDevice(token, message)
       .then((response) => {
         console.log('Successfully sent message:', response);
       })

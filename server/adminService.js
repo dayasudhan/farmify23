@@ -58,5 +58,13 @@ class AdminService {
     console.log('result', result);
     return result;
   }
+  async getTokenByDealer(username) {
+    const result = await this.db.dealer.findMany({
+      where: {
+        username
+      },
+    });
+    return result[0].deviceToken;
+  }
 }
 module.exports = new AdminService();
