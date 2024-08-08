@@ -175,7 +175,7 @@ server.prepare().then(() => {
         console.log( 'registerCustomer save complete' );
       });
       //const users =  await adminService.getAllDealers();
-      if(req.body.token)
+      if(req.body.token && typeof req.body.token === 'string')
         await adminService.updateDealerDeviceToken(req.body.username,req.body.token)
       console.log( 'Dayasudhan' ,req.session);
       return res.send({name:user.username,status:"success"})
