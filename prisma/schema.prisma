@@ -75,7 +75,7 @@ model Order {
 }
 model Dealer {
   id    Int     @default(autoincrement()) @id
-  username  String
+  username  String @unique
   password  String
   orgpassword  String
   phone     String
@@ -86,6 +86,7 @@ model Dealer {
   createdAt DateTime   
   updatedAt DateTime?
   name  String
+  deviceToken  String? @default("")
   items Item[]
   @@map("dealer")
 }

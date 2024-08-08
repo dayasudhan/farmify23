@@ -22,6 +22,15 @@ const cookieParser = require('cookie-parser');
 const LocalStrategy = require('passport-local').Strategy
 const flash = require('connect-flash');
 const cors = require('cors');
+const admin = require("firebase-admin");
+
+const serviceAccount = require("./firebase/firebase.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const tokens = [];
 async function hashPassword(password) {
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -144,7 +153,7 @@ server.prepare().then(() => {
   
   app.post('/login', (req, res, next) => {
     console.log("login",req.body)
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local',async (err, user, info) => {
       console.log("login2")
       if (err) {
         console.log("login3")
@@ -165,11 +174,14 @@ server.prepare().then(() => {
         }
         console.log( 'registerCustomer save complete' );
       });
+      //const users =  await adminService.getAllDealers();
+      if(req.body.token)
+        await adminService.updateDealerDeviceToken(req.body.username,req.body.token)
       console.log( 'Dayasudhan' ,req.session);
       return res.send({name:user.username,status:"success"})
     })(req, res, next);
     
-  });
+  }); 
   
   app.get('/logout', (req, res) => {
     console.log("logout")
@@ -325,6 +337,78 @@ async function processAndCompressImages(req, res, next) {
         });
   app.get('/states', async (req, res) => {
       res.send(await statesService.getStates());
+  });
+
+
+  app.post("/register", (req, res) => {
+    tokens.push(req.body.token);
+    res.status(200).json({ message: "Successfully registered FCM Token!" });
+  });
+  
+  app.get("/notifications", async (req, res) => {
+    try {
+      const { title, body, imageUrl } = req.body;
+      const message = {
+        data: {
+          score: '850',
+          time: '2:45'
+        },
+        notification: {
+          title: 'Hello World',
+          body: 'This is a test notification',
+        },
+      };
+      admin.messaging().sendToDevice("df6YmAJ8RDq0witjWlNXeT:APA91bECrhsPrIR0_YqmyInQ02Lh9raRg3ZwkeiAo-wud0Nm12K2ZulwS9sER5pnbE2hX7JH5X5ONHpEsvtBIaeC7b4FfJwTgpg1uCJ30F17CfGeqeoLrhVj6rVWaBg1fYBvrjwedZGk", message)
+      .then((response) => {
+        console.log('Successfully sent message:', response);
+      })
+      .catch((error) => {
+        console.log('Error sending message:', error);
+      });
+      res.status(200).json({ message: "Successfully sent notifications!" });
+    } catch (err) {
+      res
+        .status(err.status || 500)
+        .json({ message: err.message || "Something went wrong!" });
+    }
+  });
+    app.get("/broadcast", async (req, res) => {
+    try {
+   //   const { title, body, imageUrl } = req.body;
+      const message2 = {
+          notification: {
+            title: 'Broadcast Message',
+            body: 'This is a message to all devices subscribed to the topic!',
+          },
+          data: {
+            key1: 'value1',
+            key2: 'value2'
+          },
+        };
+        const topic = "all"; 
+        const message = {
+          data: {
+            score: '850',
+            time: '2:45'
+          },
+          topic: topic
+        };
+// Define the topic name
+        //if(req.body.token)
+        await adminService.updateDealerDeviceToken('admin',"req.body.token")
+      admin.messaging().send(message)
+      .then((response) => {
+        console.log('Successfully sent message:', response);
+      })
+      .catch((error) => {
+        console.log('Error sending message:', error);
+      });
+      res.status(200).json({ message: "Successfully sent broadcast notifications!" });
+    } catch (err) {
+      res
+        .status(err.status || 500)
+        .json({ message: err.message || "Something went wrong!" });
+    }
   });
   app.get('*', (req, res) => {
     return handle(req, res)

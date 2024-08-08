@@ -45,5 +45,18 @@ class AdminService {
     return e;
   }
   }
+  async updateDealerDeviceToken(username,token) {
+    console.log("updateDealerDeviceToken",username,token)
+    const result = await this.db.dealer.update({
+      where: {
+        username
+      },
+      data: {
+        deviceToken: token,
+      },
+    });
+    console.log('result', result);
+    return result;
+  }
 }
 module.exports = new AdminService();
