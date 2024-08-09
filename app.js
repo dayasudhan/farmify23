@@ -228,7 +228,7 @@ server.prepare().then(() => {
     }
   });
   app.get("/dealer/enquiries", async (req, res) => {
-    console.log("req.session?.user.id",req.session?.user)
+    console.log("req.session?.user.id",req.session)
     if (req.session?.user?.auntheticated ) {
       res.send(await enquiryService.getEnquiriesByDealer(req.session?.user?.id));
     } else {
