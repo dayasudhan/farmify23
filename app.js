@@ -180,7 +180,7 @@ server.prepare().then(() => {
       //const users =  await adminService.getAllDealers();
       if(req.body.token && typeof req.body.token === 'string')
       {
-        console.log(" before get token")
+        console.log(" before get token" ,req.body.token)
         await adminService.updateDealerDeviceToken(req.body.username,req.body.token)
         console.log(" before after token")
       }
