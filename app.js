@@ -111,14 +111,18 @@ server.prepare().then(() => {
   passport.serializeUser((user, done) => {
     done(null, user.username);
   });
-  
   passport.deserializeUser(async (id, done) => {
-    const users =  await adminService.getAllDealers();
-    console.log("deserializeUser",users,id)
-    const user = users.find(u => u.username === id);
-    console.log("deserializeUser",user)
-     done(null, user);
+
+    const user = users.find(u => u.id === id);
+     done(null, user.username);
   });
+  // passport.deserializeUser(async (id, done) => {
+  //   const users =  await adminService.getAllDealers();
+  //   console.log("deserializeUser",users,id)
+  //   const user = users.find(u => u.username === id);
+  //   console.log("deserializeUser",user)
+  //    done(null, user);
+  // });
   app.use(passport.initialize()) // init passport on every route call
   app.use(passport.session())    //allow passport to use "express-session"
   
