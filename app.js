@@ -181,8 +181,8 @@ server.prepare().then(() => {
       if(req.body.token && typeof req.body.token === 'string')
       {
         console.log(" before get token" ,req.body.token)
-        await adminService.updateDealerDeviceToken(req.body.username,req.body.token)
-        console.log(" before after token")
+        adminService.updateDealerDeviceToken(req.body.username,req.body.token)
+        console.log(" before afterv token")
       }
       console.log( 'Dayasudhan' ,req.session);
       return res.send({name:user.username,status:"success"})
