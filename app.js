@@ -111,18 +111,19 @@ server.prepare().then(() => {
   passport.serializeUser((user, done) => {
     done(null, user.username);
   });
-  passport.deserializeUser(async (id, done) => {
-
-    const user = users.find(u => u.id === id);
-     done(null, user.username);
-  });
   // passport.deserializeUser(async (id, done) => {
-  //   const users =  await adminService.getAllDealers();
-  //   console.log("deserializeUser",users,id)
-  //   const user = users.find(u => u.username === id);
-  //   console.log("deserializeUser",user)
-  //    done(null, user);
+  //   console.log("id",id)
+  //   const user = users.find(u => u.id === id);
+  //    done(null, user.username);
   // });
+  passport.deserializeUser(async (id, done) => {
+    console.log("id",id)
+    const users =  await adminService.getAllDealers();
+    console.log("deserializeUser",users)
+    const user = users.find(u => u.username === id);
+    console.log("deserializeUser result",user)
+     done(null, user);
+  });
   app.use(passport.initialize()) // init passport on every route call
   app.use(passport.session())    //allow passport to use "express-session"
   
@@ -227,7 +228,7 @@ server.prepare().then(() => {
     }
   });
   app.get("/dealer/enquiries", async (req, res) => {
-    console.log("req.session?.user.id",req.session?.user?.id)
+    console.log("req.session?.user.id",req.session?.user)
     if (req.session?.user?.auntheticated ) {
       res.send(await enquiryService.getEnquiriesByDealer(req.session?.user?.id));
     } else {
