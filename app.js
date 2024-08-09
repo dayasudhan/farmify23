@@ -246,7 +246,7 @@ server.prepare().then(() => {
     console.log('return', ret);
     if(ret !== null && ret?.itemId)
     {
-      const retItem = await sellerService.getDealerDevceTokenByItem(ret?.itemId);
+      const retItem = await sellerService.getItemByDealerDevceToken(ret?.itemId);
       console.log("retItem1",retItem) 
       //console.log("retItem",retItem?.dealer?.deviceToken)
       if(retItem?.dealer?.deviceToken)
@@ -257,7 +257,7 @@ server.prepare().then(() => {
           },
           notification: {
             title:  `Enquiry for ${retItem?.name}`, // Default title for new enquiry
-            body:  `Enquiry from  ${ret?.name}( ${ret?.address} & Phone no ${ret?.phone}) for item ${retItem?.name}`, // Default body for new enquiry
+            body:  `Name-${ret?.name}, Address- ${ret?.address},  Phone no -${ret?.phone}`, // Default body for new enquiry
             imageUrl:retItem?.image_urls[0], // Image URL if applicable
           },
         };
@@ -362,7 +362,7 @@ async function processAndCompressImages(req, res, next) {
 
           if(ret !== null)
           {
-            const retItem = await sellerService.getDealerDevceTokenByItem(ret?.id);
+            const retItem = await sellerService.getItemByDealerDevceToken(ret?.id);
             console.log("retItem1",retItem) 
             //console.log("retItem",retItem?.dealer?.deviceToken)
             if(retItem?.dealer?.deviceToken)
@@ -424,43 +424,26 @@ async function processAndCompressImages(req, res, next) {
       throw error;
     }
   };
-    app.get("/broadcast", async (req, res) => {
+  app.get("/broadcast", async (req, res) => {
+    const message = {
+      notification: {
+        title: "Deepavali",
+        body: "Happy Deepavali",
+      },
+      topic: 'all',
+    };
+  
     try {
-   //   const { title, body, imageUrl } = req.body;
-      const message2 = {
-          notification: {
-            title: 'Broadcast Message',
-            body: 'This is a message to all devices subscribed to the topic!',
-          },
-          data: {
-            key1: 'value1',
-            key2: 'value2'
-          },
-        };
-        const topic = "all"; 
-        const message = {
-          data: {
-            score: '850',
-            time: '2:45'
-          },
-          topic: topic
-        };
-// Define the topic name
-        //if(req.body.token)
-        await adminService.updateDealerDeviceToken('admin',"req.body.token")
-      admin.messaging().send(message)
-      .then((response) => {
-        console.log('Successfully sent message:', response);
-      })
-      .catch((error) => {
-        console.log('Error sending message:', error);
-      });
-      res.status(200).json({ message: "Successfully sent broadcast notifications!" });
-    } catch (err) {
-      res
-        .status(err.status || 500)
-        .json({ message: err.message || "Something went wrong!" });
+      const response = await admin.messaging().send(message);
+      console.log(`Successfully sent message to topic:`, response);
+      // Capture success in Sentry if using it
+     
+    } catch (error) {
+      console.log('Error sending message to topic:', error);
+      // Capture error in Sentry if using it
+  
     }
+    res.send("success");
   });
   app.get('*', (req, res) => {
     return handle(req, res)

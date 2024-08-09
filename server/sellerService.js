@@ -25,8 +25,8 @@ class SellerService {
         id: 'desc', // Order the items by ID in descending order
       },
     });
-    //console.log("Result getAllItemsByDealer",result)
-    return result.reverse();
+    //onsole.log("Result getAllItemsByDealer",result)
+    return result;
   }
 
   async getAllItems_by_page(page, pageSize) {
@@ -74,7 +74,7 @@ class SellerService {
     //console.log('result', result);
     return result;
   }
-  async getDealerDevceTokenByItem(id) {
+  async getItemByDealerDevceToken(id) {
     const result = await this.db.item.findUnique({
       where: {
         id,
