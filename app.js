@@ -118,7 +118,50 @@ server.prepare().then(() => {
   // });
   passport.deserializeUser(async (id, done) => {
     console.log("id",id)
-    const users =  await adminService.getAllDealers();
+    const users =  [
+      {
+        id: 3,
+        username: 'sanju',
+        password: '$2b$10$R7dVKdOCnjX11BBBMf3roOId6BfBg2B2dkt4jUC7RO8h.c7z.LDjq',
+        orgpassword: 'sanju123',
+        phone: '9380586505',
+        address: 'Kalagatagi',
+        district: 'Dharwad',
+        city: 'Kalagatagi',
+        state: 'Karnataka',
+       
+        name: 'Sanju',
+        deviceToken: ''
+      },
+      {
+        id: 2,
+        username: 'zabi',
+        password: '$2b$10$rxSqBUWnem2nKD/3QCZoiellx5zk9xRoi3Jd/TxGaB7QO.D63SXFW',
+        orgpassword: 'malebennuru',
+        phone: '9591748668',
+        address: 'malebennuru',
+        district: 'Davanagere',
+        city: 'Harihara',
+        state: 'Karnataka',
+      
+        name: 'Zabiullah',
+       
+      },
+      {
+        id: 1,
+        username: 'admin',
+        password: '$2b$10$.RlyPJ0ht/vSZA05bjKuoO95oKmKBiMuv6EMNVIWAvnE2hLcHzgfe',
+        orgpassword: 'farmify',
+        phone: '9566229075',
+        address: 'Kuruva',
+        district: 'India',
+        city: 'Honnali',
+        state: 'Karnataka',
+      
+        name: 'tractree',
+       
+      }
+    ];
     console.log("deserializeUser",users)
     const user = users.find(u => u.username === id);
     console.log("deserializeUser result",user)
