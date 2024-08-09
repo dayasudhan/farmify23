@@ -115,7 +115,7 @@ server.prepare().then(() => {
   passport.deserializeUser(async (id, done) => {
     const users =  await adminService.getAllDealers();
     console.log("deserializeUser",users,id)
-    const user = users.find(u => u.id === id);
+    const user = users.find(u => u.username === id);
     console.log("deserializeUser",user)
      done(null, user?.username);
   });
