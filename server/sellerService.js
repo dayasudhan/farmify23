@@ -74,6 +74,21 @@ class SellerService {
     //console.log('result', result);
     return result;
   }
+  async getDealerDevceTokenByItem(id) {
+    const result = await this.db.item.findUnique({
+      where: {
+        id,
+      },
+      include:{
+        dealer:{
+          select: {
+            deviceToken: true,
+          }
+        }
+      }
+    });
+    return result;
+  }
   async markitemsold(id) {
     const result = await this.db.item.update({
       where: {

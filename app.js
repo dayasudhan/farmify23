@@ -176,7 +176,7 @@ server.prepare().then(() => {
         console.log( 'registerCustomer save complete' );
       });
       //const users =  await adminService.getAllDealers();
-      if(req.body.token && typeof text === 'string')
+      if(req.body.token && typeof req.body.token === 'string')
         await adminService.updateDealerDeviceToken(req.body.username,req.body.token)
       console.log( 'Dayasudhan' ,req.session);
       return res.send({name:user.username,status:"success"})
@@ -241,6 +241,28 @@ server.prepare().then(() => {
     console.log('enquery request body', req.body);
     const ret = await enquiryService.insertEnuiry(req.body);
     console.log('return', ret);
+    if(ret !== null && ret?.itemId)
+    {
+      const retItem = await sellerService.getDealerDevceTokenByItem(ret?.itemId);
+      console.log("retItem1",retItem) 
+      //console.log("retItem",retItem?.dealer?.deviceToken)
+      if(retItem?.dealer?.deviceToken)
+      {
+        const message = {
+          data: {
+            type: 'enquiry', // Additional data can be added as needed
+          },
+          notification: {
+            title:  `Enquiry for ${retItem?.name}`, // Default title for new enquiry
+            body:  `Enquiry from  ${ret?.name}( ${ret?.address} & Phone no ${ret?.phone}) for item ${retItem?.name}`, // Default body for new enquiry
+            imageUrl:retItem?.image_urls[0], // Image URL if applicable
+          },
+        };
+      //const token = await adminService.getTokenByDealer('admin')
+      console.log("tokennnn",retItem?.dealer?.deviceToken)
+      await sendNotification(retItem?.dealer?.deviceToken, message);
+      }
+    }
     res.send(ret);
   });
   app.post("/dealer", async (req, res) => {
@@ -333,7 +355,31 @@ async function processAndCompressImages(req, res, next) {
           const inputData = { ...req.body, image_urls: uploadedFiles ,dealerId};
           //console.log("inputData",inputData,dealerId)
           const ret = await sellerService.insertItem(inputData);
-          console.log('return', ret);
+          console.log('return item', ret);
+
+          if(ret !== null)
+          {
+            const retItem = await sellerService.getDealerDevceTokenByItem(ret?.id);
+            console.log("retItem1",retItem) 
+            //console.log("retItem",retItem?.dealer?.deviceToken)
+            if(retItem?.dealer?.deviceToken)
+            {
+              const message = {
+                data: {
+                  type: 'Item', // Additional data can be added as needed
+                },
+                notification: {
+                  title:  `New Item ${retItem?.name}`, // Default title for new enquiry
+                  body:  `A new item has been added to your inventory  ${retItem?.name}( ${retItem?.address} & Phone no ${retItem?.phone}) `, // Default body for new enquiry
+                  imageUrl:retItem?.image_urls[0], // Image URL if applicable
+                },
+              };
+            //const token = await adminService.getTokenByDealer('admin')
+            console.log("tokennnn",retItem?.dealer?.deviceToken)
+            await sendNotification(retItem?.dealer?.deviceToken, message);
+            }
+          }
+
           res.send(ret);
         });
   app.get('/states', async (req, res) => {
@@ -361,13 +407,7 @@ async function processAndCompressImages(req, res, next) {
       };
       const token = await adminService.getTokenByDealer('admin')
       console.log("tokennnn",token)
-      admin.messaging().sendToDevice(token, message)
-      .then((response) => {
-        console.log('Successfully sent message:', response);
-      })
-      .catch((error) => {
-        console.log('Error sending message:', error);
-      });
+      await sendNotification(token, message);
       res.status(200).json({ message: "Successfully sent notifications!" });
     } catch (err) {
       res
@@ -375,6 +415,16 @@ async function processAndCompressImages(req, res, next) {
         .json({ message: err.message || "Something went wrong!" });
     }
   });
+  const sendNotification = async (token, message) => {
+    try {
+      const response = await admin.messaging().sendToDevice(token, message);
+      console.log('Successfully sent message:', response);
+      return response;
+    } catch (error) {
+      console.log('Error sending message:', error);
+      throw error;
+    }
+  };
     app.get("/broadcast", async (req, res) => {
     try {
    //   const { title, body, imageUrl } = req.body;
