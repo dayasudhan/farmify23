@@ -164,8 +164,8 @@ server.prepare().then(() => {
     ];
     console.log("deserializeUser",users)
     const user = users.find(u => u.username === id);
-    console.log("deserializeUser result",user)
-     done(null, user);
+    console.log("deserializeUser result",user,user.username)
+     done(null, user.username);
   });
   app.use(passport.initialize()) // init passport on every route call
   app.use(passport.session())    //allow passport to use "express-session"
