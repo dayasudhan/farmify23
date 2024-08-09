@@ -111,61 +111,14 @@ server.prepare().then(() => {
   passport.serializeUser((user, done) => {
     done(null, user.username);
   });
-  // passport.deserializeUser(async (id, done) => {
-  //   console.log("id",id)
-  //   const user = users.find(u => u.id === id);
-  //    done(null, user.username);
-  // });
+
   passport.deserializeUser(async (id, done) => {
     console.log("id",id)
-    const users =  [
-      {
-        id: 3,
-        username: 'sanju',
-        password: '$2b$10$R7dVKdOCnjX11BBBMf3roOId6BfBg2B2dkt4jUC7RO8h.c7z.LDjq',
-        orgpassword: 'sanju123',
-        phone: '9380586505',
-        address: 'Kalagatagi',
-        district: 'Dharwad',
-        city: 'Kalagatagi',
-        state: 'Karnataka',
-       
-        name: 'Sanju',
-        deviceToken: ''
-      },
-      {
-        id: 2,
-        username: 'zabi',
-        password: '$2b$10$rxSqBUWnem2nKD/3QCZoiellx5zk9xRoi3Jd/TxGaB7QO.D63SXFW',
-        orgpassword: 'malebennuru',
-        phone: '9591748668',
-        address: 'malebennuru',
-        district: 'Davanagere',
-        city: 'Harihara',
-        state: 'Karnataka',
-      
-        name: 'Zabiullah',
-       
-      },
-      {
-        id: 1,
-        username: 'admin',
-        password: '$2b$10$.RlyPJ0ht/vSZA05bjKuoO95oKmKBiMuv6EMNVIWAvnE2hLcHzgfe',
-        orgpassword: 'farmify',
-        phone: '9566229075',
-        address: 'Kuruva',
-        district: 'India',
-        city: 'Honnali',
-        state: 'Karnataka',
-      
-        name: 'tractree',
-       
-      }
-    ];
+    const users =  await adminService.getAllDealers();
     console.log("deserializeUser",users)
     const user = users.find(u => u.username === id);
-    console.log("deserializeUser result",user,user.username)
-     done(null, user.username);
+    console.log("deserializeUser result",user)
+     done(null, user);
   });
   app.use(passport.initialize()) // init passport on every route call
   app.use(passport.session())    //allow passport to use "express-session"
@@ -226,7 +179,11 @@ server.prepare().then(() => {
       });
       //const users =  await adminService.getAllDealers();
       if(req.body.token && typeof req.body.token === 'string')
+      {
+        console.log(" before get token")
         await adminService.updateDealerDeviceToken(req.body.username,req.body.token)
+        console.log(" before after token")
+      }
       console.log( 'Dayasudhan' ,req.session);
       return res.send({name:user.username,status:"success"})
     })(req, res, next);
