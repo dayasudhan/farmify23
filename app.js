@@ -113,11 +113,8 @@ server.prepare().then(() => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    console.log("id",id)
     const users =  await adminService.getAllDealers();
-    console.log("deserializeUser",users)
     const user = users.find(u => u.username === id);
-    console.log("deserializeUser result",user)
      done(null, user);
   });
   app.use(passport.initialize()) // init passport on every route call
@@ -156,7 +153,7 @@ server.prepare().then(() => {
   
   app.post('/login', (req, res, next) => {
     console.log("login",req.body)
-    passport.authenticate('local',async (err, user, info) => {
+    passport.authenticate('local',(err, user, info) => {
       console.log("login2")
       if (err) {
         console.log("login3")
@@ -393,10 +390,6 @@ async function processAndCompressImages(req, res, next) {
   });
 
 
-  app.post("/register", (req, res) => {
-    tokens.push(req.body.token);
-    res.status(200).json({ message: "Successfully registered FCM Token!" });
-  });
   
   app.get("/notifications", async (req, res) => {
     try {
