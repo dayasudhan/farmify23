@@ -188,8 +188,10 @@ server.prepare().then(() => {
   }); 
   
   app.get('/logout', (req, res) => {
-    console.log("logout")
+   
+    const username = req.session?.user?.username;
     req.logout(()=>{
+      adminService.updateDealerDeviceToken(username,null)
       console.log("logout inside")
     });
     res.send('logout_success');
