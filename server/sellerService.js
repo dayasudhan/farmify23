@@ -29,7 +29,72 @@ class SellerService {
     return result;
   }
 
-  async getAllItems_by_page(page, pageSize) {
+   calculateDistance(lat1, lon1, lat2, lon2){
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+
+
+  async getAllItems_by_page_location(arg) {
+    const inputLatitude = 14.1428661;
+    const inputLongitude = 75.6667316;
+    const {page,pageSize} = arg;
+    console.log("Arg",arg)
+    // const page =2;
+    // const pageSize =1;
+    try {
+        const result = await this.db.item.findMany({
+        where:{
+          availability:true
+        },
+
+        include:{
+          dealer:true,
+        }
+
+      });
+       const filteredCoords = result.map(e => {
+       const distance = this.calculateDistance(
+          parseFloat(inputLatitude),
+          parseFloat(inputLongitude),
+          e.latitude,
+          e.longitude
+        );
+        return {
+          ...e,
+          distance: distance,
+          dealer: {
+            name: e.dealer.name,
+            username: e.dealer.username,
+            phone: e.dealer.phone,
+            district: e.dealer.district
+          }
+        };
+      }).sort((a,b)=>  a.distance - b.distance);
+ 
+      // Apply pagination after filtering
+    const startIndex = (page - 1) * pageSize;
+    const paginatedResults = filteredCoords.slice(startIndex, startIndex + pageSize);
+
+    return paginatedResults;
+    } catch (error) {
+      console.error('Error fetching items:', error);
+      throw error;
+    }
+  }
+  async getAllItems_by_page(arg) {
+    const {page,pageSize} = arg;
+    console.log("Arg",arg)
     try {
       const skip = (page - 1) * pageSize; // Calculate the number of records to skip
       const take = parseInt(pageSize); // Define the number of records to retrieve per page

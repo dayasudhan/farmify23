@@ -200,9 +200,13 @@ server.prepare().then(() => {
   app.get("/items", async (req, res) => {
     res.send(await sellerService.getAllItems());
   });
+  app.get("/items_by_page_location", async (req, res) => {
+    console.log("req.query",req.query)
+    res.send(await sellerService.getAllItems_by_page_location(req.query));
+  });
   app.get("/items_by_page", async (req, res) => {
     console.log("req.query",req.query)
-    res.send(await sellerService.getAllItems_by_page(req.query.page, req.query.pageSize));
+    res.send(await sellerService.getAllItems_by_page(req.query));
   });
   app.get('/items/:id', async (req, res) => {
     res.send(await sellerService.getItem(parseInt(req.params.id)));
