@@ -8,7 +8,7 @@ class AdminService {
   }
   async getAllDealers() {
     const result = await this.db.dealer.findMany({});
-    console.log('result', result);
+    //console.log('result', result);
     return result;
   }
   async getDealerByDistrict(district) {
@@ -17,7 +17,7 @@ class AdminService {
         district:district
       },
     });
-    console.log('result', result);
+    //console.log('result', result);
     return result[0];
   }
   async  insertDealer(data) {
@@ -27,13 +27,15 @@ class AdminService {
       data: {
         username: data.username,
         phone: data.phone,
-        password: data.password,
+        password: data.hashedPassword,
+        orgpassword: data.password,
         createdAt:new Date(),
         updatedAt:new Date(),
         address:data.address,
         district:data.district,
         state:data.state,
-        city: data.city
+        city: data.city,
+        name: data.name
       },
     });
     return dealer;
@@ -42,6 +44,29 @@ class AdminService {
   {
     return e;
   }
+  }
+  async updateDealerDeviceToken(username,token) {
+    console.log("updateDealerDeviceToken",username,token)
+    const result = await this.db.dealer.update({
+      where: {
+        username
+      },
+      data: {
+        deviceToken: token,
+        updatedAt:new Date(),
+      },
+    });
+    console.log('result', result);
+    return result;
+  }
+  async getTokenByDealer(username) {
+    const result = await this.db.dealer.findMany({
+      where: {
+        username
+      },
+    });
+    console.log("getTokenByDealer",result);
+    return result[0].deviceToken;
   }
 }
 module.exports = new AdminService();

@@ -21,13 +21,17 @@ class EnquiryService {
       where: {
         item: {
           dealerId: dealerId,
+          availability:true,
         },
       },
       include:{
         item:true
-      }
+      },
+      orderBy: {
+        id: 'desc', // Order the items by ID in descending order
+      },
     });
-    console.log("Result equiries",result)
+    //console.log("Result equiries",result)
     return result;
   }
   async getEnquiry(id) {
@@ -36,7 +40,7 @@ class EnquiryService {
         id,
       },
     });
-    console.log('result', result);
+    // console.log('result', result);
     return result;
   }
   async  insertEnuiry(data) {

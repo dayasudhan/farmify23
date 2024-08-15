@@ -11,7 +11,7 @@ export default class Cart extends Component {
       <Segment>
         <Header />
         <PersonDetails />
-        <Footer />
+        {/* <Footer /> */}
       </Segment>
     );
   }

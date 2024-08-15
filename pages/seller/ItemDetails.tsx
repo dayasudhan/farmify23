@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Segment, Input, Form, Button, TextArea, Modal, Select } from 'semantic-ui-react';
-
+import { useAuth } from './../authContext';
 const  SegmentExampleNestedSegments = () => {
   const [showModal, setShowModal] = useState(false);
   const [responseText, setResponseText] = useState('');
@@ -9,13 +9,16 @@ const  SegmentExampleNestedSegments = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [district, setDistrict] = useState(null);
+  const { location } = useAuth();
+  
   const [formData, setFormData] = useState({
     name: 'Devraj',
-    phone: '956629075',
-    address: 'Kuruva, Honnali, Davangere, Karnataka',
+    phone: '9566229075',
+    address: '',
     email: 'dayasudhankg@gmail.com',
     landMark: '',
-    city: 'Shimoga',
+    city: '',
     item_name: 'tractri',
     item_year: '2020',
     item_price: '25000',
@@ -23,23 +26,71 @@ const  SegmentExampleNestedSegments = () => {
     description: 'Sample description',
     district: '',
     state: '',
+    latitude:0,
+    longitude:0,
+    postcode:'',
   });
   const [nameError, setNameError] = useState('');
   const [phoneError, setPhoneError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
-    // Fetch states and districts from the backend API here
-    // Replace the following with your actual API endpoint
-    axios.get('/states')
+    // Make a single axios call to fetch both states and districts
+    axios
+      .get('/states')
       .then((response) => {
-        setStates(response.data?.states); // Assuming the API response is an array of state options
-        setDistricts(response.data?.districts);
+        const { states, districts } = response.data;
+        setStates(states); // Assuming the API response contains an array of state options
+        setDistricts(districts);
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              
+              const apiKey = '04a5800be4bb465bb63d271f5b3941e4';
+              const apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}&language=en`;
+
+              fetch(apiUrl)
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.results && data.results.length > 0) {
+                    const districtInfo = data.results[0].components;
+                    const address = data.results[0].formatted.replace("unnamed road,", "");
+                    // console.log("districtInfo",districtInfo)
+                    setFormData({
+                      ...formData,
+                      latitude,
+                      longitude,
+                      postcode:districtInfo.postcode,
+                      state: districtInfo.state,
+                      district: districtInfo.state_district.replace(' District', ''),
+                      address: `${districtInfo.county}, ${address}`,
+                      city:districtInfo['suburb']?districtInfo['suburb']:districtInfo['village']?districtInfo['village']:districtInfo['town'],
+                    });
+                  } else {
+                    alert('District information not found.');
+                  }
+                })
+                .catch((error) => {
+                  console.error('Error fetching district information:', error);
+                });
+            },
+            (error) => {
+              console.error('Error getting location:', error.message);
+              setFormData({ ...formData, state: response.data?.states[0] ,
+                district: response.data?.districts[response.data?.states[0]][0]});
+            }
+          );
+        } else {
+          console.error('Geolocation is not available in this browser.');
+          setFormData({ ...formData, state: response.data?.states[0] ,
+            district: response.data?.districts[response.data?.states[0]][0]});
+        }
       })
       .catch((error) => {
-        console.error('Error fetching states:', error);
+        console.error('Error fetching states and districts:', error);
       });
-      
   }, []);
-
+ 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -68,7 +119,7 @@ const  SegmentExampleNestedSegments = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (isSubmitting) return; 
     let isFormValid = true;
 
     if (formData.item_name.trim() === '') {
@@ -115,7 +166,7 @@ const  SegmentExampleNestedSegments = () => {
     if (!isFormValid) {
       return; // Prevent form submission if there are errors
     }
-
+    setIsSubmitting(true);
     const formDataFinal = new FormData();
     selectedFiles.forEach((file, i) => {
       formDataFinal.append('images', file);
@@ -142,11 +193,14 @@ const  SegmentExampleNestedSegments = () => {
     } catch (error) {
       console.error('Error uploading images: ', error);
     }
+    finally {
+      setIsSubmitting(false); // Reset the submitting state after submission
+    }
   };
 
   const closeModal = () => {
     setShowModal(false);
-    location.reload();
+    //location.reload();
   };
 
   return (
@@ -252,7 +306,7 @@ const  SegmentExampleNestedSegments = () => {
               <Select
                 name="state"
                 options={states.map((state) => ({ key: state, text: state, value: state }))}
-                value={formData.state}
+                value={formData.state || (states.length > 0 ? states[0] : '')}
                 onChange={handleStateChange}
               />
             </Form.Field>
@@ -261,7 +315,7 @@ const  SegmentExampleNestedSegments = () => {
               <Select
                 name="district"
                 options={formData.state ? districts[formData.state].map((district) => ({ key: district, text: district, value: district })) : []}
-                value={formData.district}
+                value={formData.district || (formData.state && districts[formData.state].length > 0 ? districts[formData.state][0] : '')}
                 onChange={handleDistrictChange}
               />
             </Form.Field>
@@ -276,7 +330,7 @@ const  SegmentExampleNestedSegments = () => {
               />
             </div>
             <div style={{ display: 'flex' }}>
-              <Button primary style={{ marginLeft: 'auto' }}>
+              <Button primary style={{ marginLeft: 'auto' }} disabled={isSubmitting}>
                 Submit
               </Button>
             </div>

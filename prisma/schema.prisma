@@ -5,38 +5,41 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("AWS_DATABASE_URL")
+  url      = env("AWS_DATABASE_URL") 
 }
 
 
-model Item { 
-  id        Int      @default(autoincrement()) @id @unique
-
-  name     String
-  image_urls String[]
-  price   Int?
-  availability Boolean?
-  description   String?
-  createdAt    DateTime   
-  updatedAt    DateTime?
-  address            String?        
-  district            String?       
-  city                String?        
-  state               String?        
-  zipCode             Int?       
-  phone               String?  
-  makeYear     String?
+model Item {
+  id              Int       @default(autoincrement()) @id @unique
+  name            String
+  image_urls      String[]
+  price           Int?
+  availability    Boolean?
+  description     String?
+  createdAt       DateTime
+  updatedAt       DateTime?
+  seller_name     String?
+  address         String?
+  district        String?
+  city            String?
+  state           String?
+  zipCode         Int?
+  phone           String?
+  makeYear        String?
   registrationYear String?
-  hoursDriven  Int?
-  no_of_owners Int?
-  vehicleNo Int?
+  hoursDriven     Int?
+  no_of_owners    Int?
+  vehicleNo       Int?
   insurance_validity String?
-  enquiries Enquiry[]
-  order Order?
-  dealer   Dealer @relation(fields: [dealerId], references: [id])
-  dealerId Int 
+  enquiries        Enquiry[]
+  order           Order?
+  dealer          Dealer    @relation(fields: [dealerId], references: [id])
+  dealerId        Int
+  latitude        Float?
+  longitude       Float?
   @@map("item")
 }
+
 
 model Enquiry {
   id    Int     @default(autoincrement()) @id
@@ -72,8 +75,9 @@ model Order {
 }
 model Dealer {
   id    Int     @default(autoincrement()) @id
-  username  String
+  username  String @unique
   password  String
+  orgpassword  String
   phone     String
   address   String?
   district  String       
@@ -81,6 +85,8 @@ model Dealer {
   state     String        
   createdAt DateTime   
   updatedAt DateTime?
+  name  String
+  deviceToken  String? @default("")
   items Item[]
   @@map("dealer")
 }

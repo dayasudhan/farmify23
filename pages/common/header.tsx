@@ -4,11 +4,17 @@
   import axios from 'axios';
   import { useRouter } from 'next/router';
   function Header() {
-    const { user, loginUser, logoutUser } = useAuth();
+    const { user, loginUser, logoutlocationfLinkUser } = useAuth();
     const [activeItem, setActiveItem] = useState('home');
     const [sellerrefLink] = useState('/seller/post');
+    const [helpreflink] = useState('/tractree/help');
     const [homerefLink] = useState('/buyer/landing/landing');
-    const [enquiryrefLink] = useState('/enquiry/enquiry');
+    const [locationf2Link] = useState('/buyer/checkout/Location2');
+    const [locationfLink] = useState('/buyer/checkout/Location');
+    const [currentlocationflink] = useState('/buyer/checkout/CurrentLocation');
+    const [contactusreflink] = useState('/tractree/contactus');
+    const [enquiryrefLink] = useState('/dealer/enquiry');
+    const [myitemsrefLink] = useState('/dealer/myitems');
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [loginData, setLoginData] = useState({ username: '', password: '' });
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -80,7 +86,7 @@
     };
 
     return (
-      <Menu inverted secondary pointing size="mini" color="blue">
+      <Menu inverted secondary pointing color="blue">
         <Menu.Item
           name="Home"
           active={activeItem === 'home'}
@@ -93,20 +99,59 @@
           href={sellerrefLink}
           onClick={handleItemClick}
         />
+         <Menu.Item
+          name="Contact us"
+          active={activeItem === 'contactus'}
+          href={contactusreflink}
+          onClick={handleItemClick}
+        />
+          
+        <Menu.Item
+          name="Help"
+          active={activeItem === 'help'}
+          href={helpreflink}
+          onClick={handleItemClick}
+        />
+        {/* <Menu.Item
+          name="location"
+          active={activeItem === 'location'}
+          href={locationfLink}
+          onClick={handleItemClick}
+        />
+        <Menu.Item
+          name="location2"
+          active={activeItem === 'location2'}
+          href={locationf2Link}
+          onClick={handleItemClick}
+        />
+        <Menu.Item
+          name="currentlocation"
+          active={activeItem === 'currentlocation'}
+          href={currentlocationflink}
+          onClick={handleItemClick}
+        /> */}
         {user && (
+           <>
           <Menu.Item
             name="Enquiry"
             active={activeItem === 'enquiry'}
             href={enquiryrefLink}
             onClick={handleItemClick}
           />
+          <Menu.Item
+            name="My Items"
+            active={activeItem === 'myitems'}
+            href={myitemsrefLink}
+            onClick={handleItemClick}
+          />
+          </>
         )}
         
           {user ? (
            <>      
 
               <Menu.Item
-              position="right"
+                position="right"
                 name={`${user.username} logout`}
                 onClick={handleLogout}
               />

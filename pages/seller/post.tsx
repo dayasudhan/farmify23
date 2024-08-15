@@ -12,7 +12,7 @@ export default class Cart extends Component {
       <Segment>
         <Header />
         <ItemDetails />
-        <Footer />
+        {/* <Footer /> */}
       </Segment>
     );
   }
