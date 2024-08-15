@@ -53,6 +53,7 @@ class AdminService {
       },
       data: {
         deviceToken: token,
+        updatedAt:new Date(),
       },
     });
     console.log('result', result);
