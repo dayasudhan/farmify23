@@ -4,12 +4,14 @@
   import axios from 'axios';
   import { useRouter } from 'next/router';
   function Header() {
-    const { user, loginUser, logoutUser } = useAuth();
+    const { user, loginUser, logoutlocationfLinkUser } = useAuth();
     const [activeItem, setActiveItem] = useState('home');
     const [sellerrefLink] = useState('/seller/post');
     const [helpreflink] = useState('/tractree/help');
     const [homerefLink] = useState('/buyer/landing/landing');
-    const [locationfLink] = useState('/buyer/checkout/Location2');
+    const [locationf2Link] = useState('/buyer/checkout/Location2');
+    const [locationfLink] = useState('/buyer/checkout/Location');
+    const [currentlocationflink] = useState('/buyer/checkout/CurrentLocation');
     const [contactusreflink] = useState('/tractree/contactus');
     const [enquiryrefLink] = useState('/dealer/enquiry');
     const [myitemsrefLink] = useState('/dealer/myitems');
@@ -110,12 +112,24 @@
           href={helpreflink}
           onClick={handleItemClick}
         />
-        <Menu.Item
+        {/* <Menu.Item
           name="location"
-          active={activeItem === 'contactus'}
+          active={activeItem === 'location'}
           href={locationfLink}
           onClick={handleItemClick}
         />
+        <Menu.Item
+          name="location2"
+          active={activeItem === 'location2'}
+          href={locationf2Link}
+          onClick={handleItemClick}
+        />
+        <Menu.Item
+          name="currentlocation"
+          active={activeItem === 'currentlocation'}
+          href={currentlocationflink}
+          onClick={handleItemClick}
+        /> */}
         {user && (
            <>
           <Menu.Item
