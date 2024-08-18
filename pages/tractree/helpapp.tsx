@@ -15,8 +15,8 @@ export default class Help extends Component {
           <h3>ನಮ್ಮ ಆಪ್ ಪರಿಚಯ</h3>
           <div style={{ marginBottom: '1em', maxWidth: '100%', height: 'auto' }}>
             <Embed
-              id='oJGYIG320b8'
-              placeholder='https://img.youtube.com/vi/oJGYIG320b8/maxresdefault.jpg'
+              id='-EBCKRnbtp4'
+              placeholder='https://img.youtube.com/vi/-EBCKRnbtp4/hqdefault.jpg'
               source='youtube'
               iframe={{
                 style: {
@@ -26,7 +26,7 @@ export default class Help extends Component {
               }}
             />
           </div>
-          <h3>ನಮ್ಮ ಆಪ್ ಬಳಸುವ ಬಗ್ಗೆ</h3>
+          <h3>ನಮ್ಮ ಆಪ್ ಬಳಸುವ ವಿಧಾನ</h3>
           <div style={{ marginBottom: '1em', maxWidth: '100%', height: 'auto' }}>
             <Embed
               id='ouT9R3v8vWY'
@@ -40,11 +40,11 @@ export default class Help extends Component {
               }}
             />
           </div>
-          <h3>ನಮ್ಮ ಆಪ್ ಡೀಲರ್ ಬಳಸುವ ಬಗ್ಗೆ</h3>
+          <h3>ನಮ್ಮ ಆಪ್ ಡೀಲರ್ ಬಳಸುವ ವಿಧಾನ</h3>
           <div style={{ marginBottom: '1em', maxWidth: '100%', height: 'auto' }}>
             <Embed
-              id='-hWeHZT1MzE'
-              placeholder='https://img.youtube.com/vi/-hWeHZT1MzE/maxresdefault.jpg'
+              id='UUoP4ueW8Rw'
+              placeholder='https://img.youtube.com/vi/-UUoP4ueW8Rw/hqdefault.jpg'
               source='youtube'
               iframe={{
                 style: {
