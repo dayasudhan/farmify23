@@ -57,9 +57,9 @@ const Item = () => {
     setSuccessModalOpen(false);
   };
 
-  const saveData = () => {
+  const saveData = (id) => {
     let isFormValid = true;
-
+    formData.itemId = id;
     if (formData.name.trim() === '') {
       alert('Your Name is required');
       isFormValid = false;
@@ -120,6 +120,7 @@ const Item = () => {
     <div>
       <Segment>
         <Header />
+        
         <Grid stackable>
           <Grid.Row columns={1}>
             <Grid.Column>
@@ -206,7 +207,7 @@ const Item = () => {
         </Modal.Content>
         <Modal.Actions>
           <Button onClick={closeModal}>Cancel</Button>
-          <Button positive onClick={saveData}>
+          <Button positive onClick={()=>saveData(data?.id)}>
             Submit
           </Button>
         </Modal.Actions>

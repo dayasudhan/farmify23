@@ -11,7 +11,6 @@ export default class Landing extends Component {
     return (
       <Segment>
         <Header />
-        <Info />
         <Items />
          <Footer /> 
       </Segment>

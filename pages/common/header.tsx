@@ -1,8 +1,9 @@
   import React, { useState, useEffect } from 'react';
-  import { Menu, Modal, Form, Button } from 'semantic-ui-react';
+  import { Menu, Modal, Form, Button, Segment } from 'semantic-ui-react';
   import { useAuth } from './../authContext';
   import axios from 'axios';
   import { useRouter } from 'next/router';
+  import Info from './../buyer/landing/info';
   function Header() {
     const { user, loginUser, logoutlocationfLinkUser } = useAuth();
     const [activeItem, setActiveItem] = useState('home');
@@ -86,6 +87,7 @@
     };
 
     return (
+      <Segment>
       <Menu inverted secondary pointing color="blue">
         <Menu.Item
           name="Home"
@@ -212,6 +214,8 @@
               </Modal.Actions>
             </Modal>
       </Menu>
+      <Info />
+      </Segment>
     );
   }
 
