@@ -3,39 +3,60 @@ import Item from './item';
 import { Grid, Segment, Input } from 'semantic-ui-react';
 import axios from 'axios';
 import { useAuth } from './../../authContext';
+import { useRouter } from 'next/router';
+import Header from '../../common/header';
+import Footer from '../../common/footer';
+import 'semantic-ui-css/semantic.css';
 const baseURL = '/items';
+
 const Items = () => {
   const [items, setItems] = useState([]);
-  const [filteredData, setFilteredData] = useState(items);
+  const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const { location } = useAuth();
+  const router = useRouter();
+
   useEffect(() => {
-    console.log('reacteffect',location);
     axios.get(baseURL).then((response) => {
       setItems(response.data);
       setFilteredData(response.data);
-      console.log('response', response.data);
+      
+      // Check if there's a search query in the URL
+      const query = router.query.q || '';
+      if (query) {
+        setSearchQuery(query);
+        filterData(query, response.data);
+      }
     });
-  }, []);
+  }, [router.query.q]);
 
-  const handleSearchChange = (event) => {
-    const { value } = event.target;
-    setSearchQuery(value);
-    console.log("value", value, items);
-
-    // Filter the data based on the search query
+  const filterData = (query, items) => {
     const filteredResults = items.filter((item) =>
-      item?.name?.toLowerCase().includes(value.toLowerCase()) ||
-      item?.description?.toLowerCase().includes(value.toLowerCase()) ||
-      item?.address?.toLowerCase().includes(value.toLowerCase()) ||
-      item?.city?.toLowerCase().includes(value.toLowerCase())
+      item?.name?.toLowerCase().includes(query.toLowerCase()) ||
+      item?.description?.toLowerCase().includes(query.toLowerCase()) ||
+      item?.address?.toLowerCase().includes(query.toLowerCase()) ||
+      item?.city?.toLowerCase().includes(query.toLowerCase())
     );
 
     setFilteredData(filteredResults);
   };
 
+  const handleSearchChange = (event) => {
+    const { value } = event.target;
+    setSearchQuery(value);
+
+    // Update the URL with the search query
+    router.push({
+      pathname: '/buyer/landing/items',
+      query: { q: value },
+    });
+
+    filterData(value, items);
+  };
+
   return (
     <Segment>
+     <Header />
       <Segment>
         <Input
           icon="search"
@@ -53,6 +74,7 @@ const Items = () => {
           ))}
         </Grid.Row>
       </Grid>
+      <Footer /> 
     </Segment>
   );
 };
