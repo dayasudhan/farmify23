@@ -184,10 +184,10 @@ const Item = () => {
                       <Icon name='whatsapp' />
                       Share
                     </Button>
-                    <Button color='instagram' icon labelPosition='left' onClick={() => shareItem('instagram')}>
+                    {/* <Button color='instagram' icon labelPosition='left' onClick={() => shareItem('instagram')}>
                       <Icon name='instagram' />
                       Instagram
-                    </Button>
+                    </Button> */}
                 </div>
               </div>
             </Grid.Column>
