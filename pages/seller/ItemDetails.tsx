@@ -13,17 +13,17 @@ const  SegmentExampleNestedSegments = () => {
   const { location } = useAuth();
   
   const [formData, setFormData] = useState({
-    name: 'Devraj',
-    phone: '9566229075',
+    name: '',
+    phone: '',
     address: '',
-    email: 'dayasudhankg@gmail.com',
+    email: '',
     landMark: '',
     city: '',
-    item_name: 'tractri',
-    item_year: '2020',
-    item_price: '25000',
+    item_name: '',
+    item_year: '',
+    item_price: '',
     item_place: '',
-    description: 'Sample description',
+    description: '',
     district: '',
     state: '',
     latitude:0,
@@ -127,10 +127,10 @@ const  SegmentExampleNestedSegments = () => {
       isFormValid = false;
     }
 
-    if (formData.item_price.trim() === '') {
-      alert('Seller Item Price/Rate is required');
-      isFormValid = false;
-    }
+    // if (formData.item_price.trim() === '') {
+    //   alert('Seller Item Price/Rate is required');
+    //   isFormValid = false;
+    // }
 
     if (formData.name.trim() === '') {
       alert('Seller Name is required');

@@ -92,11 +92,29 @@ const Item = () => {
       });
   };
 
-  const generateShareableLink = () => {
-    // Modify this to create the shareable link as per your routing structure
-    const itemLink = `http://tractree.in/buyer/product/item?id=${id}`;
-    setShareableLink(itemLink);
+
+  const shareItem = (platform) => {
+    const itemLink = `https://tractree.in/buyer/product/item?id=${id}`;
+    let shareUrl = '';
+  
+    switch (platform) {
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(itemLink)}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(`Check out this item on Tractree: ${itemLink}`)}`;
+        break;
+      case 'instagram':
+        // Instagram doesn't allow direct URL sharing to stories/posts, but you can share via a deep link or ask users to copy the link.
+        shareUrl = `https://www.instagram.com/?url=${encodeURIComponent(itemLink)}`;
+        break;
+      default:
+        return;
+    }
+  
+    window.open(shareUrl, '_blank');
   };
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -155,15 +173,21 @@ const Item = () => {
                 <Rating icon="star" defaultRating={4} maxRating={5} />
                 <div>
                   <Button primary onClick={openModal}>
-                    Contact / Enquiry
+                    Enquiry
                   </Button>
-                  <Button icon labelPosition='left' onClick={() => {
-                    generateShareableLink();
-                    setShareModalOpen(true);
-                  }}>
-                    <Icon name='share' />
-                    Share
-                  </Button>
+             
+                    <Button color='facebook' icon labelPosition='left' onClick={() => shareItem('facebook')}>
+                      <Icon name='facebook' />
+                     Share
+                    </Button>
+                    <Button color='green' icon labelPosition='left' onClick={() => shareItem('whatsapp')}>
+                      <Icon name='whatsapp' />
+                      Share
+                    </Button>
+                    <Button color='instagram' icon labelPosition='left' onClick={() => shareItem('instagram')}>
+                      <Icon name='instagram' />
+                      Instagram
+                    </Button>
                 </div>
               </div>
             </Grid.Column>
@@ -228,24 +252,6 @@ const Item = () => {
         </Modal.Actions>
       </Modal>
 
-      {/* Share Modal */}
-      <Modal open={shareModalOpen} onClose={() => setShareModalOpen(false)}>
-        <Modal.Header>Share this item</Modal.Header>
-        <Modal.Content>
-          <p>Share this item with others using the link below:</p>
-          <input
-            type="text"
-            value={shareableLink}
-            readOnly
-            onClick={(e) => e.target.select()}
-          />
-        </Modal.Content>
-        <Modal.Actions>
-          <Button positive onClick={() => setShareModalOpen(false)}>
-            Close
-          </Button>
-        </Modal.Actions>
-      </Modal>
     </div>
   );
 };
