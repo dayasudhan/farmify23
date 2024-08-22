@@ -35,7 +35,8 @@ const Items = () => {
       item?.name?.toLowerCase().includes(query.toLowerCase()) ||
       item?.description?.toLowerCase().includes(query.toLowerCase()) ||
       item?.address?.toLowerCase().includes(query.toLowerCase()) ||
-      item?.city?.toLowerCase().includes(query.toLowerCase())
+      item?.city?.toLowerCase().includes(query.toLowerCase())||
+      item?.district?.toLowerCase().includes(query.toLowerCase())
     );
 
     setFilteredData(filteredResults);
