@@ -292,7 +292,7 @@ server.prepare().then(() => {
   });
 
 async function processAndCompressImages(req, res, next) {
-  upload.array('images', 5)(req, res, async (err) => { // 'files' is the field name for multiple files
+  upload.array('images', 10)(req, res, async (err) => { // 'files' is the field name for multiple files
     if (err) {
       return res.status(500).send('Error uploading files.');
     }
