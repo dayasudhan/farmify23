@@ -269,7 +269,7 @@ server.prepare().then(() => {
         };
       //const token = await adminService.getTokenByDealer('admin')
       console.log("tokennnn",retItem?.dealer?.deviceToken)
-      await sendNotification(retItem?.dealer?.deviceToken, message);
+      sendNotification(retItem?.dealer?.deviceToken, message);
       }
     }
     res.send(ret);
@@ -348,7 +348,6 @@ async function processAndCompressImages(req, res, next) {
                     );
                   return uploadedLocation;
                 } catch (err) {
-                  // Handle errors if necessary
                   return null;
                 }
               })
