@@ -192,7 +192,8 @@ server.prepare().then(() => {
           name: user.name,
           state: user.state,
           username: user.username,
-          phone:user.phone
+          phone:user.phone,
+          id:user.id
         }
       });
     })(req, res, next);
@@ -370,10 +371,17 @@ async function processAndCompressImages(req, res, next) {
           if (!uploadedFiles || uploadedFiles.length === 0) {
             return res.status(400).json({ message: 'No images uploaded' });
           }
-          const dealer  = await adminService.getDealerByDistrict(req.body.district)
-          const dealerId = dealer?dealer.id:1; //dealer default to admin
+          
+          let dealerId = null;
+          if (req.body.dealerId && !isNaN(Number(req.body.dealerId))) 
+          {
+            dealerId = parseInt(req.body.dealerId);
+          }
+          else{
+            const dealer  = await adminService.getDealerByDistrict(req.body.district);
+            dealerId = dealer?dealer.id:1; //dealer default to admin
+          }
           const inputData = { ...req.body, image_urls: uploadedFiles ,dealerId};
-          //console.log("inputData",inputData,dealerId)
           const ret = await sellerService.insertItem(inputData);
           console.log('return item', ret);
 
@@ -396,7 +404,7 @@ async function processAndCompressImages(req, res, next) {
               };
             //const token = await adminService.getTokenByDealer('admin')
             console.log("tokennnn",retItem?.dealer?.deviceToken)
-            await sendNotification(retItem?.dealer?.deviceToken, message);
+            sendNotification(retItem?.dealer?.deviceToken, message);
             }
           }
 

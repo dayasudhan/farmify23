@@ -193,7 +193,7 @@ class SellerService {
         no_of_owners: null,
         vehicleNo: null,
         insurance_validity: null,
-        dealerId:data.dealerId
+        dealerId:parseInt(data.dealerId)
       },
     });
     return item;
