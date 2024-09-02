@@ -182,7 +182,19 @@ server.prepare().then(() => {
         console.log(" before afterv token")
       }
       console.log( 'Dayasudhan' ,req.session);
-      return res.send({name:user.username,status:"success"})
+      //res.send({status:"success",data:user})
+      res.send({
+        status: "success",
+        data: {
+          address: user.address,
+          city: user.city,
+          district: user.district,
+          name: user.name,
+          state: user.state,
+          username: user.username,
+          phone:user.phone
+        }
+      });
     })(req, res, next);
     
   }); 
