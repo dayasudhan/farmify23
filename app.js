@@ -343,8 +343,12 @@ async function processAndCompressImages(req, res, next) {
   });
 }
     app.post('/upload', processAndCompressImages, async (req, res) => {
-          console.log("processedFiles",req.processedFiles )
-          const uploadedFiles = await Promise.all(
+          console.log("processedFiles",req.processedFiles, process.env.DEV )
+         
+     
+          const uploadedFiles = process.env.DEV ? [
+            'https://farmifyequipments.s3.amazonaws.com/Bhoomi-965371008-1725374152940.jpg'
+          ]: await Promise.all(
                 req.processedFiles.map(async (file) => {
                 try {
                 let fileFormat = '.jpg'; 
@@ -388,9 +392,7 @@ async function processAndCompressImages(req, res, next) {
           if(ret !== null)
           {
             const retItem = await sellerService.getItemByDealerDevceToken(ret?.id);
-            console.log("retItem1",retItem) 
-            //console.log("retItem",retItem?.dealer?.deviceToken)
-            if(retItem?.dealer?.deviceToken)
+             if(retItem?.dealer?.deviceToken)
             {
               const message = {
                 data: {
