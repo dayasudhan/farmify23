@@ -63,6 +63,7 @@ model Item {
   tyre_condition String?
   rto  String?
   loan_availability   Boolean? 
+  implements String?
   type  TYPE   @default(OTHER)
   @@map("item")
 }

@@ -189,7 +189,7 @@ class SellerService {
         longitude:parseFloat(data.longitude),
         zipCode: parseInt(data.postcode),
         registrationYear: null,
-        hoursDriven: data.hoursDriven,
+        hoursDriven: parseInt(data.hoursDriven),
         no_of_owners: parseInt(data.no_of_owners),
         vehicleNo: null,
         dealerId:parseInt(data.dealerId),
@@ -206,7 +206,9 @@ class SellerService {
         battery_condition:data.battery_condition,
         tyre_condition:data.tyre_condition,
         type:data.implement_type,
-        rto:data.rto
+        rto:data.rto,
+        implements:data.implements
+        
       },
     });
     return item;
