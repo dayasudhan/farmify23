@@ -346,7 +346,7 @@ async function processAndCompressImages(req, res, next) {
           console.log("processedFiles",req.processedFiles, process.env.DEV )
          
      
-          const uploadedFiles = process.env.DEV ? [
+          const uploadedFiles = (process.env.DEV === "true") ? [
             'https://farmifyequipments.s3.amazonaws.com/Bhoomi-965371008-1725374152940.jpg'
           ]: await Promise.all(
                 req.processedFiles.map(async (file) => {
