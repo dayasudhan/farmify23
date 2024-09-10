@@ -8,6 +8,19 @@ datasource db {
   url      = env("AWS_DATABASE_URL") 
 }
 
+enum TYPE {
+  ENGINE
+  TRAILER
+  CULTIVATOR
+  ROTAVATOR
+  PLOUGH
+  HARROW
+  SEEDER
+  SPRAYER
+  LEVELLER
+  POSTHOLEDIGGER 
+  OTHER
+}
 
 model Item {
   id              Int       @default(autoincrement()) @id @unique
@@ -30,13 +43,28 @@ model Item {
   hoursDriven     Int?
   no_of_owners    Int?
   vehicleNo       Int?
-  insurance_validity String?
   enquiries        Enquiry[]
   order           Order?
   dealer          Dealer    @relation(fields: [dealerId], references: [id])
   dealerId        Int
   latitude        Float?
   longitude       Float?
+  model           String?
+  make            String?
+  hypothecation_status String?
+  loan_status   String? 
+  insurance_status Boolean?
+  rc_present     Boolean?
+  fitnessCertificate  Boolean?
+  fc_approximate_cost Int?
+  tailor_attached Boolean?
+  condition  String?
+  battery_condition String?
+  tyre_condition String?
+  rto  String?
+  loan_availability   Boolean? 
+  implements String?
+  type  TYPE   @default(OTHER)
   @@map("item")
 }
 

@@ -167,7 +167,7 @@ class SellerService {
     return result;
   }
   async  insertItem(data) {
-    // console.log("insertItem data",data)
+     console.log("insertItem data",data)
     try{
     const item = await this.db.item.create({
       data: {
@@ -189,11 +189,26 @@ class SellerService {
         longitude:parseFloat(data.longitude),
         zipCode: parseInt(data.postcode),
         registrationYear: null,
-        hoursDriven: null,
-        no_of_owners: null,
+        hoursDriven: parseInt(data.hoursDriven),
+        no_of_owners: parseInt(data.no_of_owners),
         vehicleNo: null,
-        insurance_validity: null,
-        dealerId:data.dealerId
+        dealerId:parseInt(data.dealerId),
+        model:data.model,
+        hypothecation_status:data.hypothetical_status,
+        loan_status: data.loan_status,
+        loan_availability: (data.loan_availability === 'true'),
+        insurance_status:(data.insurance_status === 'true'),
+        rc_present:(data.rc_present === 'true'),
+        fitnessCertificate:(data.fitnessCertificate  === 'true'),
+        fc_approximate_cost:0,
+        tailor_attached:(data.tailor_attached === 'true'),
+        condition:data.tractor_condition,
+        battery_condition:data.battery_condition,
+        tyre_condition:data.tyre_condition,
+        type:data.implement_type,
+        rto:data.rto,
+        implements:data.implements
+        
       },
     });
     return item;

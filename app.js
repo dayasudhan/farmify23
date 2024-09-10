@@ -182,7 +182,20 @@ server.prepare().then(() => {
         console.log(" before afterv token")
       }
       console.log( 'Dayasudhan' ,req.session);
-      return res.send({name:user.username,status:"success"})
+      //res.send({status:"success",data:user})
+      res.send({
+        status: "success",
+        data: {
+          address: user.address,
+          city: user.city,
+          district: user.district,
+          name: user.name,
+          state: user.state,
+          username: user.username,
+          phone:user.phone,
+          id:user.id
+        }
+      });
     })(req, res, next);
     
   }); 
@@ -269,7 +282,7 @@ server.prepare().then(() => {
         };
       //const token = await adminService.getTokenByDealer('admin')
       console.log("tokennnn",retItem?.dealer?.deviceToken)
-      await sendNotification(retItem?.dealer?.deviceToken, message);
+      sendNotification(retItem?.dealer?.deviceToken, message);
       }
     }
     res.send(ret);
@@ -330,8 +343,12 @@ async function processAndCompressImages(req, res, next) {
   });
 }
     app.post('/upload', processAndCompressImages, async (req, res) => {
-          console.log("processedFiles",req.processedFiles )
-          const uploadedFiles = await Promise.all(
+          console.log("processedFiles",req.processedFiles, process.env.DEV )
+         
+     
+          const uploadedFiles = (process.env.DEV === "true") ? [
+            'https://farmifyequipments.s3.amazonaws.com/Bhoomi-965371008-1725374152940.jpg'
+          ]: await Promise.all(
                 req.processedFiles.map(async (file) => {
                 try {
                 let fileFormat = '.jpg'; 
@@ -348,7 +365,6 @@ async function processAndCompressImages(req, res, next) {
                     );
                   return uploadedLocation;
                 } catch (err) {
-                  // Handle errors if necessary
                   return null;
                 }
               })
@@ -359,19 +375,25 @@ async function processAndCompressImages(req, res, next) {
           if (!uploadedFiles || uploadedFiles.length === 0) {
             return res.status(400).json({ message: 'No images uploaded' });
           }
-          const dealer  = await adminService.getDealerByDistrict(req.body.district)
-          const dealerId = dealer?dealer.id:1; //dealer default to admin
+          
+          let dealerId = null;
+          if (req.body.dealerId && !isNaN(Number(req.body.dealerId))) 
+          {
+            dealerId = parseInt(req.body.dealerId);
+          }
+          else{
+            const dealer  = await adminService.getDealerByDistrict(req.body.district);
+            dealerId = dealer?dealer.id:1; //dealer default to admin
+          }
           const inputData = { ...req.body, image_urls: uploadedFiles ,dealerId};
-          //console.log("inputData",inputData,dealerId)
+          try{
           const ret = await sellerService.insertItem(inputData);
           console.log('return item', ret);
 
           if(ret !== null)
           {
             const retItem = await sellerService.getItemByDealerDevceToken(ret?.id);
-            console.log("retItem1",retItem) 
-            //console.log("retItem",retItem?.dealer?.deviceToken)
-            if(retItem?.dealer?.deviceToken)
+             if(retItem?.dealer?.deviceToken)
             {
               const message = {
                 data: {
@@ -385,11 +407,18 @@ async function processAndCompressImages(req, res, next) {
               };
             //const token = await adminService.getTokenByDealer('admin')
             console.log("tokennnn",retItem?.dealer?.deviceToken)
-            await sendNotification(retItem?.dealer?.deviceToken, message);
+            sendNotification(retItem?.dealer?.deviceToken, message);
             }
           }
 
           res.send(ret);
+        }
+        catch(err) {
+          console.log("err",err)
+          res
+            .status(err.status || 500)
+            .json({ message: err.message || "Internal server Error!" });
+        }
         });
   app.get('/states', async (req, res) => {
       res.send(await statesService.getStates());
