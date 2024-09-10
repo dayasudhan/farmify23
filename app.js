@@ -386,6 +386,7 @@ async function processAndCompressImages(req, res, next) {
             dealerId = dealer?dealer.id:1; //dealer default to admin
           }
           const inputData = { ...req.body, image_urls: uploadedFiles ,dealerId};
+          try{
           const ret = await sellerService.insertItem(inputData);
           console.log('return item', ret);
 
@@ -411,6 +412,13 @@ async function processAndCompressImages(req, res, next) {
           }
 
           res.send(ret);
+        }
+        catch(err) {
+          console.log("err",err)
+          res
+            .status(err.status || 500)
+            .json({ message: err.message || "Internal server Error!" });
+        }
         });
   app.get('/states', async (req, res) => {
       res.send(await statesService.getStates());
