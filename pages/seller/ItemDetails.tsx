@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { Segment, Input, Form, Button, TextArea, Modal, Select } from 'semantic-ui-react';
+import { Segment, Input, Form, Button, TextArea, Modal, Select ,Checkbox} from 'semantic-ui-react';
 import { useAuth } from './../authContext';
 const  SegmentExampleNestedSegments = () => {
   const [showModal, setShowModal] = useState(false);
@@ -11,7 +11,28 @@ const  SegmentExampleNestedSegments = () => {
   const [districts, setDistricts] = useState([]);
   const [district, setDistrict] = useState(null);
   const { location } = useAuth();
-  
+  const [rtos, setRtos] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [geoResult,setGeoResult]=useState(null);
+  const [selectedImplementType, setSelectedImplementType] = useState("ENGINE"); // Track selected implement type
+  const [insuranceStatus, setInsuranceStatus] = useState(true);
+  const [loanAvailability, setLoanAvailability] = useState(false);
+  const [rcPresent, setRcPresent] = useState(true);
+  const [fitnessCertificate, setFitnessCertificate] = useState(true);
+  const [trailorAttached, setTrailorAttached] = useState(false);
+
+  const implementTypes = ["ENGINE",
+    "TRAILER",
+    "CULTIVATOR",
+    "ROTAVATOR",
+    "PLOUGH",
+    "HARROW",
+    "SEEDER",
+    "SPRAYER",
+    "LEVELLER",
+    "DIGGER",
+    "FULL SET", 
+    "OTHER"];
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -29,6 +50,26 @@ const  SegmentExampleNestedSegments = () => {
     latitude:0,
     longitude:0,
     postcode:'',
+    implement_type: 'ENGINE', // Add this field for implement type
+    model: '', // Additional field
+    insurance: '', // Additional field
+    loan_availability: false, // Additional field
+    tractor_make: '', // New field
+    hypothetical_status: '', // New field
+    loan_status: '', // New field
+    insurance_status: true, // Boolean field
+    rc_present: true, // Boolean field
+    fitnessCertificate: true, // New field
+    approximate_cost: '', // New field
+    tailor_attached: false, // Boolean field
+    tractor_condition: '', // New field
+    battery_condition: '', // New field
+    tyre_condition: '', // New field
+    implement_or_trailer: '', // New field
+    rto: '',
+    no_of_owners:1,
+    implements:'',
+    hoursDriven:''
   });
   const [nameError, setNameError] = useState('');
   const [phoneError, setPhoneError] = useState('');
@@ -38,9 +79,10 @@ const  SegmentExampleNestedSegments = () => {
     axios
       .get('/states')
       .then((response) => {
-        const { states, districts } = response.data;
+        const { states, districts ,rto} = response.data;
         setStates(states); // Assuming the API response contains an array of state options
         setDistricts(districts);
+        setRtos(rto);
         if ('geolocation' in navigator) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -92,7 +134,9 @@ const  SegmentExampleNestedSegments = () => {
   }, []);
  
   const handleInputChange = (event) => {
+   
     const { name, value } = event.target;
+    console.log("handleInputChange",name, value)
     setFormData({ ...formData, [name]: value });
     if (name === 'name') {
       setNameError('');
@@ -106,6 +150,38 @@ const  SegmentExampleNestedSegments = () => {
     setFormData({ ...formData, state: data.value, district: '' });
   };
 
+  const handleFCChange = (_, data) => {
+    setFitnessCertificate(data.checked)
+    setFormData({ ...formData, fitnessCertificate: data.checked});
+  };
+  const handleRCPresent = (_, data) => {
+    setRcPresent(data.checked)
+    setFormData({ ...formData, rc_present: data.checked});
+  };
+  const handleLoanAvailable = (_, data) => {
+    setLoanAvailability(data.checked)
+    setFormData({ ...formData, loan_availability: data.checked});
+  };
+  const handleTailorAttached = (_, data) => {
+    console.log("handleTailorAttached",data)
+    setTrailorAttached(data.checked)
+    setFormData({ ...formData, tailor_attached: data.checked});
+  };
+  const handleInsuranceStatus = (_, data) => {
+    setInsuranceStatus(data.checked)
+    setFormData({ ...formData, insurance_status: data.checked});
+  };
+
+  const handleNoOfOwners = (_, data) => {
+    setFormData({ ...formData, no_of_owners: data.value,});
+  };
+  const handleImplementTypeChange = (_, data) => {
+    setSelectedImplementType(data.value)
+    setFormData({ ...formData, implement_type: data.value });
+  };
+  const handleRTOSChange = (_, data) => {
+    setFormData({ ...formData, rto: data.value });
+  };
   const handleDistrictChange = (_, data) => {
     setFormData({ ...formData, district: data.value });
   };
@@ -118,11 +194,16 @@ const  SegmentExampleNestedSegments = () => {
   };
 
   const handleSubmit = async (e) => {
+
+    //setFormData({ ...formData, loan_availability: loanAvailability,rc_present:rcPresent,
+     // tailor_attached:trailorAttached ,insurance_status:insuranceStatus,fitnessCertificate:fitnessCertificate});
+
+    console.log("handlesubmit",formData)
     e.preventDefault();
     if (isSubmitting) return; 
     let isFormValid = true;
 
-    if (formData.item_name.trim() === '') {
+    if (formData.item_name.trim() === '' && formData.model.trim()==='') {
       alert('Seller Item Name is required');
       isFormValid = false;
     }
@@ -212,13 +293,27 @@ const  SegmentExampleNestedSegments = () => {
           </Segment>
           <p />
           <Form ref={formRef} onSubmit={handleSubmit}>
+            
+             
+              <Form.Field>
+              <label>Item Type</label>
+              <Select
+                name="type"
+                options={implementTypes.map((i) => ({ key: i, text: i, value: i }))}
+                value={formData.implement_type || (implementTypes.length > 0 ? implementTypes[0] : '')}
+                onChange={handleImplementTypeChange}
+              />
+            </Form.Field>
+            {
+            (selectedImplementType === 'ENGINE')? 
+            (
+              <>
             <Form.Field>
-              <label>Item Details</label>
               <Input
-                name="item_name"
+                name="model"
                 focus
-                placeholder="Item Name..."
-                value={formData.item_name}
+                placeholder="Engine Model..."
+                value={formData.model}
                 onChange={handleInputChange}
               />
             </Form.Field>
@@ -227,8 +322,48 @@ const  SegmentExampleNestedSegments = () => {
               <Input
                 name="item_year"
                 focus
-                placeholder="Item Manufacture Year"
+                placeholder="Engine Manufacture Year"
                 value={formData.item_year}
+                onChange={handleInputChange}
+              />
+            </Form.Field>
+            <p />
+            <Form.Field>
+              <Input
+                name="hoursDriven"
+                focus
+                placeholder="Hours Driven"
+                value={formData.hoursDriven}
+                onChange={handleInputChange}
+              />
+            </Form.Field>
+            <p />
+            <Form.Field>
+              <Input
+                name="hypothetical_status"
+                focus
+                placeholder="Hpothetical Status"
+                value={formData.hypothetical_status}
+                onChange={handleInputChange}
+              />
+            </Form.Field>
+            <p />
+            <Form.Field>
+              <Input
+                name="loan_status"
+                focus
+                placeholder="Loan Status"
+                value={formData.loan_status}
+                onChange={handleInputChange}
+              />
+            </Form.Field>
+            <p />
+            <Form.Field>
+              <Input
+                name="implements"
+                focus
+                placeholder="Other Implements if any"
+                value={formData.implements}
                 onChange={handleInputChange}
               />
             </Form.Field>
@@ -237,7 +372,7 @@ const  SegmentExampleNestedSegments = () => {
               <Input
                 name="item_price"
                 focus
-                placeholder="Item Rate/Price..."
+                placeholder="Engine Rate/Price..."
                 value={formData.item_price}
                 onChange={handleInputChange}
               />
@@ -254,6 +389,111 @@ const  SegmentExampleNestedSegments = () => {
                 onChange={handleInputChange}
               />
             </Form.Field>
+            <Form.Field>
+             <Checkbox
+              name="Loan"
+                checked={loanAvailability}
+                label={"Loan Availability"}
+                value={formData.loan_availability ? 'true' : 'false'}
+                onChange={                 
+                    handleLoanAvailable
+                }
+              />
+            </Form.Field>
+            <Form.Field>
+             <Checkbox
+              name="insuranceStatus"
+                checked={insuranceStatus}
+                label={"Insurance Status"}
+                value={formData.insurance_status ? 'true' : 'false'}
+                onChange={                  
+                    handleInsuranceStatus
+                }
+              />
+            </Form.Field>
+            <Form.Field>
+             <Checkbox
+              name="rc"
+                checked={rcPresent}
+                label={"RC Status"}
+                value={formData.rc_present ? 'true' : 'false'}
+                onChange={handleRCPresent            
+                }
+              />
+            </Form.Field>
+            <Form.Field>
+             <Checkbox
+              name="fc"
+                checked={fitnessCertificate}
+                label={"FC"}
+                value={formData.fitnessCertificate ? 'true' : 'false'}
+                onChange={handleFCChange}
+              />
+            </Form.Field>
+            <Form.Field>
+             <Checkbox
+              name="tailorAttached"
+                checked={trailorAttached}
+                label={"Tailor Attached"}
+                value={formData.tailor_attached ? 'true' : 'false'}
+                onChange={ handleTailorAttached}
+              />
+            </Form.Field>
+            <Form.Field>
+              <label>Number of previous owners</label>
+              <Select
+                name="type"
+                options={Array.from({ length: 5 }, (_, i) => i + 1).map((i) => ({ key: i, text: i, value: i }))}
+                value={formData.no_of_owners }
+                onChange={handleNoOfOwners}
+              />
+            </Form.Field>
+            </>
+            ):(
+              <>
+              <Form.Field>
+                <Input
+                  name="item_name"
+                  focus
+                  placeholder="Item Name..."
+                  value={formData.item_name}
+                  onChange={handleInputChange}
+                />
+              </Form.Field>
+              <p />
+              <Form.Field>
+                <Input
+                  name="item_year"
+                  focus
+                  placeholder="Item Manufacture Year"
+                  value={formData.item_year}
+                  onChange={handleInputChange}
+                />
+              </Form.Field>
+              <p />
+              <Form.Field>
+                <Input
+                  name="item_price"
+                  focus
+                  placeholder="Item Rate/Price..."
+                  value={formData.item_price}
+                  onChange={handleInputChange}
+                />
+              </Form.Field>
+              <p />
+              <Form.Field>
+      
+                <TextArea
+                  name="description"
+                  rows={2}
+                  placeholder="Description..."
+                  value={formData.description}
+                  defaultValue={formData.description}
+                  onChange={handleInputChange}
+                />
+              </Form.Field>
+              </>
+            )}
             <Form.Field>
               <label>Seller Details</label>
               <Input
@@ -317,6 +557,15 @@ const  SegmentExampleNestedSegments = () => {
                 options={formData.state ? districts[formData.state].map((district) => ({ key: district, text: district, value: district })) : []}
                 value={formData.district || (formData.state && districts[formData.state].length > 0 ? districts[formData.state][0] : '')}
                 onChange={handleDistrictChange}
+              />
+            </Form.Field>
+            <Form.Field>
+              <label>RTO</label>
+              <Select
+                name="RTOS"
+                options={formData.state ? rtos[formData.state].map((rto) => ({ key: rto, text: rto, value: rto })) : []}
+                value={formData.rto || (formData.state && rtos[formData.state].length > 0 ? rtos[formData.state][0] : '')}
+                onChange={handleRTOSChange}
               />
             </Form.Field>
             <div>
