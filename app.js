@@ -376,15 +376,16 @@ async function processAndCompressImages(req, res, next) {
             return res.status(400).json({ message: 'No images uploaded' });
           }
           
-          let dealerId = null;
+          let dealerId = 1;
           if (req.body.dealerId && !isNaN(Number(req.body.dealerId))) 
           {
             dealerId = parseInt(req.body.dealerId);
           }
-          else{
-            const dealer  = await adminService.getDealerByDistrict(req.body.district);
-            dealerId = dealer?dealer.id:1; //dealer default to admin
-          }
+          //commented for while users uploaded will be put into admin
+          // else{
+          //   const dealer  = await adminService.getDealerByDistrict(req.body.district);
+          //   dealerId = dealer?dealer.id:1; //dealer default to admin
+          // }
           const inputData = { ...req.body, image_urls: uploadedFiles ,dealerId};
           try{
           const ret = await sellerService.insertItem(inputData);
