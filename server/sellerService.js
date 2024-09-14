@@ -109,13 +109,31 @@ class SellerService {
           id: 'desc', // Order the items by ID in descending order
         },
         include:{
-          dealer:true,
-        }
+          dealer: {
+            select: {
+                id: true,      // Include dealer ID
+                name: true,    // Include dealer name
+                phone: true,   // Include dealer email
+                address:true,
+                city:true,
+                district:true,
+                state:true
+                // Exclude dealer password by not including it in the select statement
+            }
+        }}
 
       });
   
-      console.log('result', result.map(e=>e.id));
-      return result
+      // Add contact_phone to each result with the new condition
+      const updatedResult = result.map(item => ({
+        ...item,
+        contact_phone: item.dealer?.id === 1 
+            ? item.phone  // If dealer ID is 1, use the item's phone
+            : (item.dealer?.phone || item.phone) // Otherwise, use dealer's phone if available, else item's phone
+    }));
+
+    console.log('result', updatedResult.map(e => e.id));
+    return updatedResult;
     } catch (error) {
       console.error('Error fetching items:', error);
       throw error;

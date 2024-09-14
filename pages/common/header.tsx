@@ -4,8 +4,9 @@
   import axios from 'axios';
   import { useRouter } from 'next/router';
   import Info from './../buyer/landing/info';
+  
   function Header() {
-    const { user, loginUser, logoutlocationfLinkUser } = useAuth();
+    const { user, loginUser, logoutUser } = useAuth();
     const [activeItem, setActiveItem] = useState('home');
     const [sellerrefLink] = useState('/seller/post');
     const [helpreflink] = useState('/tractree/help');
@@ -16,6 +17,7 @@
     const [contactusreflink] = useState('/tractree/contactus');
     const [enquiryrefLink] = useState('/dealer/enquiry');
     const [myitemsrefLink] = useState('/dealer/myitems');
+    const [createDeralerRefLink] = useState('/admin/createDealer');
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [loginData, setLoginData] = useState({ username: '', password: '' });
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -132,8 +134,21 @@
           href={currentlocationflink}
           onClick={handleItemClick}
         /> */}
-        {user && (
-           <>
+
+      {user && (
+         <>
+                {user.id ===1 && (
+                  <>
+                  
+                  <Menu.Item
+                   name="Dealer Onboarding"
+                   active={activeItem === 'createDealer'}
+                   href={createDeralerRefLink}
+                   onClick={handleItemClick}
+                 />
+                  </>
+               )}
+          
           <Menu.Item
             name="Enquiry"
             active={activeItem === 'enquiry'}
