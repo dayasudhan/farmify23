@@ -116,6 +116,8 @@ model Dealer {
   name  String
   deviceToken  String? @default("")
   items Item[]
+  allowPhoneNumberToCall   Boolean   @default(true)
+  allowWhatsAppMessages    Boolean   @default(true)
   @@map("dealer")
 }
 

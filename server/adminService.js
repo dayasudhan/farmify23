@@ -59,6 +59,29 @@ class AdminService {
     console.log('result', result);
     return result;
   }
+  async updateDealerSettings(id, allowPhoneNumberToCall, allowWhatsAppMessages) {
+    console.log("updateDealerSettings", id, allowPhoneNumberToCall, allowWhatsAppMessages);
+  
+    try {
+      const result = await this.db.dealer.update({
+        where: {
+          id,
+        },
+        data: {
+          allowPhoneNumberToCall: allowPhoneNumberToCall,
+          allowWhatsAppMessages: allowWhatsAppMessages,
+          updatedAt: new Date(),  // Update the timestamp
+        },
+      });
+  
+      console.log('result', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating dealer settings:', error);
+      throw error;
+    }
+  }
+  
   async getTokenByDealer(username) {
     const result = await this.db.dealer.findMany({
       where: {
@@ -67,6 +90,23 @@ class AdminService {
     });
     console.log("getTokenByDealer",result);
     return result[0].deviceToken;
+  }
+  async getDealerByUsername(id) {
+    const result = await this.db.dealer.findMany({
+      where: {
+        id
+      },
+      select: {
+        id: true,
+        name: true,
+        allowPhoneNumberToCall: true,
+        allowWhatsAppMessages: true,
+        name:true,
+        username:true,
+      },
+    });
+    console.log("getTokenByDealer",result);
+    return result[0];
   }
 }
 module.exports = new AdminService();

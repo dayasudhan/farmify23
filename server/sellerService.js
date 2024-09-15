@@ -74,10 +74,12 @@ class SellerService {
           ...e,
           distance: distance,
           dealer: {
+            id:e.dealer.id,
             name: e.dealer.name,
             username: e.dealer.username,
             phone: e.dealer.phone,
-            district: e.dealer.district
+            district: e.dealer.district,
+            allowPhoneNumberToCall: e.dealer.allowPhoneNumberToCall
           }
         };
       }).sort((a,b)=>  a.distance - b.distance);
@@ -86,7 +88,15 @@ class SellerService {
     const startIndex = (page - 1) * pageSize;
     const paginatedResults = filteredCoords.slice(startIndex, startIndex + pageSize);
 
-    return paginatedResults;
+    const updatedResult = paginatedResults.map(item => ({
+      ...item,
+      contact_phone: item.dealer?.id === 1 
+          ? item.phone  // If dealer ID is 1, use the item's phone
+          : (item.dealer?.phone || item.phone) // Otherwise, use dealer's phone if available, else item's phone
+      }));
+
+      console.log('result', updatedResult.map(e => e.id));
+      return updatedResult;
     } catch (error) {
       console.error('Error fetching items:', error);
       throw error;
@@ -117,7 +127,8 @@ class SellerService {
                 address:true,
                 city:true,
                 district:true,
-                state:true
+                state:true,
+                allowPhoneNumberToCall:true,
                 // Exclude dealer password by not including it in the select statement
             }
         }}

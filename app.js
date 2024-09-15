@@ -303,6 +303,29 @@ server.prepare().then(() => {
   app.get("/dealers", async (req, res) => {
       res.send(await adminService.getAllDealers());
   });
+  app.get("/dealer", async (req, res) => {
+    console.log("req.session?.user.id",req.session?.user?.id)
+    res.send(await adminService.getDealerByUsername(req.session?.user?.id));
+});
+// API to update dealer settings
+app.patch('/dealer/updatesettings', async (req, res) => {
+  console.log("req.session?.user.id",req.session?.user?.id)
+  const { allowPhoneNumberToCall, allowWhatsAppMessages } = req.body;
+
+  console.log("Updating settings for dealer:", req.session?.user?.id, allowPhoneNumberToCall, allowWhatsAppMessages);
+
+  try {
+    const result = await adminService.updateDealerSettings(
+      req.session?.user?.id,
+      allowPhoneNumberToCall,
+      allowWhatsAppMessages
+    );
+    res.status(200).send(result);
+  } catch (error) {
+    console.error("Error updating dealer settings:", error);
+    res.status(500).send({ error: 'Failed to update dealer settings' });
+  }
+});
 
 async function processAndCompressImages(req, res, next) {
   upload.array('images', 10)(req, res, async (err) => { // 'files' is the field name for multiple files
