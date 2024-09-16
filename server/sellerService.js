@@ -128,7 +128,7 @@ class SellerService {
                 city:true,
                 district:true,
                 state:true,
-                username: e.dealer.username,
+                username: true,
                 allowPhoneNumberToCall:true,
                 // Exclude dealer password by not including it in the select statement
             }
