@@ -203,6 +203,11 @@ const  SegmentExampleNestedSegments = () => {
     if (isSubmitting) return; 
     let isFormValid = true;
 
+    if(selectedImplementType != "OTHER")
+    {
+       const itemName = `${selectedImplementType.charAt(0).toUpperCase()}${selectedImplementType.slice(1).toLowerCase()}`;
+       formData.item_name = itemName;
+    }
     if (formData.item_name.trim() === '' && formData.model.trim()==='') {
       alert('Seller Item Name is required');
       isFormValid = false;
