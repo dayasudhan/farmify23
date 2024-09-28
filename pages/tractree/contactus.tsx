@@ -19,11 +19,11 @@ export default class ContactUs extends Component {
           
           <h3>ಇಮೇಲ್</h3>
           <p>ನಮ್ಮ ಬೆಂಬಲ ತಂಡವನ್ನು ಇಮೇಲ್ ಮೂಲಕ ಸಂಪರ್ಕಿಸಿ:</p>
-          <p><a href='mailto:kuruvatechnologies@gmail.com'>kuruvatechnologies@gmail.com</a></p>
+          <p><a href='mailto:tractree620@gmail.com'>tractree620@gmail.com</a></p>
           
           <h3>ಫೋನ್</h3>
           <p>ನೀವು ನಮ್ಮನ್ನು ಫೋನ್ ಮೂಲಕ ಸಂಪರ್ಕಿಸಬಹುದು:</p>
-          <p>+919566229075</p>
+          <p>+919902262044</p>
           
           <h3>ವಿಳಾಸ</h3>
           <p>ನಮ್ಮ ಕಚೇರಿಯ ವಿಳಾಸ:</p>
