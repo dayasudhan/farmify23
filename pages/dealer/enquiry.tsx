@@ -108,10 +108,11 @@ function CustomerListComponent() {
         <Table.Row>
           <Table.HeaderCell width={1}>#</Table.HeaderCell>
           <Table.HeaderCell width={2}>Image</Table.HeaderCell>
-          <Table.HeaderCell width={2}>ItemId</Table.HeaderCell>
-          <Table.HeaderCell width={3}>Item Name</Table.HeaderCell>
-          <Table.HeaderCell width={5}>Name</Table.HeaderCell>
+          <Table.HeaderCell width={2}>Enquiry ID</Table.HeaderCell>
+          <Table.HeaderCell width={3}>Party Name</Table.HeaderCell>
           <Table.HeaderCell width={4}>Phone</Table.HeaderCell>
+          <Table.HeaderCell width={5}>Address</Table.HeaderCell>
+          <Table.HeaderCell width={5}>Date</Table.HeaderCell>
           <Table.HeaderCell width={1}></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
@@ -124,25 +125,37 @@ function CustomerListComponent() {
           {/* Add the thumbnail image here */}
           <img src={item.item.image_urls[0]} alt="Thumbnail" style={{ maxWidth: '100px', maxHeight: '100px' }} />
         </Table.Cell>
-            <Table.Cell>{item.itemId}</Table.Cell>
-            <Table.Cell>{item.item.name}</Table.Cell>
+            <Table.Cell>{item.id}</Table.Cell>
             <Table.Cell>{item.name}</Table.Cell>
             <Table.Cell>{item.phone}</Table.Cell>
-           
+            <Table.Cell>{item.address}</Table.Cell>
+            <Table.Cell>{new Date(item?.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' })}</Table.Cell>
+
             {/* <Table.Cell>
               <Button primary onClick={() => handleDetailButtonClick(item._id)}>Aggrement</Button>
             </Table.Cell> */}
           </Table.Row>
           {expandedRowIndex === index && (
               <Table.Row>
-                <Table.Cell colSpan="4"> {/* colSpan should match the number of columns in your table */}
+                <Table.Cell colSpan="7"> {/* colSpan should match the number of columns in your table */}
                   {/* Add your additional content here */}
-                  <p><b>ID</b>: &nbsp;  &nbsp;  &nbsp;{ item.id}</p>
-                  <p><b>name</b>: {item.name}</p>
-                  <p><b>phone</b>: {item.phone}</p>
-                  <p><b>address</b>: {item.address}</p>
-                  <p><b>state</b>: {item.state}</p>
-                  <p><b>createdAt</b>: {item.createdAt}</p>
+                  <p><b>Item ID</b>: &nbsp;  &nbsp;  &nbsp;{ item.item.id}</p>
+                  <p><b>Seller name</b>: {item.item.seller_name}</p>
+                  <p><b>phone</b>: {item.item.phone}</p>
+                  <p><b>address</b>: {item.item.address}</p>
+                  <p><b>district</b>: {item.item.district}</p>
+                  <p><b>createdAt</b>: {new Date(item?.item?.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' })}</p>
+                  <p><b>Rate</b>: {item.item.price}</p>
+                  <p><b>Make Year</b>: {item.item.makeYear}</p>
+                  <p><b>model</b>: {item.item.model}</p>
+                  <p><b>Insurance Status</b>: {item.item.insurance_status}</p>
+                  <p><b>RC</b>: {item.item.rc_present}</p>
+                  <p><b>FC</b>: {item.item.fitnessCertificate}</p>
+                  <p><b>RTO</b>: {item.item.rto}</p>
+                  <p><b>Loan Availability</b>: {item.item.loan_availability}</p>
+                  <p><b>Owners</b>: {item.item.no_of_owners}</p>
+                  <p><b>More Details</b>: {item.item.description}</p>
+
                 </Table.Cell>
               </Table.Row>
             )}
