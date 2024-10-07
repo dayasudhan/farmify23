@@ -90,7 +90,7 @@
 
     return (
       <Segment>
-      <Menu inverted secondary pointing color="blue">
+      <Menu inverted secondary pointing style={{ backgroundColor: "#398378" }}>
         <Menu.Item
           name="Home"
           active={activeItem === 'home'}

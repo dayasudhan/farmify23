@@ -156,11 +156,13 @@ const Item = () => {
                   <p>
                     <b>Seller Details:</b>
                     <br />
-                    Name: {data?.dealer.username}
+                    Name: {data?.seller_name}
                     <br />
-                    Phone: {data?.dealer.phone}
+                    Phone: {data?.phone}
                     <br />
                     Address: {data?.address}
+                    <br />
+                    village/city: {data?.city}
                     <br />
                     District: {data?.district}
                     <br />

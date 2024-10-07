@@ -56,8 +56,8 @@ export default class LandingPage extends Component {
                     <Header as='h3' inverted>
                       ನಮ್ಮ ಸಂಪರ್ಕ ಮಾಹಿತಿ
                     </Header>
-                    <p>ಇಮೇಲ್: kuruvatechnologies@gmail.com</p>
-                    <p>ಫೋನ್: +919566229075</p>
+                    <li>ಇಮೇಲ್: tractree620@gmail.com</li>
+                    <li>ಫೋನ್: +919902262044</li>
                   </Container>
                 </Segment>
               </Grid.Column>

@@ -8,7 +8,7 @@ const InfoSegment = () => (
       <Grid.Column width={8} textAlign='left'>
         <Header as='h2' style={{ display: 'flex', alignItems: 'center' }}>
           <Image
-            src='https://farmifyequipments.s3.ap-south-1.amazonaws.com/apks/logo.png'
+            src='https://farmifyadda.s3.ap-south-1.amazonaws.com/tractree.png'
             style={{ marginRight: '10px', verticalAlign: 'middle' }}
           />
           <div>
