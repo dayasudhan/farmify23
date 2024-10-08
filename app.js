@@ -251,6 +251,14 @@ server.prepare().then(() => {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
   });
+  app.get("/dealer/enquiriesbyitem", async (req, res) => {
+    console.log("req.session?.user.id",req.session)
+    if (req.session?.user?.auntheticated ) {
+      res.send(await enquiryService.getEnquiriesByDealerGroupByItem(req.session?.user?.id));
+    } else {
+    res.status(403).send('Access Denied: You are not authenticated.');
+    }
+  });
   app.get("/dealer/items", async (req, res) => {
     console.log("req.session?.user.id",req.session?.user?.id)
     if (req.session?.user?.auntheticated ) {
