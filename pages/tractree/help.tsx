@@ -91,8 +91,8 @@ export default class Help extends Component {
           <h2>ಹೆಚ್ಚಿನ ಸಹಾಯಕ್ಕಾಗಿ</h2>
           <p>ನೀವು ಇನ್ನಷ್ಟು ಸಹಾಯ ಬೇಕಾದಲ್ಲಿ, ದಯವಿಟ್ಟು ನಮ್ಮ ತಂಡವನ್ನು ಸಂಪರ್ಕಿಸಿ:</p>
           <ul>
-            <li>ಇಮೇಲ್: kuruvatechnologies@gmail.com</li>
-            <li>ಫೋನ್: +919566229075</li>
+            <li>ಇಮೇಲ್: tractree620@gmail.com</li>
+            <li>ಫೋನ್: +919902262044</li>
           </ul>
         </div>
         {/* <Footer /> */}
