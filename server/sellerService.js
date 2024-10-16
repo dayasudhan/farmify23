@@ -151,6 +151,69 @@ class SellerService {
       throw error;
     }
   }
+
+  async getItemsBySearchQuery(arg) {
+    console.log("getItemsBySearchQuery")
+    const { page, pageSize, searchText } = arg;
+    console.log("Arg", arg);
+    try {
+      const skip = (page - 1) * pageSize; // Calculate the number of records to skip
+      const take = parseInt(pageSize); // Define the number of records to retrieve per page
+  
+      const searchCondition = searchText
+        ? {
+            OR: [
+               { model: { contains: searchText, mode: "insensitive" } },
+              { name: { contains: searchText, mode: "insensitive" } },
+              { makeYear: { contains: searchText, mode: "insensitive" } },
+             
+            ]
+          }
+        : {};
+  
+      const result = await this.db.item.findMany({
+        where: {
+          availability: true,
+          ...searchCondition
+        },
+        orderBy: {
+          id: 'desc' // Order the items by ID in descending order
+        },
+        skip,
+        take,
+        include: {
+          dealer: {
+            select: {
+              id: true,      // Include dealer ID
+              name: true,    // Include dealer name
+              phone: true,   // Include dealer phone
+              address: true,
+              city: true,
+              district: true,
+              state: true,
+              username: true,
+              allowPhoneNumberToCall: true
+            }
+          }
+        }
+      });
+  
+      // Add contact_phone to each result with the new condition
+      const updatedResult = result.map(item => ({
+        ...item,
+        contact_phone: item.dealer?.id === 1 
+          ? item.phone  // If dealer ID is 1, use the item's phone
+          : (item.dealer?.phone || item.phone) // Otherwise, use dealer's phone if available, else item's phone
+      }));
+  
+      console.log('result', updatedResult.map(e => e.id));
+      return updatedResult;
+    } catch (error) {
+      console.error('Error fetching items:', error);
+      throw error;
+    }
+  }
+  
   async getItem(id) {
     const result = await this.db.item.findUnique({
       where: {

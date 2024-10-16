@@ -221,6 +221,10 @@ server.prepare().then(() => {
     console.log("req.query",req.query)
     res.send(await sellerService.getAllItems_by_page(req.query));
   });
+  app.get("/itemsbysearchquery", async (req, res) => {
+    console.log("req.query",req.query)
+    res.send(await sellerService.getItemsBySearchQuery(req.query));
+  });
   app.get('/items/:id', async (req, res) => {
     res.send(await sellerService.getItem(parseInt(req.params.id)));
   });
