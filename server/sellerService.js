@@ -46,8 +46,8 @@ class SellerService {
 
 
   async getAllItems_by_page_location(arg) {
-    const inputLatitude = 14.1428661;
-    const inputLongitude = 75.6667316;
+    const inputLatitude = arg.latitude;
+    const inputLongitude = arg.longitude;
     const {page,pageSize} = arg;
     console.log("Arg",arg)
     // const page =2;
@@ -164,9 +164,9 @@ class SellerService {
         ? {
             OR: [
                { model: { contains: searchText, mode: "insensitive" } },
-              { name: { contains: searchText, mode: "insensitive" } },
-              { makeYear: { contains: searchText, mode: "insensitive" } },
-             
+               { name: { contains: searchText, mode: "insensitive" } },
+               { makeYear: { contains: searchText, mode: "insensitive" } },
+               { district: { contains: searchText, mode: "insensitive" } },
             ]
           }
         : {};
