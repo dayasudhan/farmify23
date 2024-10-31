@@ -456,6 +456,11 @@ async function processAndCompressImages(req, res, next) {
             .json({ message: err.message || "Internal server Error!" });
         }
         });
+  app.post('/dealer/item', async (req, res) => {
+    console.log("/dealer/item  update",req.body)
+    res.send(await sellerService.updateItem(req.body));
+  });
+
   app.get('/states', async (req, res) => {
       res.send(await statesService.getStates());
   });

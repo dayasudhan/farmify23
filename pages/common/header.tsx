@@ -16,8 +16,8 @@
     const [currentlocationflink] = useState('/buyer/checkout/CurrentLocation');
     const [contactusreflink] = useState('/tractree/contactus');
     const [enquiryrefLink] = useState('/dealer/enquiry');
-    const [enquirybyitemrefLink] = useState('/dealer/enquirybyitem');
-    
+    const [enquirybyitemrefLink] = useState('/seller/enquirybyitem');
+    const [updatesitemrefLink] = useState('/dealer/update');
     const [myitemsrefLink] = useState('/dealer/myitems');
     const [createDeralerRefLink] = useState('/admin/createDealer');
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -167,6 +167,12 @@
             name="My Items"
             active={activeItem === 'myitems'}
             href={myitemsrefLink}
+            onClick={handleItemClick}
+          />
+          <Menu.Item
+            name="UpdateItem"
+            active={activeItem === 'updateitem'}
+            href={updatesitemrefLink}
             onClick={handleItemClick}
           />
           </>

@@ -1,0 +1,403 @@
+{
+    "tractors": [
+      {
+        "brand": "Mahindra",
+        "models": [
+          "Yuvo 265 DI (26HP)",
+          "Yuvo 275 DI (27HP)",
+          "Yuvo 415 DI (41HP)",
+          "Yuvo 475 DI (47HP)",
+          "Yuvo 575 DI (57HP)",
+          "Jivo 245 DI (24HP)",
+          "Jivo 225 DI (22HP)",
+          "Jivo 305 DI (30HP)",
+          "Jivo 365 DI (36HP)",
+          "215 DI (20HP)",
+          "245 DI (24HP)",
+          "275 DI XP Plus (37HP)",
+          "575 DI XP Plus (49HP)",
+          "475 DI XP Plus (44HP)",
+          "585 DI XP Plus (50HP)",
+          "Arjun Novo 605 DI-i (60HP)",
+          "Arjun Novo 605 DI-PS (60HP)",
+          "Arjun Novo 605 DI-MS (60HP)",
+          "Arjun Novo 755 DI (75HP)",
+          "275 DI SP Plus (37HP)",
+          "475 DI SP Plus (44HP)",
+          "575 DI SP Plus (49HP)",
+          "265 DI Bhoomiputra (30HP)",
+          "275 DI TU Bhoomiputra (27HP)",
+          "475 DI Sarpanch (45HP)",
+          "575 DI Sarpanch (57HP)",
+          "Arjun 555 DI (55HP)",
+          "585 DI (50HP)",
+          "265 DI (26HP)",
+          "275 DI ECO (27HP)",
+          "Shaan (30HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "John Deere",
+        "models": [
+          "5036 D (36HP)",
+          "5038 D (38HP)",
+          "5045 D (45HP)",
+          "5050 D (50HP)",
+          "5055 D (55HP)",
+          "5060 D (60HP)",
+          "5065 D (65HP)",
+          "5075 D (75HP)",
+          "5042 D (42HP)",  
+          "3028 EN (28HP)",
+          "3036 EN (36HP)",
+          "3036 E (36HP)",
+          "3038 E (38HP)",
+          "3025 E (25HP)",
+          "5210 GearPro (51HP)",
+          "5310 GearPro (53HP)",
+          "5405 GearPro (54HP)",
+          "5045 PowerPro (45HP)",
+          "5050 PowerPro (50HP)",
+          "5039 C (39HP)",
+          "5042 C (42HP)",
+          "5036 C (36HP)",
+          "5055 E (55HP)",
+          "5065 E (65HP)",
+          "5075 E (75HP)",
+          "5105 (105HP)",
+          "5210 (51HP)",
+          "5310 (53HP)",
+          "5405 (54HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "TAFE",
+        "models": [
+          "25 DI (25HP)",
+          "35 DI (35HP)",
+          "45 DI (45HP)",
+          "55 DI (55HP)",
+          "5502 (50HP)",
+          "6502 (60HP)",
+          "3040 (40HP)",
+          "4045 (45HP)",
+          "475 DI (42HP)",
+          "1200 (60HP)",
+          "8502 (85HP)",
+          "7250 (75HP)",
+          "9500 (90HP)",
+          "742 (42HP)",
+          "3000 (30HP)",
+          "10 (10HP)",
+          "Other"
+        ]
+      },      
+      {
+        "brand": "Sonalika",
+        "models": [
+          "DI 30 (30HP)",
+          "DI 35 (35HP)",
+          "DI 40 (40HP)",
+          "42 (42HP)",
+          "50 (50HP)",
+          "RX 55 (55HP)",
+          "Sikander 4WD (50HP)",
+          "745 (45HP)",
+          "745 DI (45HP)",
+          "60 (60HP)",
+          "65 (65HP)",
+          "DI 750 (75HP)",
+          "Tiger 50 (50HP)",
+          "65 RX (65HP)",
+          "750 RX (75HP)",
+          "740 III (40HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "Powertrac",
+        "models": [
+          "425 (42HP)",
+          "439 (39HP)",
+          "445 (45HP)",
+          "455 (45HP)",
+          "6045 (45HP)",
+          "6000 (60HP)",
+          "404 (40HP)",
+          "4045 (45HP)",
+          "445 Plus (45HP)",
+          "275 (27HP)",
+          "295 (29HP)",
+          "420 (42HP)",
+          "Euro 50 (50HP)",
+          "750 (75HP)",
+          "4140 (40HP)",
+          "4545 (45HP)",
+          "Other"
+        ]
+      },          
+      {
+        "brand": "Farmtrac",
+        "models": [
+          "45 (45HP)",
+          "60 (60HP)",
+          "50 (50HP)",
+          "75 (75HP)",
+          "60 EPI (60HP)",
+          "26 (26HP)",
+          "30 (30HP)",
+          "45 EPI (45HP)",
+          "70 (70HP)",
+          "60 PowerMaxx (60HP)",
+          "35 (35HP)",
+          "50 EPI (50HP)",
+          "45 PowerMaxx (45HP)",
+          "6050 (50HP)",
+          "25 (25HP)",
+          "75 EPI (75HP)",
+          "Other"
+        ]
+      },      
+      {
+        "brand": "New Holland",
+        "models": [
+          "3230 NX (35HP)",
+          "3600-2 TX All Rounder Plus (40HP)",
+          "4710 Turbo Super (50HP)",
+          "5500 Turbo Super (55HP)",
+          "7500 Turbo Super (75HP)",
+          "5630 TX Plus (63HP)",
+          "3032 NX (30HP)",
+          "3630 TX Special Edition (30HP)",
+          "4010 (40HP)",
+          "3230 TX Super (35HP)",
+          "3600-2 Excel (40HP)",
+          "3630 TX Plus (30HP)",
+          "3600-2 TX (40HP)",
+          "4710 With 4WD (50HP)",
+          "7500 With AC Cabin (75HP)",
+          "3510 (35HP)",
+          "Other"
+        ]
+      },      
+      {
+        "brand": "Kubota",
+        "models": [
+          "NeoStar B2741 4WD (27HP)",
+          "MU4501 2WD (45HP)",
+          "MU5501 4WD (55HP)",
+          "L4508 (48HP)",
+          "A211N-OP (21HP)",
+          "MU4501 4WD (45HP)",
+          "B2441 (24HP)",
+          "MU5501 2WD (55HP)",
+          "L3408 (36HP)",
+          "A211N-OP 4WD (21HP)",
+          "B2741S 4WD (27HP)",
+          "B2441S (24HP)",
+          "MU4502 4WD (50HP)",
+          "MU5502 4WD (55HP)",
+          "L3408 4WD (36HP)",
+          "L4508 4WD (48HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "Eicher",
+        "models": [
+          "242 (25HP)",
+          "380 (38HP)",
+          "485 (45HP)",
+          "5150 Super DI (50HP)",
+          "557 (55HP)",
+          "333 Super DI (33HP)",
+          "312 Super DI (31HP)",
+          "5660 (60HP)",
+          "548 (48HP)",
+          "485 Super Plus (45HP)",
+          "551 (55HP)",
+          "368 (36HP)",
+          "188 (18HP)",
+          "241 (24HP)",
+          "242 Super DI (25HP)",
+          "5150 (50HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "Swaraj",
+        "models": [
+          "724 FE (24HP)",
+          "735 FE (35HP)",
+          "744 FE (44HP)",
+          "855 FE (55HP)",
+          "960 FE (60HP)",
+          "717 (17HP)",
+          "843 XM (43HP)",
+          "963 FE (60HP)",
+          "744 XT (44HP)",
+          "735 XT (35HP)",
+          "841 XM (41HP)",
+          "843 FE (43HP)",
+          "742 FE (42HP)",
+          "834 XM (34HP)",
+          "724 XM Orchard (24HP)",
+          "855 XM (55HP)",
+          "Other"
+        ]
+      },      
+      {
+        "brand": "Massey Ferguson",
+        "models": [
+          "1035 DI (35HP)",
+          "241 DI (41HP)",
+          "7250 Power Up (75HP)",
+          "9500 Smart (90HP)",
+          "2635 4WD (63HP)",
+          "1030 DI Mahashakti (30HP)",
+          "245 DI Planetary Plus (45HP)",
+          "5245 DI (45HP)",
+          "6028 4WD (28HP)",
+          "1035 DI Tonner (35HP)",
+          "7250 DI (75HP)",
+          "245 Smart (45HP)",
+          "241 R (41HP)",
+          "246 DI DynaTrack (46HP)",
+          "1035 DI Dost (35HP)",
+          "1035 DI Planetary Plus (35HP)",
+          "Other"
+        ]
+      }      
+      ,
+      {
+        "brand": "HMT",
+        "models": [
+          "Zetor 2511 (25HP)",
+          "3522 DI (35HP)",
+          "3511 (35HP)",
+          "5911 (59HP)",
+          "4921 DI (49HP)",
+          "6522 (65HP)",
+          "2522 DI (25HP)",
+          "Zetor 5911 (59HP)",
+          "5022 DI (50HP)",
+          "7522 (75HP)",
+          "3022 DI (30HP)",
+          "Zetor 3011 (30HP)",
+          "4511 (45HP)",
+          "Zetor 4512 (45HP)",
+          "1711 (17HP)",
+          "1822 (18HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "Solis",
+        "models": [
+          "2516 (25HP)",
+          "2516 SN (25HP)",
+          "3016 (30HP)",
+          "3025 (25HP)",
+          "4025 (40HP)",
+          "5015 (50HP)",
+          "5018 (50HP)",
+          "6024 (60HP)",
+          "6024 SN (60HP)",
+          "7040 (70HP)",
+          "7048 (70HP)",
+          "9015 (90HP)",
+          "9024 (90HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "VST",
+        "models": [
+          "9025 R (25HP)",
+          "5025 R (25HP)",
+          "9045 DI (45HP)",
+          "120 (12HP)",
+          "160 (16HP)",
+          "164 (16HP)",
+          "949 (49HP)",
+          "200 (20HP)",
+          "285 (28HP)",
+          "6006 (60HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "Captain",
+        "models": [
+          "200 DI (20HP)",
+          "250 DI (25HP)",
+          "300 DI (30HP)",
+          "400 DI (40HP)",
+          "500 DI (50HP)",
+          "700 DI (70HP)",
+          "450 (45HP)",
+          "550 (55HP)",
+          "650 (65HP)",
+          "750 (75HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "ACE",
+        "models": [
+          "DI 450 (45HP)",
+          "DI 550 (55HP)",
+          "DI 750 (75HP)",
+          "DI 600 (60HP)",
+          "DI 800 (80HP)",
+          "DI 25 (25HP)",
+          "DI 35 (35HP)",
+          "DI 45 (45HP)",
+          "DI 50 (50HP)",
+          "DI 60 (60HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "Indo Farm",
+        "models": [
+          "3048 DI (48HP)",
+          "2042 DI (42HP)",
+          "2030 DI (30HP)",
+          "2022 DI (22HP)",
+          "3040 DI (40HP)",
+          "7075 DI (75HP)",
+          "4045 DI (45HP)",
+          "4040 DI (40HP)",
+          "1040 DI (40HP)",
+          "6060 DI (60HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "Force Motors",
+        "models": [
+          "Dynamo (30HP)",
+          "Sardar (40HP)",
+          "Gurudev (50HP)",
+          "(60HP)",
+          "Trax (60HP)",
+          "Field (60HP)",
+          "Balwan (50HP)",
+          "Tempo (40HP)",
+          "Gladiator (50HP)",
+          "Rohan (25HP)",
+          "Other"
+        ]
+      },
+      {
+        "brand": "Other",
+        "models": [
+          "Other"
+        ]
+      }       
+    ]
+  }
+  
