@@ -4,7 +4,7 @@ import Header from '../common/header';
 
 import Footer from '../common/footer';
 import 'semantic-ui-css/semantic.css';
-import ItemDetails from './updateItem';
+import ItemDetails from './updateitem';
 
 export default class Cart extends Component {
   render() {
