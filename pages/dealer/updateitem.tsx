@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Segment, Input, Form, Button, TextArea, Modal, Select ,Checkbox} from 'semantic-ui-react';
-import { useAuth } from './../authContext';
-import tractorsData from './../tractors.json'; // Import the JSON data
-
+import { useAuth } from '../authContext';
+import tractorsData from '../tractors.json'; // Import the JSON data
+import { useRouter } from 'next/router';
 const  SegmentExampleNestedSegments = () => {
+  const [item, setItem] = useState(null);   // State to store item details
+  const [loading, setLoading] = useState(true);   // State to manage loading state
+  const [error, setError] = useState(null);   // State to manage errors
   const [showModal, setShowModal] = useState(false);
   const [responseText, setResponseText] = useState('');
   const formRef = useRef(null);
@@ -24,6 +27,8 @@ const  SegmentExampleNestedSegments = () => {
   const [trailorAttached, setTrailorAttached] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(tractorsData.tractors[0].brand);
   const [selectedModel, setSelectedModel] = useState(tractorsData.tractors[0].models[0]);
+  const router = useRouter();
+  const { id } = router.query;
   const models = tractorsData.tractors.find(tractor => tractor.brand === selectedBrand)?.models || [];
   const implementTypes = ["ENGINE",
     "TRAILER",
@@ -38,6 +43,7 @@ const  SegmentExampleNestedSegments = () => {
     "FULL SET", 
     "OTHER"];
   const [formData, setFormData] = useState({
+    id:'',
     name: '',
     phone: '',
     address: '',
@@ -79,65 +85,69 @@ const  SegmentExampleNestedSegments = () => {
   const [nameError, setNameError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  useEffect(() => {
-    // Make a single axios call to fetch both states and districts
-    axios
-      .get('/states')
-      .then((response) => {
-        const { states, districts ,rto} = response.data;
-        setStates(states); // Assuming the API response contains an array of state options
-        setDistricts(districts);
-        setRtos(rto);
-        if ('geolocation' in navigator) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude } = position.coords;
-              
-              const apiKey = '04a5800be4bb465bb63d271f5b3941e4';
-              const apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}&language=en`;
-
-              fetch(apiUrl)
-                .then((response) => response.json())
-                .then((data) => {
-                  if (data.results && data.results.length > 0) {
-                    const districtInfo = data.results[0].components;
-                    const address = data.results[0].formatted.replace("unnamed road,", "");
-                    // console.log("districtInfo",districtInfo)
-                    setFormData({
-                      ...formData,
-                      latitude,
-                      longitude,
-                      postcode:districtInfo.postcode,
-                      state: districtInfo.state,
-                      district: districtInfo.state_district.replace(' District', ''),
-                      address: `${districtInfo.county}, ${address}`,
-                      city:districtInfo['suburb']?districtInfo['suburb']:districtInfo['village']?districtInfo['village']:districtInfo['town'],
-                    });
-                  } else {
-                    alert('District information not found.');
-                  }
-                })
-                .catch((error) => {
-                  console.error('Error fetching district information:', error);
-                });
-            },
-            (error) => {
-              console.error('Error getting location:', error.message);
-              setFormData({ ...formData, state: response.data?.states[0] ,
-                district: response.data?.districts[response.data?.states[0]][0]});
-            }
-          );
-        } else {
-          console.error('Geolocation is not available in this browser.');
-          setFormData({ ...formData, state: response.data?.states[0] ,
-            district: response.data?.districts[response.data?.states[0]][0]});
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching states and districts:', error);
-      });
+  
+ const initFormData = (item)=>
+ {
+  console.log("item",item);
+      setFormData({
+         ...formData,
+        id : item.id,
+        item_year : item.makeYear,
+        hoursDriven : item.hoursDriven,
+        hypothetical_status : item.hypothecation_status,
+        tyre_condition : item.tyre_condition,
+        loan_availability : item.loan_availability,
+        loan_status : item.loan_status,
+        implements : item.implements,
+        item_price : item.price,
+        insurance_status :item.insurance_status,
+        rc_present : item.rc_present,
+        tailor_attached : item.tailor_attached,
+        no_of_owners : item.no_of_owners,
+        name : item.name,
+        address : item.address,
+        city : item.city,
+        phone : item.phone,
+        rto : item.rto,
+        state : item.state,
+        district : item.district,
+        description : item.description,
+    })
+    setLoanAvailability(item.loan_availability)
+    setRcPresent(item.rc_present );
+    setFitnessCertificate(item.fitnessCertificate );
+    setTrailorAttached(item.tailor_attached );
+    setInsuranceStatus(item.insurance_status);
+ }
+    useEffect(() => {
+      
+      const url = '/items/' + 133;
+      console.log("useEffect called",133,url);
+      if (id) {
+        axios.get(url)
+          .then((response) => {
+            console.log("useeffect",response.data)
+            setItem(response.data);   // Update item state with fetched data
+            setLoading(false);   // Set loading to false once data is fetched
+            initFormData(response.data);
+            
+          })
+          .catch((error) => {
+            console.log("catch error",error)
+            setError("Failed to fetch item details.");   // Set error if request fails
+            setLoading(false);
+          });
+    }
   }, []);
- 
+
+  // useEffect(() => {
+  //   // Get the passed item data from route params
+  //   const { item } = route.params;
+  //   if (item) {
+  //     initFormData(item);
+  //   }
+  // }, [route.params]);
+
   const handleInputChange = (event) => {
    
     const { name, value } = event.target;
@@ -206,18 +216,10 @@ const handleModelChange = (_, data) => {
     setFormData({ ...formData, district: data.value });
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-      setSelectedFiles(filesArray);
-    }
-  };
-
+ 
   const handleSubmit = async (e) => {
 
-    //setFormData({ ...formData, loan_availability: loanAvailability,rc_present:rcPresent,
-     // tailor_attached:trailorAttached ,insurance_status:insuranceStatus,fitnessCertificate:fitnessCertificate});
-
+    
     console.log("handlesubmit",formData)
     e.preventDefault();
     if (isSubmitting) return; 
@@ -283,34 +285,15 @@ const handleModelChange = (_, data) => {
       alert('Seller district is required');
       isFormValid = false;
     }
-
-    if (selectedFiles.length == 0) {
-      alert('At least add One Image');
-      isFormValid = false;
-    }
-
-
-
-    if (!isFormValid) {
+     if (!isFormValid) {
       return; // Prevent form submission if there are errors
     }
     setIsSubmitting(true);
     const formDataFinal = new FormData();
-    selectedFiles.forEach((file, i) => {
-      formDataFinal.append('images', file);
-    });
-    for (const key in formData) {
-      if (formData.hasOwnProperty(key)) {
-        const value = formData[key];
-        formDataFinal.append(key, value);
-      }
-    }
+      formDataFinal.append("id","133");
+      console.log("formDatafinal",formDataFinal,formData)
     try {
-      await axios.post('/upload', formDataFinal, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }).then((response) => {
+      await axios.post('/dealer/item', formData).then((response) => {
         setTimeout(() => {
           setResponseText(`Item Posted Successfully With Id : ${response?.data?.id}`);
           setShowModal(true);
@@ -332,18 +315,20 @@ const handleModelChange = (_, data) => {
   };
 
   return (
+    
     <Segment.Group>
       <Segment.Group horizontal>
         <Segment>
+         
           <Segment textAlign="center">
-            <h3>Item Details</h3>
+            <h3>Update Item Details</h3>
           </Segment>
           <p />
           <Form ref={formRef} onSubmit={handleSubmit}>
             
              
               <Form.Field>
-              <label>Item Type</label>
+              <label>Item2 Type</label>
               <Select
                 name="type"
                 options={implementTypes.map((i) => ({ key: i, text: i, value: i }))}
@@ -375,22 +360,13 @@ const handleModelChange = (_, data) => {
               />
             </Form.Field>
             )}  
-            {/* <Form.Field>
-              <Input
-                name="model"
-                focus
-                placeholder="Engine Model..."
-                value={formData.model}
-                onChange={handleInputChange}
-              />
-            </Form.Field> */}
             <p />
             <Form.Field>
               <Input
                 name="item_year"
                 focus
                 placeholder="Engine Manufacture Year"
-                value={formData.item_year}
+                value={item?.makeYear || formData.item_year}
                 onChange={handleInputChange}
               />
             </Form.Field>
@@ -484,7 +460,7 @@ const handleModelChange = (_, data) => {
                 checked={rcPresent}
                 label={"RC Status"}
                 value={formData.rc_present ? 'true' : 'false'}
-                onChange={handleRCPresent            
+                onChange={handleRCPresent         
                 }
               />
             </Form.Field>
@@ -510,7 +486,7 @@ const handleModelChange = (_, data) => {
               <label>Tyre Condition</label>
               <Select
                 name="tyre"
-                options={Array.from({ length: 10 }, (_, i) => 100 - i * 10).map((i) => ({ key: i, text: `${i} %`, value: i }))}
+                options={Array.from({ length: 10 }, (_, i) => 100 - i * 10).map((i) => ({ key: i, text: i, value: i }))}
                 value={formData.tyre_condition }
                 onChange={handleTyreCondition}
               />
@@ -617,7 +593,7 @@ const handleModelChange = (_, data) => {
               />
             </Form.Field>
 
-            <Form.Field>
+            {/* <Form.Field>
               <label>State</label>
               <Select
                 name="state"
@@ -634,7 +610,7 @@ const handleModelChange = (_, data) => {
                 value={formData.district || (formData.state && districts[formData.state].length > 0 ? districts[formData.state][0] : '')}
                 onChange={handleDistrictChange}
               />
-            </Form.Field>
+            </Form.Field> 
             <Form.Field>
               <label>RTO</label>
               <Select
@@ -653,7 +629,7 @@ const handleModelChange = (_, data) => {
                 multiple
                 onChange={handleImageChange}
               />
-            </div>
+            </div>*/}
             <div style={{ display: 'flex' }}>
               <Button primary style={{ marginLeft: 'auto' }} disabled={isSubmitting}>
                 Submit

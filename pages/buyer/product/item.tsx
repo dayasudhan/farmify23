@@ -7,11 +7,12 @@ import ImageGallery2 from './horizontalgallery';
 import 'semantic-ui-css/semantic.css';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-
+import { useAuth } from './../../authContext';
 const baseURL = '/items/';
 const enquiryURL = '/enquiry';
 
 const Item = () => {
+  const { user, loginUser, logoutUser } = useAuth();
   const router = useRouter();
   const { id } = router.query;
 
@@ -133,7 +134,7 @@ const Item = () => {
 
     fetchData();
   }, [id]);
-
+const rowStyle = { borderBottom: '1px solid #e0e0e0', padding: '10px 0' };
   return (
     <div>
       <Segment>
@@ -148,31 +149,125 @@ const Item = () => {
           <Grid.Row columns={1}>
             <Grid.Column>
               <div>
-                <h1 className="ui header">{data?.name}</h1>
-                <div className="price">
-                  <p>Description: {data?.description}</p>
-                  <p>Manufacture Year: {data?.makeYear}</p>
-                  <p>Price/Rate: Rs {data?.price}</p>
-                  <p>
-                    <b>Seller Details:</b>
-                    <br />
-                    Name: {data?.seller_name}
-                    <br />
-                    Phone: {data?.phone}
-                    <br />
-                    Address: {data?.address}
-                    <br />
-                    village/city: {data?.city}
-                    <br />
-                    District: {data?.district}
-                    <br />
-                    State: {data?.state}
-                    <br />
-                    Posted On: {new Date(data?.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' })}
-                  </p>
-                  
-                </div>
-                <Rating icon="star" defaultRating={4} maxRating={5} />
+             <h1 className="ui header">{data?.name}</h1>
+  
+                    <div className="ui divider"></div>
+                    <div className="ui two column grid">
+                      <div className="column">
+                     <div className="ui two column grid">
+         <div className="row" style={rowStyle}>
+          <div className="column"><strong>ID:</strong></div>
+          <div className="column">{data?.id}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Model:</strong></div>
+          <div className="column">{data?.model}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Manufacture Year:</strong></div>
+          <div className="column">{data?.makeYear}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Hours Driven:</strong></div>
+          <div className="column">{data?.hoursDriven}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Price/Rate:</strong></div>
+          <div className="column">Rs {data?.price}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Hypothecation:</strong></div>
+          <div className="column">{data?.hypothecation_status}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Loan Status:</strong></div>
+          <div className="column">{data?.loan_status}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Loan Availability:</strong></div>
+          <div className="column">{data?.loan_availability ? "Yes" : "No"}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Insurance Status:</strong></div>
+          <div className="column">{data?.insurance_status ? "Yes" : "No"}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>RC Present:</strong></div>
+          <div className="column">{data?.rc_present ? "Yes" : "No"}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>FC:</strong></div>
+          <div className="column">{data?.fitnessCertificate ? "Yes" : "No"}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Tailor Attached:</strong></div>
+          <div className="column">{data?.tailor_attached ? "Yes" : "No"}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Previous Owner:</strong></div>
+          <div className="column">{data?.no_of_owners}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>RTO:</strong></div>
+          <div className="column">{data?.rto}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Tyre Condition:</strong></div>
+          <div className="column">{data?.tyre_condition}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Implements If Any:</strong></div>
+          <div className="column">{data?.implements}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Description:</strong></div>
+          <div className="column">{data?.description}</div>
+        </div>
+      </div>
+                      </div>
+                      
+                      <div className="column">
+                        <div className="ui two column grid">
+                        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Seller Name:</strong></div>
+          <div className="column">{data?.seller_name}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Phone:</strong></div>
+          <div className="column">{data?.phone}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Address:</strong></div>
+          <div className="column">{data?.address}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Village/City:</strong></div>
+          <div className="column">{data?.city}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>District:</strong></div>
+          <div className="column">{data?.district}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>State:</strong></div>
+          <div className="column">{data?.state}</div>
+        </div>
+        <div className="row" style={rowStyle}>
+          <div className="column"><strong>Posted On:</strong></div>
+          <div className="column">
+            {new Date(data?.createdAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: '2-digit'
+            })}
+          </div>
+        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+
+                <div style={{ marginBottom: '10px' }}></div> {/* Blank line */}
                 <div>
                   <Button primary onClick={openModal}>
                     Enquiry
@@ -190,8 +285,15 @@ const Item = () => {
                       <Icon name='instagram' />
                       Instagram
                     </Button> */}
+                    {user && (
+                      <Link href={`/dealer/update?id=${data?.id}`}>
+                       <Button  primary >
+                        Edit
+                        </Button>
+                    </Link>                    
+                    )}
                 </div>
-              </div>
+              
             </Grid.Column>
           </Grid.Row>
         </Grid>

@@ -18,7 +18,8 @@ const Item = (props) => {
       </div>
       <div className="product-details">
         <h3>
-          <Link href={baseURL + props.data.id}>{props.data?.name}</Link>
+          <Link href={baseURL + props.data.id}>{props.data.type === 'ENGINE' && props.data.model !== "" ? props.data.model : props.data.name}
+      {props.data.makeYear === "" ? "" : ` (${props.data.makeYear})`}</Link>
         </h3>
         <p>{props.data?.description}</p>
         <p>
