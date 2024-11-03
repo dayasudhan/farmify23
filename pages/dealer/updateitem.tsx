@@ -121,8 +121,8 @@ const  SegmentExampleNestedSegments = () => {
  }
     useEffect(() => {
       
-      const url = '/items/' + 133;
-      console.log("useEffect called",133,url);
+      const url = '/items/' + id;
+      console.log("useEffect called",id,url);
       if (id) {
         axios.get(url)
           .then((response) => {
