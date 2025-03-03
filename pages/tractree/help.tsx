@@ -3,14 +3,20 @@ import { Segment, Embed } from 'semantic-ui-react';
 import Header from '../common/header';
 import Footer from '../common/footer';
 import 'semantic-ui-css/semantic.css';
-
+import ReactGA from "react-ga4";
+ReactGA.initialize("G-E36KXVXBE5");
 export default class Help extends Component {
+
+  componentDidMount() {
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname,title: "Help Page" });
+  }
+
   render() {
     return (
       <Segment>
         <Header />
         <div style={{ padding: '1em' }}>
-          <h2>ಸಹಾಯ ವಿಡಿಯೋಗಳು</h2>
+          <h2>ಸಹಾಯ ವಿಡಿಯೋಗಳು123</h2>
 
           <h3>ನಮ್ಮ ಆಪ್ ಪರಿಚಯ</h3>
           <div style={{ marginBottom: '1em', maxWidth: '50%', height: 'auto' }}>

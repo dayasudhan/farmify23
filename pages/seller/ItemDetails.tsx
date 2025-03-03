@@ -3,7 +3,8 @@ import axios from 'axios';
 import { Segment, Input, Form, Button, TextArea, Modal, Select ,Checkbox} from 'semantic-ui-react';
 import { useAuth } from './../authContext';
 import tractorsData from './../tractors.json'; // Import the JSON data
-
+import ReactGA from "react-ga4";
+ReactGA.initialize("G-E36KXVXBE5");
 const  SegmentExampleNestedSegments = () => {
   const [showModal, setShowModal] = useState(false);
   const [responseText, setResponseText] = useState('');
@@ -80,6 +81,7 @@ const  SegmentExampleNestedSegments = () => {
   const [phoneError, setPhoneError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname ,title: "Sell Page"});
     // Make a single axios call to fetch both states and districts
     axios
       .get('/states')
@@ -136,6 +138,7 @@ const  SegmentExampleNestedSegments = () => {
       .catch((error) => {
         console.error('Error fetching states and districts:', error);
       });
+      
   }, []);
  
   const handleInputChange = (event) => {

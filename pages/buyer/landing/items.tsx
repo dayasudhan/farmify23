@@ -8,6 +8,8 @@ import Header from '../../common/header';
 import Footer from '../../common/footer';
 import 'semantic-ui-css/semantic.css';
 const baseURL = '/items';
+import ReactGA from "react-ga4";
+
 
 const Items = () => {
   const [items, setItems] = useState([]);
@@ -28,6 +30,9 @@ const Items = () => {
         filterData(query, response.data);
       }
     });
+
+      ReactGA.send({ hitType: "pageview", page: window.location.pathname ,title: "Landing Page"});
+
   }, [router.query.q]);
 
   const filterData = (query, items) => {
@@ -45,7 +50,14 @@ const Items = () => {
   const handleSearchChange = (event) => {
     const { value } = event.target;
     setSearchQuery(value);
-
+    ReactGA.event({
+      category: "Items",
+      action: "Search",
+      label: "Search Box", // optional
+      //value: value, // optional, must be a number
+      nonInteraction: false, // optional, true/false
+      transport: "xhr", // optional, beacon/xhr/image
+    });
     // Update the URL with the search query
     router.push({
       pathname: '/buyer/landing/items',

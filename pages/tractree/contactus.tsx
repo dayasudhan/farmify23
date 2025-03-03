@@ -3,8 +3,14 @@ import { Segment, Grid, Header, Image } from 'semantic-ui-react';
 import HeaderComponent from '../common/header';
 import Footer from '../common/footer';
 import 'semantic-ui-css/semantic.css';
+import ReactGA from "react-ga4";
+ReactGA.initialize("G-E36KXVXBE5");
 
 export default class ContactUs extends Component {
+  componentDidMount() {
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname,title: "Contactus Page" });
+  }
+
   render() {
     return (
       <Segment>

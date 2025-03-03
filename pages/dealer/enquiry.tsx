@@ -5,6 +5,8 @@ import 'semantic-ui-css/semantic.css';
 import Header2 from '../common/header';
 import Footer from '../common/footer';
 import { useRouter } from 'next/router';
+import ReactGA from "react-ga4";
+ReactGA.initialize("G-E36KXVXBE5");
 function CustomerListComponent() {
   const [data, setData] = useState([]);
   const [expandedRowIndex, setExpandedRowIndex] = useState(null);
@@ -38,6 +40,7 @@ function CustomerListComponent() {
         router.push('/');
       });
     }
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname ,title: "Enquiry Page"});
   });
 
   const handleRowClick = (index) => {
