@@ -10,7 +10,8 @@ import { useRouter } from 'next/router';
 import { useAuth } from './../../authContext';
 const baseURL = '/items/';
 const enquiryURL = '/enquiry';
-
+import ReactGA from 'react-ga4';
+ReactGA.initialize("G-E36KXVXBE5");
 const Item = () => {
   const { user, loginUser, logoutUser } = useAuth();
   const router = useRouter();
@@ -33,7 +34,6 @@ const Item = () => {
 
   const [data, setData] = useState(null);
   const [imageUrls, setImageUrl] = useState(null);
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
@@ -43,6 +43,14 @@ const Item = () => {
   };
 
   const openModal = () => {
+    ReactGA.event({
+      category: "Enquiry",
+      action: "Enquiry on Item",
+      label: "Enquiry", // optional
+      //value: , // optional, must be a number
+     // nonInteraction: false, // optional, true/false
+      //transport: "xhr", // optional, beacon/xhr/image
+    });
     setModalOpen(true);
   };
 
@@ -100,12 +108,36 @@ const Item = () => {
   
     switch (platform) {
       case 'facebook':
+        ReactGA.event({
+          category: "Share",
+          action: "Share on Facebook",
+          label: "Share", // optional
+          //value: , // optional, must be a number
+         // nonInteraction: false, // optional, true/false
+          //transport: "xhr", // optional, beacon/xhr/image
+        });
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(itemLink)}`;
         break;
       case 'whatsapp':
+        ReactGA.event({
+          category: "Whatsapp",
+          action: "Share on Whatsapp",
+          label: "Share", // optional
+          //value: , // optional, must be a number
+         // nonInteraction: false, // optional, true/false
+          //transport: "xhr", // optional, beacon/xhr/image
+        });
         shareUrl = `https://wa.me/?text=${encodeURIComponent(`Check out this item on Tractree: ${itemLink}`)}`;
         break;
       case 'instagram':
+        ReactGA.event({
+          category: "Instagram",
+          action: "Share on Instagram",
+          label: "Share", // optional
+          //value: , // optional, must be a number
+         // nonInteraction: false, // optional, true/false
+          //transport: "xhr", // optional, beacon/xhr/image
+        });
         // Instagram doesn't allow direct URL sharing to stories/posts, but you can share via a deep link or ask users to copy the link.
         shareUrl = `https://www.instagram.com/?url=${encodeURIComponent(itemLink)}`;
         break;
@@ -115,7 +147,9 @@ const Item = () => {
   
     window.open(shareUrl, '_blank');
   };
-  
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname ,title: "Item Page"});
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -133,6 +167,7 @@ const Item = () => {
     };
 
     fetchData();
+    //ReactGA.send({ hitType: "pageview", page: window.location.pathname ,title: "Item Page"});
   }, [id]);
 const rowStyle = { borderBottom: '1px solid #e0e0e0', padding: '10px 0' };
   return (
