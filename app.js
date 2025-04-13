@@ -11,6 +11,7 @@ const enquiryService = require('./server/enquiryService')
 const sellerService = require('./server/sellerService')
 const adminService = require('./server/adminService')
 const statesService = require('./server/statesService')
+const newTractorServices = require('./server/newTractorService')
 const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3-transform');
@@ -464,7 +465,9 @@ async function processAndCompressImages(req, res, next) {
   app.get('/states', async (req, res) => {
       res.send(await statesService.getStates());
   });
-
+  app.get('/v1/newtractors', async (req, res) => {
+    res.send(await newTractorServices.getTractors());
+});
 
   
   app.get("/notifications", async (req, res) => {
