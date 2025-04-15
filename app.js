@@ -11,6 +11,7 @@ const enquiryService = require('./server/enquiryService')
 const sellerService = require('./server/sellerService')
 const adminService = require('./server/adminService')
 const statesService = require('./server/statesService')
+const userService = require('./server/userService')
 const newTractorServices = require('./server/newTractorService')
 const AWS = require('aws-sdk');
 const multer = require('multer');
@@ -467,8 +468,34 @@ async function processAndCompressImages(req, res, next) {
   });
   app.get('/v1/newtractors', async (req, res) => {
     res.send(await newTractorServices.getTractors());
-});
+  });
+  app.get('/v1/users', async (req, res) => {
+    res.send(await userService.getAllUsers());
+  });
+  app.get('/v1/user/:id', async (req, res) => {
+    res.send(await userService.getUserByPhone(req.params.id));
+  });
 
+  app.post('/v1/user', async (req, res) => {
+    console.log('user request body', req.body);
+   // const hashedPassword = await hashPassword(req.body.password)
+  //  console.log("Hashed Password:", hashedPassword);
+    // .then(hashedPassword => {
+    //     console.log("Hashed Password:", hashedPassword);
+    // })
+    // .catch(err => console.error(err));
+   // req.body['hashedPassword'] = hashedPassword;
+    const ret = await userService.insertUser(req.body);
+    console.log('return', ret);
+    res.send(ret);
+  });
+
+  app.post('/v1/generateotp', async(req, res) => {
+    res.send(await userService.sendOtp(req.body));
+  });
+  app.post('/v1/verifyotp', async(req, res) => {
+    res.send(await userService.matchOtp(req.body));
+  });
   
   app.get("/notifications", async (req, res) => {
     try {

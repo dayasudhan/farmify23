@@ -120,4 +120,18 @@ model Dealer {
   allowWhatsAppMessages    Boolean   @default(true)
   @@map("dealer")
 }
+model User {
+  id    Int     @default(autoincrement()) @id
+  name        String
+  phone       String   @unique
+  district    String
+  city        String
+  state       String
+  latitude    Float
+  longitude   Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@map("user")
+}
+
 
