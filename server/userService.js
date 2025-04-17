@@ -91,27 +91,47 @@ class UserService {
     console.log("Your OTP and expireAt is:", otp);
     return otp;
   }
-  async matchOtp(data) {
-    const { otp: inputOTP } = data;
+  async matchOtp(req, res) {
+    console.log("Input:", req.body);
+    
+    const { otp: inputOTP } = req.body;
+  
+    // Simulated stored OTP and expiry - In real app, fetch from DB or session
     let otpStore = {
-      otp: null,
-      expiresAt: null,
+      otp: "123456", // Dummy OTP for testing
+      expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes from now
     };
+  
     if (!otpStore.otp || !otpStore.expiresAt) {
-      return res.status(400).json({ success: false, message: "No OTP generated" });
+      return ({
+        status :400,
+        success: false,
+        message: "OTP not generated yet",
+      });
     }
   
     if (Date.now() > otpStore.expiresAt) {
-      otpStore = { otp: null, expiresAt: null };
-      return res.status(400).json({ success: false, message: "OTP expired" });
+      return ({
+        status :401,
+        success: false,
+        message: "OTP expired",
+      });
     }
   
     if (inputOTP === otpStore.otp) {
-      otpStore = { otp: null, expiresAt: null }; // Clear after success
-      return res.json({ success: true, message: "OTP verified successfully" });
+      otpStore = { otp: null, expiresAt: null }; // Clear OTP after success
+      return ({
+        status :200,
+        success: true,
+        message: "OTP verified successfully",
+      });
     }
   
-    res.status(400).json({ success: false, message: "Invalid OTP" });
+    return ({
+      status :400,
+      success: false,
+      message: "Invalid OTP",
+    });
   }
 }
 module.exports = new UserService();

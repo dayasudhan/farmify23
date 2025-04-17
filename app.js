@@ -493,9 +493,14 @@ async function processAndCompressImages(req, res, next) {
   app.post('/v1/generateotp', async(req, res) => {
     res.send(await userService.sendOtp(req.body));
   });
-  app.post('/v1/verifyotp', async(req, res) => {
-    res.send(await userService.matchOtp(req.body));
+  app.post('/v1/verifyotp', async (req, res) => {
+    
+    const ret = await userService.matchOtp(req, res);
+ 
+    // Assuming `ret` is an object like { status: 200, success: true, message: "OTP verified" }
+    res.send(ret);
   });
+  
   
   app.get("/notifications", async (req, res) => {
     try {
