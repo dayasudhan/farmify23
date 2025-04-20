@@ -273,6 +273,10 @@ server.prepare().then(() => {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
   });
+  app.get("/user/items/:phone", async (req, res) => {
+    console.log("req.params.phone",req.params.phone)
+    res.send(await sellerService.getAllItemsByPhone(req.params.phone));
+  });
   app.post("/enquiry", async (req, res) => {
     console.log('enquery request body', req.body);
     const ret = await enquiryService.insertEnuiry(req.body);

@@ -28,6 +28,19 @@ class SellerService {
     //onsole.log("Result getAllItemsByDealer",result)
     return result;
   }
+  async getAllItemsByPhone(phone) {
+    const result = await this.db.item.findMany({
+      where: {
+        phone: phone,
+        availability:true
+      },
+      orderBy: {
+        id: 'desc', // Order the items by ID in descending order
+      },
+    });
+    //onsole.log("Result getAllItemsByDealer",result)
+    return result;
+  }
 
    calculateDistance(lat1, lon1, lat2, lon2){
     const R = 6371; // Earth's radius in kilometers
