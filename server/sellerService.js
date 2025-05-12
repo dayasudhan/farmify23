@@ -108,7 +108,7 @@ class SellerService {
           : (item.dealer?.phone || item.phone) // Otherwise, use dealer's phone if available, else item's phone
       }));
 
-      console.log('result', updatedResult.map(e => e.id));
+      console.log('result234', updatedResult.map(e => [{"id":e.id,"distance":e.distance}]));
       return updatedResult;
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -357,12 +357,12 @@ class SellerService {
         model:data.model,
         hypothecation_status:data.hypothetical_status,
         loan_status: data.loan_status,
-        loan_availability:data.loan_availability,
-        insurance_status:data.insurance_status,
-        rc_present:data.rc_present,
-        fitnessCertificate:data.fitnessCertificate,
+        loan_availability: (data.loan_availability === 'true'),
+        insurance_status:(data.insurance_status === 'true'),
+        rc_present:(data.rc_present === 'true'),
+        fitnessCertificate:(data.fitnessCertificate  === 'true'),
         fc_approximate_cost:0,
-        tailor_attached:data.tailor_attached,
+        tailor_attached:(data.tailor_attached === 'true'),
         condition:data.tractor_condition,
         battery_condition:data.battery_condition,
         tyre_condition:String(data.tyre_condition),
