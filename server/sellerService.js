@@ -109,6 +109,8 @@ class SellerService {
       }));
 
       console.log('result234', updatedResult.map(e => [{"id":e.id,"distance":e.distance}]));
+      console.log("sample json 1", updatedResult[0])
+      console.log("sample json 2", updatedResult[1])
       return updatedResult;
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -220,6 +222,8 @@ class SellerService {
       }));
   
       console.log('result', updatedResult.map(e => e.id));
+      console.log("sample json 1", updatedResult[0])
+      console.log("sample json 2", updatedResult[1])
       return updatedResult;
     } catch (error) {
       console.error('Error fetching items:', error);

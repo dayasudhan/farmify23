@@ -213,18 +213,19 @@ server.prepare().then(() => {
   });
   app.get('/hello', (req, res) => res.send('Namaste Home Page'));
   app.get("/items", async (req, res) => {
+    console.log("get /items")
     res.send(await sellerService.getAllItems());
   });
   app.get("/items_by_page_location", async (req, res) => {
-    console.log("req.query",req.query)
+    console.log("/items_by_page_location",req.query)
     res.send(await sellerService.getAllItems_by_page_location(req.query));
   });
   app.get("/items_by_page", async (req, res) => {
-    console.log("req.query",req.query)
+    console.log("items_by_page",req.query)
     res.send(await sellerService.getAllItems_by_page(req.query));
   });
   app.get("/itemsbysearchquery", async (req, res) => {
-    console.log("req.query",req.query)
+    console.log("itemsbysearchquery",req.query)
     res.send(await sellerService.getItemsBySearchQuery(req.query));
   });
   app.get('/items/:id', async (req, res) => {
