@@ -90,33 +90,50 @@ class SellerService {
         }
 
       });
-       const filteredCoords = result.map(e => {
-       const distance = this.calculateDistance(
-          parseFloat(inputLatitude),
-          parseFloat(inputLongitude),
-          e.latitude,
-          e.longitude
-        );
-        return {
-          ...e,
-          distance: Math.round(distance),
-          dealer: {
-            id:e.dealer.id,
-            name: e.dealer.name,
-            username: e.dealer.username,
-            phone: e.dealer.phone,
-            district: e.dealer.district,
-            city: e.dealer.city,
-            address:e.dealer.address,
-            state:e.dealer.state,
-            allowPhoneNumberToCall: e.dealer.allowPhoneNumberToCall
-          }
-        };
-      }).sort((a,b)=>  a.distance - b.distance);
+      
+      const filteredCoords = result.map(e => {
+  const hasCoords = e.latitude != null && e.longitude != null;
+
+  const distance = hasCoords
+    ? this.calculateDistance(
+        parseFloat(inputLatitude),
+        parseFloat(inputLongitude),
+        e.latitude,
+        e.longitude
+      )
+    : null;
+
+  return {
+    ...e,
+    distance: hasCoords ? Math.round(distance) : null,
+    dealer: {
+      id: e.dealer.id,
+      name: e.dealer.name,
+      username: e.dealer.username,
+      phone: e.dealer.phone,
+      district: e.dealer.district,
+      city: e.dealer.city,
+      address: e.dealer.address,
+      state: e.dealer.state,
+      allowPhoneNumberToCall: e.dealer.allowPhoneNumberToCall
+    }
+  };
+});
+
+// Split into two groups
+const withDistance = filteredCoords.filter(item => item.distance !== null);
+const withoutDistance = filteredCoords.filter(item => item.distance === null);
+
+// Sort separately
+withDistance.sort((a, b) => a.distance - b.distance); // nearest first
+withoutDistance.sort((a, b) => b.id - a.id);          // latest first
+
+// Merge back
+const sortedResults = [...withDistance, ...withoutDistance];
  
       // Apply pagination after filtering
     const startIndex = (page - 1) * pageSize;
-    const paginatedResults = filteredCoords.slice(startIndex, startIndex + pageSize);
+    const paginatedResults = sortedResults.slice(startIndex, startIndex + pageSize);
 
     const updatedResult = paginatedResults.map(item => ({
       ...item,
