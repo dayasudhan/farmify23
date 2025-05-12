@@ -62,7 +62,11 @@ class SellerService {
     const inputLatitude = arg.latitude;
     const inputLongitude = arg.longitude;
     const {page,pageSize,searchText} = arg;
-    console.log("Arg",arg)
+
+    console.log("Arg",arg,inputLatitude,inputLongitude)
+    if (!inputLatitude || !inputLongitude) {
+        return this.getItemsBySearchQuery({ page, pageSize, searchText });
+      }
 
     try {
         const searchCondition = searchText
