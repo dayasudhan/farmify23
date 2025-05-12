@@ -61,14 +61,24 @@ class SellerService {
   async getAllItems_by_page_location(arg) {
     const inputLatitude = arg.latitude;
     const inputLongitude = arg.longitude;
-    const {page,pageSize} = arg;
+    const {page,pageSize,searchText} = arg;
     console.log("Arg",arg)
-    // const page =2;
-    // const pageSize =1;
+
     try {
+        const searchCondition = searchText
+        ? {
+            OR: [
+               { model: { contains: searchText, mode: "insensitive" } },
+               { name: { contains: searchText, mode: "insensitive" } },
+               { makeYear: { contains: searchText, mode: "insensitive" } },
+               { district: { contains: searchText, mode: "insensitive" } },
+            ]
+          }
+        : {};
         const result = await this.db.item.findMany({
         where:{
-          availability:true
+          availability:true,
+          ...searchCondition
         },
 
         include:{
@@ -92,6 +102,9 @@ class SellerService {
             username: e.dealer.username,
             phone: e.dealer.phone,
             district: e.dealer.district,
+            city: e.dealer.city,
+            address:e.dealer.address,
+            state:e.dealer.state,
             allowPhoneNumberToCall: e.dealer.allowPhoneNumberToCall
           }
         };
@@ -109,8 +122,8 @@ class SellerService {
       }));
 
       console.log('result234', updatedResult.map(e => [{"id":e.id,"distance":e.distance}]));
-      console.log("sample json 1", updatedResult[0])
-      console.log("sample json 2", updatedResult[1])
+      // console.log("sample json 1", updatedResult[0])
+      // console.log("sample json 2", updatedResult[1])
       return updatedResult;
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -222,8 +235,8 @@ class SellerService {
       }));
   
       console.log('result', updatedResult.map(e => e.id));
-      console.log("sample json 1", updatedResult[0])
-      console.log("sample json 2", updatedResult[1])
+      // console.log("sample json 1", updatedResult[0])
+      // console.log("sample json 2", updatedResult[1])
       return updatedResult;
     } catch (error) {
       console.error('Error fetching items:', error);
