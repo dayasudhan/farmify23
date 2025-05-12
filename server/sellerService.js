@@ -99,7 +99,7 @@ class SellerService {
         );
         return {
           ...e,
-          distance: distance,
+          distance: Math.round(distance),
           dealer: {
             id:e.dealer.id,
             name: e.dealer.name,
