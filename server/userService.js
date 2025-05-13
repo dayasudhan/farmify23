@@ -55,29 +55,48 @@ class UserService {
   }
   
 
-  async  insertUser(data) {
-     console.log("insertUser data",data)
-    try{
-    const item = await this.db.user.create({
-      data: {
+async insertUser(data) {
+  console.log("insertUser data", data);
+
+  try {
+    const item = await this.db.user.upsert({
+      where: { phone: data.phone }, // unique identifier
+      update: {
+        name: data.name,
+        updatedAt: new Date(),
+        city: data.city,
+        district: data.district,
+        state: data.state,
+        latitude: parseFloat(data.latitude),
+        longitude: parseFloat(data.longitude)
+      },
+      create: {
         name: data.name,
         phone: data.phone,
-        createdAt:new Date(),
-        updatedAt:new Date(), 
+        createdAt: new Date(),
+        updatedAt: new Date(),
         city: data.city,
-        district:data.district,
-        state:data.state,
-        latitude:parseFloat(data.location.latitude),
-        longitude:parseFloat(data.location.longitude)
-      },
+        district: data.district,
+        state: data.state,
+        latitude: parseFloat(data.latitude),
+        longitude: parseFloat(data.longitude)
+      }
     });
-    return item;
+
+    return {
+      success: true,
+      data: item
+    };
+  } catch (e) {
+    console.error("Error in upsertUser:", e);
+    return {
+      success: false,
+      message: "Failed to insert or update user",
+      error: e.message
+    };
   }
-  catch(e)
-  {
-    return e;
-  }
-  }
+}
+
 
 
   async generateOTPWithExpiry(){
