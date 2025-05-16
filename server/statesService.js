@@ -15,7 +15,7 @@ class StatesService {
         "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
         "Andhra Pradesh": ["Hyderabad", "Vijayawada", "Visakhapatnam"]
         },
-        
+
         "rto":{
           "Karnataka": [
             "None",
@@ -87,7 +87,42 @@ class StatesService {
             "KA66(Tarikere, Chikkamagalore District)",
             "KA70(Bantwal)"
         ]
-        }
+        },
+        "coordinates":{
+            "state": "Karnataka",
+            "districts": [
+              { "district": "Davanagere", "latitude": 14.470586, "longitude": 75.914154 },
+              { "district": "Shimoga", "latitude": 13.929930, "longitude": 75.568100 },
+              { "district": "Bagalkote", "latitude": 16.181700, "longitude": 75.695801 },
+              { "district": "Ballari", "latitude": 15.139393, "longitude": 76.921440 },
+              { "district": "Belagavi", "latitude": 15.850000, "longitude": 74.500000 },
+              { "district": "Bengaluru Urban", "latitude": 12.972442, "longitude": 77.580643 },
+              { "district": "Bengaluru Rural", "latitude": 13.227243, "longitude": 77.574021 },
+              { "district": "Bidar", "latitude": 17.920000, "longitude": 77.519722 },
+              { "district": "Chamarajanagar", "latitude": 11.926147, "longitude": 76.943733 },
+              { "district": "Chikkaballapura", "latitude": 13.432515, "longitude": 77.727478 },
+              { "district": "Chikkamagaluru", "latitude": 13.313000, "longitude": 75.737000 },
+              { "district": "Chitradurga", "latitude": 14.230000, "longitude": 76.400002 },
+              { "district": "Dakshina Kannada", "latitude": 12.870000, "longitude": 74.880000 },
+              { "district": "Dharwad", "latitude": 15.460252, "longitude": 75.010284 },
+              { "district": "Gadag", "latitude": 15.429800, "longitude": 75.629700 },
+              { "district": "Hassan", "latitude": 13.005000, "longitude": 76.100000 },
+              { "district": "Haveri", "latitude": 14.800000, "longitude": 75.400000 },
+              { "district": "Kalaburagi", "latitude": 17.329731, "longitude": 76.834295 },
+              { "district": "Kodagu", "latitude": 12.420000, "longitude": 75.730000 },
+              { "district": "Kolar", "latitude": 13.133889, "longitude": 78.133889 },
+              { "district": "Koppal", "latitude": 15.350000, "longitude": 76.150000 },
+              { "district": "Mandya", "latitude": 12.520000, "longitude": 76.900000 },
+              { "district": "Mysuru", "latitude": 12.295810, "longitude": 76.639381 },
+              { "district": "Raichur", "latitude": 16.200000, "longitude": 77.350000 },
+              { "district": "Ramanagara", "latitude": 12.720000, "longitude": 77.280000 },
+              { "district": "Tumakuru", "latitude": 13.340880, "longitude": 77.101000 },
+              { "district": "Udupi", "latitude": 13.340880, "longitude": 74.742142 },
+              { "district": "Uttara Kannada", "latitude": 14.800000, "longitude": 74.130000 },
+              { "district": "Vijayapura", "latitude": 16.830000, "longitude": 75.710000 },
+              { "district": "Yadgir", "latitude": 16.770000, "longitude": 77.140000 }
+            ]
+          }
       };
   }
   async getStates() {
@@ -96,7 +131,29 @@ class StatesService {
   async getDistricts(id) {
 
   }
-
+  async getCoordinateForDistrict(state, district) {
+  try {
+    if (
+      this.states.coordinates &&
+      this.states.coordinates.state === state &&
+      Array.isArray(this.states.coordinates.districts)
+    ) {
+      const match = this.states.coordinates.districts.find(
+        (item) => item.district.toLowerCase() === district.toLowerCase()
+      );
+      if (match) {
+        return { latitude: match.latitude, longitude: match.longitude };
+      } else {
+        throw new Error("District not found in coordinates list");
+      }
+    } else {
+      throw new Error("State not found or coordinates data is missing");
+    }
+  } catch (error) {
+    console.error(error.message);
+    return null;
+  }
+}
 
 }
 

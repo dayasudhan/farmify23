@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-
+const statesService = require('./statesService')
 class SellerService {
 
   constructor() 
@@ -312,6 +312,13 @@ const sortedResults = [...withDistance, ...withoutDistance];
   }
   async  insertItem(data) {
      console.log("insertItem data",data)
+     if(data.latitude == null && data.longitude == null)
+     {
+      const coords = await statesService.getCoordinateForDistrict(data.state,data.district)
+      data.latitude = coords.latitude;
+      data.longitude = coords.longitude;
+      console.log("data",data.latitude,data.longitude);
+     }
     try{
     const item = await this.db.item.create({
       data: {
