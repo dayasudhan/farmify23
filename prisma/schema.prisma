@@ -1,11 +1,130 @@
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("AWS_DATABASE_URL") 
+  url      = env("AWS_DATABASE_URL")
+}
+
+
+model Item {
+  id                   Int       @id @unique @default(autoincrement())
+  name                 String
+  image_urls           String[]
+  price                Int?
+  availability         Boolean?
+  description          String?
+  createdAt            DateTime
+  updatedAt            DateTime?
+  seller_name          String?
+  address              String?
+  district             String?
+  city                 String?
+  state                String?
+  zipCode              Int?
+  phone                String?
+  makeYear             String?
+  registrationYear     String?
+  hoursDriven          Int?
+  no_of_owners         Int?
+  vehicleNo            Int?
+  dealerId             Int
+  latitude             Float?
+  longitude            Float?
+  model                String?
+  make                 String?
+  hypothecation_status String?
+  loan_status          String?
+  insurance_status     Boolean?
+  rc_present           Boolean?
+  fitnessCertificate   Boolean?
+  fc_approximate_cost  Int?
+  tailor_attached      Boolean?
+  condition            String?
+  battery_condition    String?
+  tyre_condition       String?
+  rto                  String?
+  loan_availability    Boolean?
+  implements           String?
+  type                 TYPE      @default(OTHER)
+  enquiries            Enquiry[]
+  dealer               Dealer    @relation(fields: [dealerId], references: [id])
+  order                Order?
+
+  @@map("item")
+}
+
+model Enquiry {
+  id        Int       @id @default(autoincrement())
+  name      String
+  address   String?
+  address2  String?
+  city      String?
+  state     String?
+  zipCode   Int?
+  phone     String
+  email     String?
+  itemId    Int
+  createdAt DateTime
+  updatedAt DateTime?
+  item      Item      @relation(fields: [itemId], references: [id])
+
+  @@map("enquiry")
+}
+
+model Order {
+  id        Int       @id @default(autoincrement())
+  name      String
+  address   String?
+  address2  String?
+  city      String?
+  state     String?
+  zipCode   Int?
+  phone     String
+  email     String?
+  itemId    Int       @unique
+  createdAt DateTime
+  updatedAt DateTime?
+  item      Item      @relation(fields: [itemId], references: [id])
+
+  @@map("order")
+}
+
+model Dealer {
+  id                     Int       @id @default(autoincrement())
+  username               String    @unique
+  password               String
+  orgpassword            String
+  phone                  String
+  address                String?
+  district               String
+  city                   String?
+  state                  String
+  createdAt              DateTime
+  updatedAt              DateTime?
+  name                   String
+  deviceToken            String?   @default("")
+  allowPhoneNumberToCall Boolean   @default(true)
+  allowWhatsAppMessages  Boolean   @default(true)
+  items                  Item[]
+
+  @@map("dealer")
+}
+
+model User {
+  name      String
+  district  String?
+  city      String?
+  latitude  Float?
+  longitude Float?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  phone     String   @unique
+  state     String?
+  id        Int      @id @default(autoincrement())
+
+  @@map("user")
 }
 
 enum TYPE {
@@ -18,106 +137,7 @@ enum TYPE {
   SEEDER
   SPRAYER
   LEVELLER
-  POSTHOLEDIGGER 
+  DIGGER
+  FULL_SET
   OTHER
 }
-
-model Item {
-  id              Int       @default(autoincrement()) @id @unique
-  name            String
-  image_urls      String[]
-  price           Int?
-  availability    Boolean?
-  description     String?
-  createdAt       DateTime
-  updatedAt       DateTime?
-  seller_name     String?
-  address         String?
-  district        String?
-  city            String?
-  state           String?
-  zipCode         Int?
-  phone           String?
-  makeYear        String?
-  registrationYear String?
-  hoursDriven     Int?
-  no_of_owners    Int?
-  vehicleNo       Int?
-  enquiries        Enquiry[]
-  order           Order?
-  dealer          Dealer    @relation(fields: [dealerId], references: [id])
-  dealerId        Int
-  latitude        Float?
-  longitude       Float?
-  model           String?
-  make            String?
-  hypothecation_status String?
-  loan_status   String? 
-  insurance_status Boolean?
-  rc_present     Boolean?
-  fitnessCertificate  Boolean?
-  fc_approximate_cost Int?
-  tailor_attached Boolean?
-  condition  String?
-  battery_condition String?
-  tyre_condition String?
-  rto  String?
-  loan_availability   Boolean? 
-  implements String?
-  type  TYPE   @default(OTHER)
-  @@map("item")
-}
-
-
-model Enquiry {
-  id    Int     @default(autoincrement()) @id
-  name                String
-  address            String?        
-  address2            String?       
-  city                String?        
-  state               String?        
-  zipCode             Int?       
-  phone               String  
-  email               String? 
-  item   Item @relation(fields: [itemId], references: [id])
-  itemId Int 
-  createdAt    DateTime   
-  updatedAt    DateTime?
-  @@map("enquiry")
-}
-model Order {
-  id    Int     @default(autoincrement()) @id
-  name                String
-  address            String?        
-  address2            String?       
-  city                String?        
-  state               String?        
-  zipCode             Int?       
-  phone               String  
-  email               String? 
-  item   Item @relation(fields: [itemId], references: [id])
-  itemId Int @unique
-  createdAt    DateTime   
-  updatedAt    DateTime?
-  @@map("order")
-}
-model Dealer {
-  id    Int     @default(autoincrement()) @id
-  username  String @unique
-  password  String
-  orgpassword  String
-  phone     String
-  address   String?
-  district  String       
-  city      String?        
-  state     String        
-  createdAt DateTime   
-  updatedAt DateTime?
-  name  String
-  deviceToken  String? @default("")
-  items Item[]
-  allowPhoneNumberToCall   Boolean   @default(true)
-  allowWhatsAppMessages    Boolean   @default(true)
-  @@map("dealer")
-}
-

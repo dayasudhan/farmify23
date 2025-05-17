@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-
+const statesService = require('./statesService')
 class SellerService {
 
   constructor() 
@@ -28,6 +28,19 @@ class SellerService {
     //onsole.log("Result getAllItemsByDealer",result)
     return result;
   }
+  async getAllItemsByPhone(phone) {
+    const result = await this.db.item.findMany({
+      where: {
+        phone: phone,
+        availability:true
+      },
+      orderBy: {
+        id: 'desc', // Order the items by ID in descending order
+      },
+    });
+    //onsole.log("Result getAllItemsByDealer",result)
+    return result;
+  }
 
    calculateDistance(lat1, lon1, lat2, lon2){
     const R = 6371; // Earth's radius in kilometers
@@ -48,14 +61,28 @@ class SellerService {
   async getAllItems_by_page_location(arg) {
     const inputLatitude = arg.latitude;
     const inputLongitude = arg.longitude;
-    const {page,pageSize} = arg;
-    console.log("Arg",arg)
-    // const page =2;
-    // const pageSize =1;
+    const {page,pageSize,searchText} = arg;
+
+    console.log("Arg",arg,inputLatitude,inputLongitude)
+    if (!inputLatitude || !inputLongitude) {
+        return this.getItemsBySearchQuery({ page, pageSize, searchText });
+      }
+
     try {
+        const searchCondition = searchText
+        ? {
+            OR: [
+               { model: { contains: searchText, mode: "insensitive" } },
+               { name: { contains: searchText, mode: "insensitive" } },
+               { makeYear: { contains: searchText, mode: "insensitive" } },
+               { district: { contains: searchText, mode: "insensitive" } },
+            ]
+          }
+        : {};
         const result = await this.db.item.findMany({
         where:{
-          availability:true
+          availability:true,
+          ...searchCondition
         },
 
         include:{
@@ -63,30 +90,50 @@ class SellerService {
         }
 
       });
-       const filteredCoords = result.map(e => {
-       const distance = this.calculateDistance(
-          parseFloat(inputLatitude),
-          parseFloat(inputLongitude),
-          e.latitude,
-          e.longitude
-        );
-        return {
-          ...e,
-          distance: distance,
-          dealer: {
-            id:e.dealer.id,
-            name: e.dealer.name,
-            username: e.dealer.username,
-            phone: e.dealer.phone,
-            district: e.dealer.district,
-            allowPhoneNumberToCall: e.dealer.allowPhoneNumberToCall
-          }
-        };
-      }).sort((a,b)=>  a.distance - b.distance);
+      
+      const filteredCoords = result.map(e => {
+  const hasCoords = e.latitude != null && e.longitude != null;
+
+  const distance = hasCoords
+    ? this.calculateDistance(
+        parseFloat(inputLatitude),
+        parseFloat(inputLongitude),
+        e.latitude,
+        e.longitude
+      )
+    : null;
+
+  return {
+    ...e,
+    distance: hasCoords ? Math.round(distance) : null,
+    dealer: {
+      id: e.dealer.id,
+      name: e.dealer.name,
+      username: e.dealer.username,
+      phone: e.dealer.phone,
+      district: e.dealer.district,
+      city: e.dealer.city,
+      address: e.dealer.address,
+      state: e.dealer.state,
+      allowPhoneNumberToCall: e.dealer.allowPhoneNumberToCall
+    }
+  };
+});
+
+// Split into two groups
+const withDistance = filteredCoords.filter(item => item.distance !== null);
+const withoutDistance = filteredCoords.filter(item => item.distance === null);
+
+// Sort separately
+withDistance.sort((a, b) => a.distance - b.distance); // nearest first
+withoutDistance.sort((a, b) => b.id - a.id);          // latest first
+
+// Merge back
+const sortedResults = [...withDistance, ...withoutDistance];
  
       // Apply pagination after filtering
     const startIndex = (page - 1) * pageSize;
-    const paginatedResults = filteredCoords.slice(startIndex, startIndex + pageSize);
+    const paginatedResults = sortedResults.slice(startIndex, startIndex + pageSize);
 
     const updatedResult = paginatedResults.map(item => ({
       ...item,
@@ -95,7 +142,9 @@ class SellerService {
           : (item.dealer?.phone || item.phone) // Otherwise, use dealer's phone if available, else item's phone
       }));
 
-      console.log('result', updatedResult.map(e => e.id));
+      console.log('result234', updatedResult.map(e => [{"id":e.id,"distance":e.distance}]));
+      // console.log("sample json 1", updatedResult[0])
+      // console.log("sample json 2", updatedResult[1])
       return updatedResult;
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -207,6 +256,8 @@ class SellerService {
       }));
   
       console.log('result', updatedResult.map(e => e.id));
+      // console.log("sample json 1", updatedResult[0])
+      // console.log("sample json 2", updatedResult[1])
       return updatedResult;
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -261,6 +312,13 @@ class SellerService {
   }
   async  insertItem(data) {
      console.log("insertItem data",data)
+     if(data.latitude == null && data.longitude == null)
+     {
+      const coords = await statesService.getCoordinateForDistrict(data.state,data.district)
+      data.latitude = coords.latitude;
+      data.longitude = coords.longitude;
+      console.log("data",data.latitude,data.longitude);
+     }
     try{
     const item = await this.db.item.create({
       data: {
@@ -344,12 +402,12 @@ class SellerService {
         model:data.model,
         hypothecation_status:data.hypothetical_status,
         loan_status: data.loan_status,
-        loan_availability:data.loan_availability,
-        insurance_status:data.insurance_status,
-        rc_present:data.rc_present,
-        fitnessCertificate:data.fitnessCertificate,
+        loan_availability: (data.loan_availability === 'true'),
+        insurance_status:(data.insurance_status === 'true'),
+        rc_present:(data.rc_present === 'true'),
+        fitnessCertificate:(data.fitnessCertificate  === 'true'),
         fc_approximate_cost:0,
-        tailor_attached:data.tailor_attached,
+        tailor_attached:(data.tailor_attached === 'true'),
         condition:data.tractor_condition,
         battery_condition:data.battery_condition,
         tyre_condition:String(data.tyre_condition),

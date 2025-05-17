@@ -11,6 +11,8 @@ const enquiryService = require('./server/enquiryService')
 const sellerService = require('./server/sellerService')
 const adminService = require('./server/adminService')
 const statesService = require('./server/statesService')
+const userService = require('./server/userService')
+const newTractorServices = require('./server/newTractorService')
 const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3-transform');
@@ -211,18 +213,19 @@ server.prepare().then(() => {
   });
   app.get('/hello', (req, res) => res.send('Namaste Home Page'));
   app.get("/items", async (req, res) => {
+    console.log("get /items")
     res.send(await sellerService.getAllItems());
   });
   app.get("/items_by_page_location", async (req, res) => {
-    console.log("req.query",req.query)
+    console.log("/items_by_page_location",req.query)
     res.send(await sellerService.getAllItems_by_page_location(req.query));
   });
   app.get("/items_by_page", async (req, res) => {
-    console.log("req.query",req.query)
+    console.log("items_by_page",req.query)
     res.send(await sellerService.getAllItems_by_page(req.query));
   });
   app.get("/itemsbysearchquery", async (req, res) => {
-    console.log("req.query",req.query)
+    console.log("itemsbysearchquery",req.query)
     res.send(await sellerService.getItemsBySearchQuery(req.query));
   });
   app.get('/items/:id', async (req, res) => {
@@ -270,6 +273,10 @@ server.prepare().then(() => {
     } else {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
+  });
+  app.get("/user/items/:phone", async (req, res) => {
+    console.log("req.params.phone",req.params.phone)
+    res.send(await sellerService.getAllItemsByPhone(req.params.phone));
   });
   app.post("/enquiry", async (req, res) => {
     console.log('enquery request body', req.body);
@@ -464,8 +471,41 @@ async function processAndCompressImages(req, res, next) {
   app.get('/states', async (req, res) => {
       res.send(await statesService.getStates());
   });
+  app.get('/v1/newtractors', async (req, res) => {
+    res.send(await newTractorServices.getTractors());
+  });
+  app.get('/v1/users', async (req, res) => {
+    res.send(await userService.getAllUsers());
+  });
+  app.get('/v1/user/:id', async (req, res) => {
+    res.send(await userService.getUserByPhone(req.params.id));
+  });
 
+  app.post('/v1/user', async (req, res) => {
+    console.log('user request body', req.body);
+   // const hashedPassword = await hashPassword(req.body.password)
+  //  console.log("Hashed Password:", hashedPassword);
+    // .then(hashedPassword => {
+    //     console.log("Hashed Password:", hashedPassword);
+    // })
+    // .catch(err => console.error(err));
+   // req.body['hashedPassword'] = hashedPassword;
+    const ret = await userService.insertUser(req.body);
+    console.log('return', ret);
+    res.send(ret);
+  });
 
+  app.post('/v1/generateotp', async(req, res) => {
+    res.send(await userService.sendOtp(req.body));
+  });
+  app.post('/v1/verifyotp', async (req, res) => {
+    
+    const ret = await userService.matchOtp(req, res);
+ 
+    // Assuming `ret` is an object like { status: 200, success: true, message: "OTP verified" }
+    res.send(ret);
+  });
+  
   
   app.get("/notifications", async (req, res) => {
     try {
