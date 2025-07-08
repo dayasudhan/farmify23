@@ -99,6 +99,7 @@ async insertUser(data) {
         latitude: parseFloat(data.latitude),
         longitude: parseFloat(data.longitude),
         languagePreference:data.languagePreference,
+        appVersion:data.appVersion,
       },
       create: {
         name: data.name,
@@ -111,6 +112,7 @@ async insertUser(data) {
         latitude: parseFloat(data.latitude),
         longitude: parseFloat(data.longitude),
         languagePreference:data.languagePreference,
+        appVersion:data.appVersion,
       }
     });
 
