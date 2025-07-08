@@ -495,6 +495,38 @@ async function processAndCompressImages(req, res, next) {
     res.send(ret);
   });
 
+  app.post('/v1/user/devicetoken', async (req, res) => {
+  try {
+    const { phone, deviceToken } = req.body;
+    if (!phone || !deviceToken) {
+      return res.status(400).send({ message: 'Missing phoneNumber or deviceToken' });
+    }
+
+    const ret = await userService.updateDeviceToken(phone, deviceToken);
+    console.log('Device token update result:', ret);
+    res.send({ success: true, updated: ret });
+  } catch (err) {
+    console.error('Error updating device token:', err);
+    res.status(500).send({ success: false, error: 'Internal Server Error' });
+  }
+});
+
+  app.post('/v1/user/languagepreference', async (req, res) => {
+  try {
+    const { phone, languagePreference } = req.body;
+    if (!phone || !languagePreference) {
+      return res.status(400).send({ message: 'Missing phoneNumber or languagePreference' });
+    }
+
+    const ret = await userService.updateLanguagePreference(phone, languagePreference);
+    console.log('languagePreference update result:', ret);
+    res.send({ success: true, updated: ret });
+  } catch (err) {
+    console.error('Error updating languagePreference:', err);
+    res.status(500).send({ success: false, error: 'Internal Server Error' });
+  }
+});
+
   app.post('/v1/generateotp', async(req, res) => {
     res.send(await userService.sendOtp(req.body));
   });

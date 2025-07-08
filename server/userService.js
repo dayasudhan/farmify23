@@ -54,6 +54,35 @@ class UserService {
     }
   }
   
+async updateDeviceToken(phone,deviceToken) {
+    console.log("updateDeviceToken",phone,deviceToken)
+    const result = await this.db.user.update({
+      where: {
+        phone:phone
+      },
+      data: {
+        deviceToken: deviceToken,
+        updatedAt:new Date(),
+      },
+    });
+    console.log('result', result);
+    return result;
+}
+
+async updateLanguagePreference(phone,languagePreference) {
+    console.log("updateLanguagePreference",phone,languagePreference)
+    const result = await this.db.user.update({
+      where: {
+        phone:phone
+      },
+      data: {
+        languagePreference: languagePreference,
+        updatedAt:new Date(),
+      },
+    });
+    console.log('result', result);
+    return result;
+}
 
 async insertUser(data) {
   console.log("insertUser data", data);
@@ -68,7 +97,8 @@ async insertUser(data) {
         district: data.district,
         state: data.state,
         latitude: parseFloat(data.latitude),
-        longitude: parseFloat(data.longitude)
+        longitude: parseFloat(data.longitude),
+        languagePreference:data.languagePreference,
       },
       create: {
         name: data.name,
@@ -79,7 +109,8 @@ async insertUser(data) {
         district: data.district,
         state: data.state,
         latitude: parseFloat(data.latitude),
-        longitude: parseFloat(data.longitude)
+        longitude: parseFloat(data.longitude),
+        languagePreference:data.languagePreference,
       }
     });
 
