@@ -266,6 +266,9 @@ server.prepare().then(() => {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
   });
+  app.get("/user/enquiriesbyitem/:id", async (req, res) => {
+      res.send(await enquiryService.getEnquiriesByItem(req.params.id));
+   });
   app.get("/dealer/items", async (req, res) => {
     console.log("req.session?.user.id",req.session?.user?.id)
     if (req.session?.user?.auntheticated ) {

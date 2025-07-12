@@ -34,6 +34,19 @@ class EnquiryService {
     //console.log("Result equiries",result)
     return result;
   }
+    async getEnquiriesByItem(id) {
+      console.log("itemId",id);
+    const result = await this.db.enquiry.findMany({
+      where: {
+        itemId:parseInt(id)
+      },
+      orderBy: {
+        id: 'desc', // Order the items by ID in descending order
+      },
+    });
+   // console.log("Result equiries",result)
+    return result;
+  }
   async getEnquiriesByDealerGroupByItem2(dealerId) {
     const result = await this.db.enquiry.findMany({
       where: {
