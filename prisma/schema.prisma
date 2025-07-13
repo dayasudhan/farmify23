@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Item {
-  id                   Int       @id @unique @default(autoincrement())
+  id                   Int             @id @unique @default(autoincrement())
   name                 String
   image_urls           String[]
   price                Int?
@@ -45,10 +45,11 @@ model Item {
   rc_present           Boolean?
   rto                  String?
   tailor_attached      Boolean?
-  type                 TYPE      @default(OTHER)
+  type                 TYPE            @default(OTHER)
   tyre_condition       String?
+  advertisement        Advertisement[]
   enquiries            Enquiry[]
-  dealer               Dealer    @relation(fields: [dealerId], references: [id])
+  dealer               Dealer          @relation(fields: [dealerId], references: [id])
   order                Order?
 
   @@map("item")
@@ -127,6 +128,22 @@ model User {
   appVersion         String?
 
   @@map("user")
+}
+
+model Advertisement {
+  id        Int       @id @default(autoincrement())
+  title     String?
+  itemId    Int?
+  linkUrl   String?
+  media     Json      @db.Json
+  startDate DateTime  @db.Timestamp(6)
+  endDate   DateTime  @db.Timestamp(6)
+  active    Boolean?  @default(true)
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @updatedAt @db.Timestamp(6)
+  item      Item?     @relation(fields: [itemId], references: [id], onUpdate: NoAction)
+
+  @@map("advertisement")
 }
 
 enum TYPE {

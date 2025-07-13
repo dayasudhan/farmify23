@@ -309,6 +309,16 @@ server.prepare().then(() => {
     }
     res.send(ret);
   });
+  app.get("/v1/advertisements", async (req, res) => {
+    console.log('getadvertisements request body', req.query);
+      res.send(await adminService.getAdvertisements());
+  });
+  app.post("/v1/advertisements", async (req, res) => {
+    console.log('advertisements request body', req.body);
+    const ret = await adminService.insertAdvertisement(req.body);
+    console.log("ret",ret)
+    res.send(ret);
+  });
   app.post("/dealer", async (req, res) => {
     console.log('dealer request body', req.body);
     const hashedPassword = await hashPassword(req.body.password)
