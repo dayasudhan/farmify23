@@ -34,6 +34,19 @@ class EnquiryService {
     //console.log("Result equiries",result)
     return result;
   }
+    async getEnquiriesByItem(id) {
+      console.log("itemId",id);
+    const result = await this.db.enquiry.findMany({
+      where: {
+        itemId:parseInt(id)
+      },
+      orderBy: {
+        id: 'desc', // Order the items by ID in descending order
+      },
+    });
+   // console.log("Result equiries",result)
+    return result;
+  }
   async getEnquiriesByDealerGroupByItem2(dealerId) {
     const result = await this.db.enquiry.findMany({
       where: {
@@ -121,7 +134,7 @@ class EnquiryService {
   }
   async  insertEnuiry(data) {
     console.log("insertItem data",data)
-    const item = await this.db.enquiry.create({
+    const enquiry = await this.db.enquiry.create({
       data: {
         name: data.name,
         phone: data.phone,
@@ -135,7 +148,24 @@ class EnquiryService {
         zipCode:data.zipcode
       },
     });
-    return item;
+    let deviceToken = null;
+    const item = await this.db.item.findUnique({
+     where: { id: parseInt(data.itemId) },
+     select: { phone: true },
+    });
+    if (item?.phone)
+    {
+     const user = await this.db.user.findUnique({
+      where: { phone: item.phone },
+      select: { deviceToken: true },
+    });
+     deviceToken = user?.deviceToken || null;
+    } 
+    console.log("item?.phone",item?.phone)
+    return {
+      enquiry,
+      deviceToken,
+    };
   }
 }
 module.exports = new EnquiryService();

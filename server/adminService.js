@@ -108,5 +108,34 @@ class AdminService {
     console.log("getTokenByDealer",result);
     return result[0];
   }
+async getAdvertisements(){
+      const ads = await this.db.advertisement.findMany({
+      where: {
+        active: true,
+        startDate: { lte: new Date() },
+        endDate: { gte: new Date() },
+      },
+      include: { item: true },
+    });
+    return ads;
+  }
+
+
+
+async  insertAdvertisement(data) {
+    console.log("insertAdvertisement data",data)
+    const item = this.db.advertisement.create({
+      data: {
+      title: data.title,
+      itemId: data.itemId,
+      linkUrl: data.linkUrl,
+      media: data.media,
+      startDate: new Date(data.startDate),
+      endDate: new Date(data.endDate),
+      active: data.active ?? true,
+      },
+    });
+    return item;
+  }
 }
 module.exports = new AdminService();

@@ -142,7 +142,7 @@ const sortedResults = [...withDistance, ...withoutDistance];
           : (item.dealer?.phone || item.phone) // Otherwise, use dealer's phone if available, else item's phone
       }));
 
-      console.log('result234', updatedResult.map(e => [{"id":e.id,"distance":e.distance}]));
+      //console.log('result234', updatedResult.map(e => [{"id":e.id,"distance":e.distance}]));
       // console.log("sample json 1", updatedResult[0])
       // console.log("sample json 2", updatedResult[1])
       return updatedResult;

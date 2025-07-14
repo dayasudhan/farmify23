@@ -7,9 +7,8 @@ datasource db {
   url      = env("AWS_DATABASE_URL")
 }
 
-
 model Item {
-  id                   Int       @id @unique @default(autoincrement())
+  id                   Int             @id @unique @default(autoincrement())
   name                 String
   image_urls           String[]
   price                Int?
@@ -32,24 +31,25 @@ model Item {
   dealerId             Int
   latitude             Float?
   longitude            Float?
-  model                String?
-  make                 String?
-  hypothecation_status String?
-  loan_status          String?
-  insurance_status     Boolean?
-  rc_present           Boolean?
-  fitnessCertificate   Boolean?
-  fc_approximate_cost  Int?
-  tailor_attached      Boolean?
-  condition            String?
   battery_condition    String?
-  tyre_condition       String?
-  rto                  String?
-  loan_availability    Boolean?
+  condition            String?
+  fc_approximate_cost  Int?
+  fitnessCertificate   Boolean?
+  hypothecation_status String?
   implements           String?
-  type                 TYPE      @default(OTHER)
+  insurance_status     Boolean?
+  loan_availability    Boolean?
+  loan_status          String?
+  make                 String?
+  model                String?
+  rc_present           Boolean?
+  rto                  String?
+  tailor_attached      Boolean?
+  type                 TYPE            @default(OTHER)
+  tyre_condition       String?
+  advertisement        Advertisement[]
   enquiries            Enquiry[]
-  dealer               Dealer    @relation(fields: [dealerId], references: [id])
+  dealer               Dealer          @relation(fields: [dealerId], references: [id])
   order                Order?
 
   @@map("item")
@@ -113,18 +113,37 @@ model Dealer {
 }
 
 model User {
-  name      String
-  district  String?
-  city      String?
-  latitude  Float?
-  longitude Float?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  phone     String   @unique
-  state     String?
-  id        Int      @id @default(autoincrement())
+  name               String
+  district           String?
+  city               String?
+  latitude           Float?
+  longitude          Float?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  phone              String   @unique
+  state              String?
+  id                 Int      @id @default(autoincrement())
+  deviceToken        String?
+  languagePreference String?
+  appVersion         String?
 
   @@map("user")
+}
+
+model Advertisement {
+  id        Int       @id @default(autoincrement())
+  title     String?
+  itemId    Int?
+  linkUrl   String?
+  media     Json      @db.Json
+  startDate DateTime  @db.Timestamp(6)
+  endDate   DateTime  @db.Timestamp(6)
+  active    Boolean?  @default(true)
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @updatedAt @db.Timestamp(6)
+  item      Item?     @relation(fields: [itemId], references: [id], onUpdate: NoAction)
+
+  @@map("advertisement")
 }
 
 enum TYPE {
