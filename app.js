@@ -26,7 +26,7 @@ const flash = require('connect-flash');
 const cors = require('cors');
 const admin = require("firebase-admin");
 
-const serviceAccount = require("./firebase/firebase.json");
+const serviceAccount = require("./firebase/firebasesandbox.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -285,27 +285,57 @@ server.prepare().then(() => {
     console.log('enquery request body', req.body);
     const ret = await enquiryService.insertEnuiry(req.body);
     console.log('return', ret);
-    if(ret !== null && ret?.itemId)
+    if(ret !== null && ret?.enquiry?.itemId)
     {
-      const retItem = await sellerService.getItemByDealerDevceToken(ret?.itemId);
+      
+
+      const retItem = await sellerService.getItemByDealerDevceToken(ret?.enquiry?.itemId);
       console.log("retItem1",retItem) 
+      
       //console.log("retItem",retItem?.dealer?.deviceToken)
-      if(retItem?.dealer?.deviceToken)
-      {
-        const message = {
+      // if(retItem?.dealer?.deviceToken)
+      // {
+      //  const message = {
+      //   token:retItem?.dealer?.deviceToken,
+      //     data: {
+      //       type: 'enquiry', // Additional data can be added as needed
+      //     },
+      //     notification: {
+      //       title:  `Enquiry for ${retItem?.name}`, // Default title for new enquiry
+      //       body:  `Name-${ret?.enquiry?.name}, Address- ${ret?.enquiry?.address},  Phone no -${ret?.enquiry?.phone}`, // Default body for new enquiry
+      //       imageUrl:retItem?.image_urls[0], // Image URL if applicable
+      //     },
+      //   };
+
+      // console.log("tokennnn",retItem?.dealer?.deviceToken)
+      // sendNotification(retItem?.dealer?.deviceToken, message);
+      // }
+  //      const message = {
+  //   token,
+  //   notification: {
+  //     title,
+  //     body,
+  //   },
+  //   data: {
+  //     type: type || '',
+  //     itemId: itemId?.toString() || '',
+  //   },
+  // };
+      const message = {
+        token:ret?.deviceToken,
           data: {
             type: 'enquiry', // Additional data can be added as needed
+            itemId: ret?.enquiry?.itemId?.toString() || '',
           },
           notification: {
             title:  `Enquiry for ${retItem?.name}`, // Default title for new enquiry
-            body:  `Name-${ret?.name}, Address- ${ret?.address},  Phone no -${ret?.phone}`, // Default body for new enquiry
+            body:  `Name-${ret?.enquiry?.name}, Address- ${ret?.enquiry?.address},  Phone no -${ret?.enquiry?.phone}`, // Default body for new enquiry
             imageUrl:retItem?.image_urls[0], // Image URL if applicable
           },
         };
-      //const token = await adminService.getTokenByDealer('admin')
-      console.log("tokennnn",retItem?.dealer?.deviceToken)
-      sendNotification(retItem?.dealer?.deviceToken, message);
-      }
+        console.log("message",message);
+       sendNotification(null,message)
+
     }
     res.send(ret);
   });
@@ -550,7 +580,28 @@ async function processAndCompressImages(req, res, next) {
     // Assuming `ret` is an object like { status: 200, success: true, message: "OTP verified" }
     res.send(ret);
   });
-  
+app.post('/v1/itemnotification', async (req, res) => {
+  const { title, body, type, itemId, token } = req.body;
+
+  if (!token || !title || !body) {
+    return res.status(400).json({ error: 'Missing required fields: token, title, body' });
+  }
+console.log("itemnotification",req.body)
+  const message = {
+    token,
+    notification: {
+      title,
+      body,
+    },
+    data: {
+      type: type || '',
+      itemId: itemId?.toString() || '',
+    },
+  };
+
+  await sendNotification(null,message)
+  res.send("success")
+});
   
   app.get("/notifications", async (req, res) => {
     try {
@@ -575,9 +626,9 @@ async function processAndCompressImages(req, res, next) {
         .json({ message: err.message || "Something went wrong!" });
     }
   });
-  const sendNotification = async (token, message) => {
+  const sendNotification = async (token=null, message) => {
     try {
-      const response = await admin.messaging().sendToDevice(token, message);
+      const response = await admin.messaging().send(message);
       console.log('Successfully sent message:', response);
       return response;
     } catch (error) {
