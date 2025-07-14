@@ -26,7 +26,7 @@ const flash = require('connect-flash');
 const cors = require('cors');
 const admin = require("firebase-admin");
 
-const serviceAccount = require("./firebase/firebasesandbox.json");
+const serviceAccount = require("./firebase/firebase.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
