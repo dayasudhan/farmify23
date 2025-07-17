@@ -19,25 +19,23 @@ import {
   IconButton,
   useTheme,
   Stack,
-  Badge,
   Paper,
-  Divider
+  Autocomplete
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import PlaceIcon from '@mui/icons-material/Place';
-import EmailIcon from '@mui/icons-material/Email';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import TractorIcon from '@mui/icons-material/Agriculture';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
 import axios from 'axios';
 import { useAuth } from '../../authContext';
 import { useRouter } from 'next/router';
 import HeaderComponent from '../../common/header';
 import Footer from '../../common/footer';
 import ReactGA from "react-ga4";
-import Autocomplete from '@mui/material/Autocomplete';
-import MyLocationIcon from '@mui/icons-material/MyLocation';
 
 const baseURL = '/items';
 
@@ -55,8 +53,8 @@ const categories = [
 
 const tractorBrands = [
   { key: 'all', label: 'All Brands', value: 'all' },
-  { key: 'mahindra', label: 'Mahindra', value: '' },
-  { key: 'john-deere', label: 'John Deere', value: 'john deere' },
+  { key: 'mahindra', label: 'Mahindra', value: 'mahindra' },
+  { key: 'john-deere', label: 'John Deere', value: 'john-deere' },
   { key: 'swaraj', label: 'Swaraj', value: 'swaraj' },
   { key: 'new-holland', label: 'New Holland', value: 'new-holland' },
   { key: 'massey-ferguson', label: 'Massey Ferguson', value: 'massey-ferguson' },
@@ -65,7 +63,6 @@ const tractorBrands = [
   { key: 'sonalika', label: 'Sonalika', value: 'sonalika' }
 ];
 
-// Placeholder brand images (replace with your own assets)
 const brandImages = {
   mahindra: 'https://www.tractorjunction.com/assets/images/mahindra-logo.png',
   'john-deere': 'https://www.tractorjunction.com/assets/images/john-deere-logo.png',
@@ -77,7 +74,6 @@ const brandImages = {
   sonalika: 'https://www.tractorjunction.com/assets/images/sonalika-logo.png',
 };
 
-// Add state/district data (for demo, you can replace with your own data)
 const states = [
   { label: 'Karnataka', districts: ['Bagalkot', 'Bangalore', 'Davanagere'] },
   { label: 'Maharashtra', districts: ['Pune', 'Nashik', 'Nagpur'] },
@@ -112,7 +108,6 @@ const NewHome = () => {
   }, [router.query.q]);
 
   const filterData = (query, items) => {
-    console.log("filterData",query);
     let filteredResults = items.filter((item) =>
       item?.name?.toLowerCase().includes(query.toLowerCase()) ||
       item?.description?.toLowerCase().includes(query.toLowerCase()) ||
@@ -141,11 +136,10 @@ const NewHome = () => {
       );
     }
     if (isNearby && location) {
-      // Simple nearby filter: within 100km (replace with your own logic)
       filteredResults = filteredResults.filter(item => {
         if (!item.latitude || !item.longitude) return false;
         const toRad = (v) => (v * Math.PI) / 180;
-        const R = 6371; // km
+        const R = 6371;
         const dLat = toRad(item.latitude - location.latitude);
         const dLon = toRad(item.longitude - location.longitude);
         const a =
@@ -155,7 +149,7 @@ const NewHome = () => {
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         const d = R * c;
-        return d < 100; // within 100km
+        return d < 100;
       });
     }
     setFilteredData(filteredResults);
@@ -185,9 +179,8 @@ const NewHome = () => {
   };
 
   const handleBrandChange = (event, newValue) => {
-   console.log("handleBrandChange",tractorBrands[newValue].value);
     setSelectedBrand(tractorBrands[newValue].value);
-    filterData(tractorBrands[newValue].value, items);
+    filterData(searchQuery, items);
   };
 
   const handleEnquiryClick = (itemId) => {
@@ -202,19 +195,6 @@ const NewHome = () => {
   const handlePostItem = () => {
     setShowPostModal(false);
     router.push('/seller/post');
-  };
-
-  const formatPrice = (price) => {
-    if (!price) return 'Price on enquiry';
-    return `₹${price.toLocaleString()}`;
-  };
-
-  const getLocationText = (item) => {
-    const parts = [];
-    if (item?.district) parts.push(item.district);
-    if (item?.city) parts.push(item.city);
-    if (item?.state) parts.push(item.state);
-    return parts.join(', ') || 'Location not specified';
   };
 
   const handleStateChange = (event, value) => {
@@ -246,19 +226,6 @@ const NewHome = () => {
         <Container>
           <Grid container justifyContent="center" alignItems="center">
             <Grid item xs={12} textAlign="center">
-              {/* <Typography
-                variant="h2"
-                sx={{
-                  color: 'white',
-                  fontWeight: 700,
-                  mb: 2,
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-                  fontSize: { xs: '2rem', md: '3rem' },
-                }}
-              >
-                <TractorIcon sx={{ fontSize: 48, verticalAlign: 'middle', mr: 1 }} />
-                Tractree
-              </Typography> */}
               <Typography
                 variant="subtitle1"
                 sx={{ color: 'white', mb: 4 }}
@@ -425,100 +392,113 @@ const NewHome = () => {
             </Typography>
           </Box>
         ) : (
-          <Grid container spacing={3}>
+          <Grid container spacing={2} alignItems="stretch">
             {filteredData.map((item, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
+              <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: 'flex', height: '100%' }}>
                 <Card
-                  elevation={3}
+                  elevation={1}
                   sx={{
-                    borderRadius: 3,
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: 6,
-                    },
+                    borderRadius: 2,
+                    border: '1px solid #eee',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                    bgcolor: '#fff',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    width: '100%',
+                    transition: 'box-shadow 0.2s',
+                    '&:hover': { boxShadow: '0 4px 16px rgba(0,0,0,0.08)' },
                   }}
-                  onClick={() => router.push(`/buyer/product/item?id=${item.id}`)}
                 >
                   <Box position="relative">
                     <CardMedia
                       component="img"
-                      height="200"
                       image={item.image_urls?.[0] || '/placeholder-tractor.jpg'}
                       alt={item.name}
                       sx={{
+                        width: '100%',
+                        height: 150,
                         objectFit: 'cover',
-                        borderTopLeftRadius: 12,
-                        borderTopRightRadius: 12,
+                        borderTopLeftRadius: 8,
+                        borderTopRightRadius: 8,
                       }}
                     />
-                    <Chip
-                      label={item.type || 'Equipment'}
-                      color="primary"
-                      size="small"
-                      sx={{
-                        position: 'absolute',
-                        top: 12,
-                        left: 12,
-                        borderRadius: 2,
-                        fontWeight: 600,
-                      }}
-                    />
-                    {item.price && (
-                      <Chip
-                        label={formatPrice(item.price)}
-                        color="success"
-                        size="small"
-                        sx={{
-                          position: 'absolute',
-                          top: 12,
-                          right: 12,
-                          borderRadius: 2,
-                          fontWeight: 600,
-                        }}
-                      />
+                    {item.brand && brandImages[item.brand.toLowerCase()] && (
+                      <Box sx={{ position: 'absolute', top: 10, left: 10, bgcolor: '#fff', borderRadius: 1, p: 0.5, boxShadow: '0 1px 4px #b2dfdb' }}>
+                        <img src={brandImages[item.brand.toLowerCase()]} alt={item.brand} style={{ height: 22 }} />
+                      </Box>
                     )}
                   </Box>
-                  <CardContent>
-                    <Typography variant="h6" fontWeight={700} gutterBottom>
-                      {item.type === 'ENGINE' && item.model ? item.model : item.name}
-                      {item.makeYear && ` (${item.makeYear})`}
-                    </Typography>
-                    <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-                      <PlaceIcon color="primary" fontSize="small" />
-                      <Typography variant="body2" color="text.secondary">
-                        {getLocationText(item)}
+                  <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 1.5 }}>
+                    <Box>
+                      <Typography variant="subtitle1" fontWeight={700} color="#398378" gutterBottom noWrap sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {item.type === 'ENGINE' && item.model ? item.model : item.name}
+                        {item.makeYear && ` (${item.makeYear})`}
                       </Typography>
-                    </Stack>
-                    {item.description && (
+                      <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
+                        <MonetizationOnIcon color="success" fontSize="small" />
+                        <Typography variant="body2" color="success.main" fontWeight={700}>
+                          {item.price ? `₹${item.price.toLocaleString()}` : 'Price on enquiry'}
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
+                        <PlaceIcon color="primary" fontSize="small" />
+                        <Typography variant="body2" color="text.secondary">
+                          {item.district}, {item.state}
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1} mb={0.5}>
+                        <Chip
+                          label={item.type || 'Equipment'}
+                          color="primary"
+                          size="small"
+                          sx={{ fontWeight: 600, fontSize: 12, borderRadius: 2 }}
+                        />
+                        {item.model && (
+                          <Chip
+                            label={item.model}
+                            color="default"
+                            size="small"
+                            sx={{ fontWeight: 500, fontSize: 12, borderRadius: 2 }}
+                          />
+                        )}
+                      </Stack>
                       <Typography
                         variant="body2"
                         color="text.secondary"
-                        sx={{
-                          mb: 1,
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                        }}
+                        sx={{ mb: 0.5, minHeight: 28, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}
                       >
                         {item.description}
                       </Typography>
-                    )}
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      startIcon={<EmailIcon />}
-                      sx={{ borderRadius: 2, mt: 1 }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        handleEnquiryClick(item.id);
-                      }}
-                    >
-                      More Details
-                    </Button>
+                    </Box>
+                    <Stack direction="row" spacing={1} mt={1}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        fullWidth
+                        sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
+                        onClick={e => {
+                          e.stopPropagation();
+                          router.push(`/buyer/product/item?id=${item.id}`);
+                        }}
+                      >
+                        More Details
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="success"
+                        size="small"
+                        fullWidth
+                        sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
+                        onClick={e => {
+                          e.stopPropagation();
+                          router.push(`/buyer/product/item?id=${item.id}#contact`);
+                        }}
+                      >
+                        Contact Seller
+                      </Button>
+                    </Stack>
                   </CardContent>
                 </Card>
               </Grid>
