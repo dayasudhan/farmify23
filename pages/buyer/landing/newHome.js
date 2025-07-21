@@ -42,25 +42,42 @@ const baseURL = '/items';
 const categories = [
   { key: 'all', label: 'All Items', value: 'all', icon: <FilterAltIcon /> },
   { key: 'tractor', label: 'Tractor', value: 'tractor', icon: <TractorIcon /> },
+   { key: 'trailer', label: 'Trailer', value: 'trailer' },
   { key: 'cultivator', label: 'Cultivator', value: 'cultivator' },
   { key: 'rotavator', label: 'Rotavator', value: 'rotavator' },
   { key: 'plough', label: 'Plough', value: 'plough' },
   { key: 'harrow', label: 'Harrow', value: 'harrow' },
   { key: 'seeder', label: 'Seeder', value: 'seeder' },
   { key: 'sprayer', label: 'Sprayer', value: 'sprayer' },
-  { key: 'other', label: 'Other', value: 'other' }
+ 
+  { key: 'thresher', label: 'Thresher', value: 'thresher' },
+  { key: 'baler', label: 'Baler', value: 'baler' },
+  { key: 'post-hole-digger', label: 'Post Hole Digger', value: 'post hole digger' },
+  { key: 'mulcher', label: 'Mulcher', value: 'mulcher' },
+  { key: 'puddler', label: 'Puddler', value: 'puddler' },
+  { key: 'reaper', label: 'Reaper', value: 'reaper' }
+  // { key: 'laser-land-leveler', label: 'Laser Land Leveler', value: 'laser land leveler' },
+  // { key: 'fertilizer-spreader', label: 'Fertilizer Spreader', value: 'fertilizer spreader' },
+ // { key: 'other', label: 'Other', value: 'other' }
 ];
 
 const tractorBrands = [
   { key: 'all', label: 'All Brands', value: 'all' },
   { key: 'mahindra', label: 'Mahindra', value: 'mahindra' },
-  { key: 'john-deere', label: 'John Deere', value: 'john-deere' },
+  { key: 'john-deere', label: 'John Deere', value: 'john deere' },
   { key: 'swaraj', label: 'Swaraj', value: 'swaraj' },
-  { key: 'new-holland', label: 'New Holland', value: 'new-holland' },
-  { key: 'massey-ferguson', label: 'Massey Ferguson', value: 'massey-ferguson' },
+  { key: 'new-holland', label: 'New Holland', value: 'new holland' },
+  { key: 'massey-ferguson', label: 'Massey Ferguson', value: 'massey ferguson' },
   { key: 'kubota', label: 'Kubota', value: 'kubota' },
   { key: 'force', label: 'Force', value: 'force' },
-  { key: 'sonalika', label: 'Sonalika', value: 'sonalika' }
+  { key: 'sonalika', label: 'Sonalika', value: 'sonalika' },
+    { key: 'eicher', label: 'Eicher', value: 'eicher' },
+  { key: 'escort', label: 'Escort', value: 'escort' },
+  { key: 'vst', label: 'VST Shakti', value: 'vst shakti' },
+   { key: 'hmt', label: 'HMT', value: 'hmt' },
+  { key: 'indofarm', label: 'Indofarm', value: 'indofarm' },
+  { key: 'ace', label: 'ACE', value: 'ace' }
+  // { key: 'same-deutz-fahr', label: 'Same Deutz-Fahr', value: 'same deutz-fahr' 
 ];
 
 const brandImages = {
@@ -107,53 +124,81 @@ const NewHome = () => {
     ReactGA.send({ hitType: "pageview", page: window.location.pathname, title: "New Home Page" });
   }, [router.query.q]);
 
-  const filterData = (query, items) => {
-    let filteredResults = items.filter((item) =>
-      item?.name?.toLowerCase().includes(query.toLowerCase()) ||
-      item?.description?.toLowerCase().includes(query.toLowerCase()) ||
-      item?.address?.toLowerCase().includes(query.toLowerCase()) ||
-      item?.city?.toLowerCase().includes(query.toLowerCase()) ||
-      item?.district?.toLowerCase().includes(query.toLowerCase())
+  const filterData = (
+  query,
+  items,
+  category = selectedCategory,
+  brand = selectedBrand,
+  state = selectedState,
+  district = selectedDistrict,
+  nearby = isNearby
+) => {
+  console.log("filterData", query, "sc", category,brand);
+
+  let filteredResults = items;
+  
+if (category === 'tractor' ) {
+  console.log("item",brand,filteredResults.length)
+  if(brand != 'all')
+  {
+    filteredResults = filteredResults.filter(item =>
+      item?.model?.toLowerCase().includes(brand.toLowerCase())
     );
-    if (selectedCategory !== 'all') {
-      filteredResults = filteredResults.filter(item =>
-        item?.type?.toLowerCase() === selectedCategory.toLowerCase()
-      );
-    }
-    if (selectedCategory === 'tractor' && selectedBrand !== 'all') {
-      filteredResults = filteredResults.filter(item =>
-        item?.brand?.toLowerCase() === selectedBrand.toLowerCase()
-      );
-    }
-    if (selectedState) {
-      filteredResults = filteredResults.filter(item =>
-        item?.state?.toLowerCase() === selectedState.label.toLowerCase()
-      );
-    }
-    if (selectedDistrict) {
-      filteredResults = filteredResults.filter(item =>
-        item?.district?.toLowerCase() === selectedDistrict.toLowerCase()
-      );
-    }
-    if (isNearby && location) {
-      filteredResults = filteredResults.filter(item => {
-        if (!item.latitude || !item.longitude) return false;
-        const toRad = (v) => (v * Math.PI) / 180;
-        const R = 6371;
-        const dLat = toRad(item.latitude - location.latitude);
-        const dLon = toRad(item.longitude - location.longitude);
-        const a =
-          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-          Math.cos(toRad(location.latitude)) *
-            Math.cos(toRad(item.latitude)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const d = R * c;
-        return d < 100;
-      });
-    }
-    setFilteredData(filteredResults);
-  };
+  }
+  else{
+    filteredResults = filteredResults.filter(item => item.model === '');
+  }
+}
+else 
+{
+   filteredResults = filteredResults.filter((item) =>
+    item?.name?.toLowerCase().includes(query.toLowerCase()) ||
+    item?.description?.toLowerCase().includes(query.toLowerCase()) ||
+    item?.address?.toLowerCase().includes(query.toLowerCase()) ||
+    item?.city?.toLowerCase().includes(query.toLowerCase()) ||
+    item?.district?.toLowerCase().includes(query.toLowerCase())
+  );
+
+  if (category !== 'all') {
+    filteredResults = filteredResults.filter(item =>
+      item?.type?.toLowerCase() === category.toLowerCase()
+    );
+  }
+}
+
+  if (state) {
+    filteredResults = filteredResults.filter(item =>
+      item?.state?.toLowerCase() === state.label.toLowerCase()
+    );
+  }
+
+  if (district) {
+    filteredResults = filteredResults.filter(item =>
+      item?.district?.toLowerCase() === district.toLowerCase()
+    );
+  }
+
+  if (nearby && location) {
+    filteredResults = filteredResults.filter(item => {
+      if (!item.latitude || !item.longitude) return false;
+      const toRad = (v) => (v * Math.PI) / 180;
+      const R = 6371;
+      const dLat = toRad(item.latitude - location.latitude);
+      const dLon = toRad(item.longitude - location.longitude);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(location.latitude)) *
+        Math.cos(toRad(item.latitude)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const d = R * c;
+      return d < 100;
+    });
+  }
+
+  setFilteredData(filteredResults);
+};
+
 
   const handleSearchChange = (event) => {
     const { value } = event.target;
@@ -172,17 +217,18 @@ const NewHome = () => {
     filterData(value, items);
   };
 
-  const handleCategoryChange = (event, newValue) => {
-    setSelectedCategory(categories[newValue].value);
-    setSelectedBrand('all');
-    filterData(searchQuery, items);
-  };
+const handleCategoryChange = (event, newValue) => {
+  const newCategory = categories[newValue].value;
+  setSelectedCategory(newCategory);
+  setSelectedBrand('all');
+  filterData(searchQuery, items, newCategory, 'all'); // Pass updated values directly
+};
 
-  const handleBrandChange = (event, newValue) => {
-    setSelectedBrand(tractorBrands[newValue].value);
-    filterData(searchQuery, items);
-  };
-
+const handleBrandChange = (event, newValue) => {
+  const newBrand = tractorBrands[newValue].value;
+  setSelectedBrand(newBrand);
+  filterData(searchQuery, items, selectedCategory, newBrand);
+};
   const handleEnquiryClick = (itemId) => {
     ReactGA.event({
       category: "Items",
@@ -269,7 +315,7 @@ const NewHome = () => {
                 <Tabs
                   value={categories.findIndex(c => c.value === selectedCategory)}
                   onChange={handleCategoryChange}
-                  textColor="primary"
+                  textColor="white"
                   indicatorColor="primary"
                   variant="scrollable"
                   scrollButtons="auto"
@@ -306,7 +352,8 @@ const NewHome = () => {
                         key={brand.key}
                         onClick={() => {
                           setSelectedBrand(brand.value);
-                          filterData(searchQuery, items);
+                          //filterData(searchQuery, items);
+                          filterData(searchQuery, items, selectedCategory, brand.value);
                         }}
                         sx={{
                           cursor: 'pointer',
@@ -322,9 +369,9 @@ const NewHome = () => {
                           transition: 'all 0.2s',
                         }}
                       >
-                        {brandImages[brand.value] && (
+                        {/* {brandImages[brand.value] && (
                           <img src={brandImages[brand.value]} alt={brand.label} style={{ height: 28, marginRight: 8, borderRadius: 4, background: '#fff' }} />
-                        )}
+                        )} */}
                         <Typography color={selectedBrand === brand.value ? 'white' : '#398378'} fontWeight={600} fontSize={15}>
                           {brand.label}
                         </Typography>
@@ -435,12 +482,12 @@ const NewHome = () => {
                         {item.type === 'ENGINE' && item.model ? item.model : item.name}
                         {item.makeYear && ` (${item.makeYear})`}
                       </Typography>
-                      <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
+                      {/* <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
                         <MonetizationOnIcon color="success" fontSize="small" />
                         <Typography variant="body2" color="success.main" fontWeight={700}>
                           {item.price ? `₹${item.price.toLocaleString()}` : 'Price on enquiry'}
                         </Typography>
-                      </Stack>
+                      </Stack> */}
                       <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
                         <PlaceIcon color="primary" fontSize="small" />
                         <Typography variant="body2" color="text.secondary">
