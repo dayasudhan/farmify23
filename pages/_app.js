@@ -6,18 +6,18 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     background: {
-      default: '#eafbe7', // light green background
+      default: '#eafbe7',
       paper: '#ffffff',
     },
     primary: {
-      main: '#398378', // accent green
+      main: '#398378', // custom green
       contrastText: '#fff',
     },
     secondary: {
-      main: '#b2dfdb', // lighter green accent
+      main: '#b2dfdb',
     },
     success: {
-      main: '#7ed957', // vibrant green for highlights
+      main: '#7ed957',
     },
     text: {
       primary: '#2e473b',
