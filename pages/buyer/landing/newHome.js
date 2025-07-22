@@ -96,12 +96,6 @@ const brandImages = {
   sonalika: 'https://www.tractorjunction.com/assets/images/sonalika-logo.png',
 };
 
-const states = [
-  { label: 'Karnataka', districts: ['Bagalkot', 'Bangalore', 'Davanagere'] },
-  { label: 'Maharashtra', districts: ['Pune', 'Nashik', 'Nagpur'] },
-  { label: 'Punjab', districts: ['Ludhiana', 'Amritsar', 'Patiala'] },
-];
-
 const NewHome = () => {
   const [items, setItems] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -112,8 +106,8 @@ const NewHome = () => {
   const { location } = useAuth();
   const router = useRouter();
   const theme = useTheme();
-  const [selectedState, setSelectedState] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedState, setSelectedState] = useState(''); // string
+  const [selectedDistrict, setSelectedDistrict] = useState(''); // string
   const [isNearby, setIsNearby] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -129,6 +123,23 @@ const NewHome = () => {
   });
   const [enquirySuccess, setEnquirySuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [statesData, setStatesData] = useState({ states: [], districts: {} });
+  const [statesLoading, setStatesLoading] = useState(true);
+
+  useEffect(() => {
+    setStatesLoading(true);
+    axios.get('/states')
+      .then((response) => {
+        setStatesData(response.data);
+      })
+      .catch((error) => {
+        setStatesData({ states: [], districts: {} });
+        console.error('Failed to load states:', error);
+      })
+      .finally(() => {
+        setStatesLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -190,7 +201,7 @@ else
 
   if (state) {
     filteredResults = filteredResults.filter(item =>
-      item?.state?.toLowerCase() === state.label.toLowerCase()
+      item?.state?.toLowerCase() === state.toLowerCase()
     );
   }
 
@@ -267,7 +278,7 @@ const handleBrandChange = (event, newValue) => {
 
   const handleStateChange = (event, value) => {
     setSelectedState(value);
-    setSelectedDistrict(null);
+    setSelectedDistrict('');
     filterData(searchQuery, items);
   };
   const handleDistrictChange = (event, value) => {
@@ -336,6 +347,8 @@ const handleBrandChange = (event, newValue) => {
               filterData={filterData}
               items={items}
               searchQuery={searchQuery}
+              statesData={statesData}
+              statesLoading={statesLoading}
             />
           </Drawer>
         ) : (
@@ -352,6 +365,8 @@ const handleBrandChange = (event, newValue) => {
               filterData={filterData}
               items={items}
               searchQuery={searchQuery}
+              statesData={statesData}
+              statesLoading={statesLoading}
             />
           </Paper>
         )}
@@ -685,7 +700,7 @@ const handleBrandChange = (event, newValue) => {
 };
 
 // SidebarContent component
-function SidebarContent({ selectedCategory, setSelectedCategory, selectedBrand, setSelectedBrand, selectedState, setSelectedState, selectedDistrict, setSelectedDistrict, filterData, items, searchQuery }) {
+function SidebarContent({ selectedCategory, setSelectedCategory, selectedBrand, setSelectedBrand, selectedState, setSelectedState, selectedDistrict, setSelectedDistrict, filterData, items, searchQuery, statesData, statesLoading }) {
   return (
     <Box sx={{ width: 240, p: 1 }}>
       <Typography variant="h6" fontWeight={700} color="#398378" mb={2}>
@@ -696,22 +711,39 @@ function SidebarContent({ selectedCategory, setSelectedCategory, selectedBrand, 
         State
       </Typography>
       <Autocomplete
-        options={states}
-        getOptionLabel={option => option.label}
+        options={Array.isArray(statesData.states) ? statesData.states : []}
+        getOptionLabel={option => option}
         value={selectedState}
         onChange={(e, value) => {
           setSelectedState(value);
-          setSelectedDistrict(null);
-          filterData(searchQuery, items, selectedCategory, selectedBrand, value, null);
+          setSelectedDistrict('');
+          filterData(searchQuery, items, selectedCategory, selectedBrand, value, '');
         }}
-        renderInput={(params) => <TextField {...params} label="State" variant="outlined" size="small" />}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="State"
+            variant="outlined"
+            size="small"
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {statesLoading ? <CircularProgress color="primary" size={18} /> : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
+          />
+        )}
         sx={{ mb: 2 }}
+        loading={statesLoading}
       />
       <Typography variant="subtitle2" fontWeight={600} mb={1}>
         District
       </Typography>
       <Autocomplete
-        options={selectedState ? selectedState.districts : []}
+        options={selectedState && statesData.districts[selectedState] ? statesData.districts[selectedState] : []}
         getOptionLabel={option => option}
         value={selectedDistrict}
         onChange={(e, value) => {
