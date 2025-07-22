@@ -146,7 +146,7 @@ if (category === 'tractor' ) {
     );
   }
   else{
-    filteredResults = filteredResults.filter(item => item.model === '');
+    filteredResults = filteredResults.filter(item => item.name === "Engine");
   }
 }
 else 
