@@ -20,7 +20,9 @@ import {
   useTheme,
   Stack,
   Paper,
-  Autocomplete
+  Autocomplete,
+  LinearProgress,
+  CircularProgress
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
@@ -126,8 +128,10 @@ const NewHome = () => {
     zipCode: '',
   });
   const [enquirySuccess, setEnquirySuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     axios.get(baseURL).then((response) => {
       setItems(response.data);
       setFilteredData(response.data);
@@ -136,6 +140,8 @@ const NewHome = () => {
         setSearchQuery(query);
         filterData(query, response.data);
       }
+    }).finally(() => {
+      setLoading(false);
     });
     ReactGA.send({ hitType: "pageview", page: window.location.pathname, title: "New Home Page" });
   }, [router.query.q]);
@@ -399,7 +405,22 @@ const handleBrandChange = (event, newValue) => {
           </Box>
           {/* Item Cards Grid */}
           <Container sx={{ py: 2, flex: 1 }}>
-            {filteredData.length === 0 ? (
+            {loading ? (
+              <Box sx={{
+                width: '100%',
+                minHeight: 300,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                py: 8,
+              }}>
+                <CircularProgress color="primary" size={56} thickness={4} />
+                <Typography variant="h6" color="primary" mt={2} fontWeight={600}>
+                  Loading...
+                </Typography>
+              </Box>
+            ) : filteredData.length === 0 ? (
               <Box textAlign="center" py={8}>
                 <SearchIcon sx={{ fontSize: 64, color: 'grey.400' }} />
                 <Typography variant="h5" color="text.secondary" mt={2}>
@@ -448,78 +469,78 @@ const handleBrandChange = (event, newValue) => {
                         )}
                       </Box>
                        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 1.5 }}>
-                    <Box>
-                      <Typography variant="subtitle1" fontWeight={700} color="#398378" gutterBottom noWrap sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {item.type === 'ENGINE' && item.model ? item.model : item.name}
-                        {item.makeYear && ` (${item.makeYear})`}
+                  <Box>
+                    <Typography variant="subtitle1" fontWeight={700} color="#398378" gutterBottom noWrap sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {item.type === 'ENGINE' && item.model ? item.model : item.name}
+                      {item.makeYear && ` (${item.makeYear})`}
+                    </Typography>
+                    {/* <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
+                      <MonetizationOnIcon color="success" fontSize="small" />
+                      <Typography variant="body2" color="success.main" fontWeight={700}>
+                        {item.price ? `₹${item.price.toLocaleString()}` : 'Price on enquiry'}
                       </Typography>
-                      {/* <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
-                        <MonetizationOnIcon color="success" fontSize="small" />
-                        <Typography variant="body2" color="success.main" fontWeight={700}>
-                          {item.price ? `₹${item.price.toLocaleString()}` : 'Price on enquiry'}
-                        </Typography>
-                      </Stack> */}
-                      <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
-                        <PlaceIcon color="primary" fontSize="small" />
-                        <Typography variant="body2" color="text.secondary">
-                          {item.district}, {item.state}
-                        </Typography>
-                      </Stack>
-                      <Stack direction="row" spacing={1} mb={0.5}>
-                        <Chip
-                          label={item.type || 'Equipment'}
-                          color="primary"
-                          size="small"
-                          sx={{ fontWeight: 600, fontSize: 12, borderRadius: 2 }}
-                        />
-                        {item.model && (
-                          <Chip
-                            label={item.model}
-                            color="default"
-                            size="small"
-                            sx={{ fontWeight: 500, fontSize: 12, borderRadius: 2 }}
-                          />
-                        )}
-                      </Stack>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 0.5, minHeight: 28, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}
-                      >
-                        {item.description}
+                    </Stack> */}
+                    <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
+                      <PlaceIcon color="primary" fontSize="small" />
+                      <Typography variant="body2" color="text.secondary">
+                        {item.district}, {item.state}
                       </Typography>
-                    </Box>
-                    <Stack direction="row" spacing={1} mt={1}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        fullWidth
-                        sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          router.push(`/buyer/product/item?id=${item.id}`);
-                        }}
-                      >
-                        More Details
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        fullWidth
-                        sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          setEnquiryItem(item);
-                          setEnquiryForm({ name: '', phone: '', address: '', city: '', state: '', zipCode: '' });
-                          setEnquiryOpen(true);
-                        }}
-                      >
-                        Contact Seller
-                      </Button>
                     </Stack>
-                  </CardContent>
+                    <Stack direction="row" spacing={1} mb={0.5}>
+                      <Chip
+                        label={item.type || 'Equipment'}
+                        color="primary"
+                        size="small"
+                        sx={{ fontWeight: 600, fontSize: 12, borderRadius: 2 }}
+                      />
+                      {item.model && (
+                        <Chip
+                          label={item.model}
+                          color="default"
+                          size="small"
+                          sx={{ fontWeight: 500, fontSize: 12, borderRadius: 2 }}
+                        />
+                      )}
+                    </Stack>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 0.5, minHeight: 28, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}
+                    >
+                      {item.description}
+                    </Typography>
+                  </Box>
+                  <Stack direction="row" spacing={1} mt={1}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      fullWidth
+                      sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
+                      onClick={e => {
+                        e.stopPropagation();
+                        router.push(`/buyer/product/item?id=${item.id}`);
+                      }}
+                    >
+                      More Details
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      fullWidth
+                      sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
+                      onClick={e => {
+                        e.stopPropagation();
+                        setEnquiryItem(item);
+                        setEnquiryForm({ name: '', phone: '', address: '', city: '', state: '', zipCode: '' });
+                        setEnquiryOpen(true);
+                      }}
+                    >
+                      Contact Seller
+                    </Button>
+                  </Stack>
+                </CardContent>
                     </Card>
                   </Grid>
                 ))}
