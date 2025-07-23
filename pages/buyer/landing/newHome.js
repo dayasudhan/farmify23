@@ -81,7 +81,10 @@ const tractorBrands = [
   { key: 'vst', label: 'VST Shakti', value: 'vst shakti' },
    { key: 'hmt', label: 'HMT', value: 'hmt' },
   { key: 'indofarm', label: 'Indofarm', value: 'indofarm' },
-  { key: 'ace', label: 'ACE', value: 'ace' }
+  { key: 'ace', label: 'ACE', value: 'ace' },
+  { key: 'trakstar', label: 'Trakstar', value: 'trakstar' }
+
+
   // { key: 'same-deutz-fahr', label: 'Same Deutz-Fahr', value: 'same deutz-fahr' 
 ];
 
