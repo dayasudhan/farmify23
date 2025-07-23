@@ -20,7 +20,9 @@ import {
   useTheme,
   Stack,
   Paper,
-  Autocomplete
+  Autocomplete,
+  LinearProgress,
+  CircularProgress
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
@@ -79,7 +81,10 @@ const tractorBrands = [
   { key: 'vst', label: 'VST Shakti', value: 'vst shakti' },
    { key: 'hmt', label: 'HMT', value: 'hmt' },
   { key: 'indofarm', label: 'Indofarm', value: 'indofarm' },
-  { key: 'ace', label: 'ACE', value: 'ace' }
+  { key: 'ace', label: 'ACE', value: 'ace' },
+  { key: 'trakstar', label: 'Trakstar', value: 'trakstar' }
+
+
   // { key: 'same-deutz-fahr', label: 'Same Deutz-Fahr', value: 'same deutz-fahr' 
 ];
 
@@ -94,12 +99,6 @@ const brandImages = {
   sonalika: 'https://www.tractorjunction.com/assets/images/sonalika-logo.png',
 };
 
-const states = [
-  { label: 'Karnataka', districts: ['Bagalkot', 'Bangalore', 'Davanagere'] },
-  { label: 'Maharashtra', districts: ['Pune', 'Nashik', 'Nagpur'] },
-  { label: 'Punjab', districts: ['Ludhiana', 'Amritsar', 'Patiala'] },
-];
-
 const NewHome = () => {
   const [items, setItems] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -110,8 +109,8 @@ const NewHome = () => {
   const { location } = useAuth();
   const router = useRouter();
   const theme = useTheme();
-  const [selectedState, setSelectedState] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedState, setSelectedState] = useState(''); // string
+  const [selectedDistrict, setSelectedDistrict] = useState(''); // string
   const [isNearby, setIsNearby] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -126,8 +125,27 @@ const NewHome = () => {
     zipCode: '',
   });
   const [enquirySuccess, setEnquirySuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [statesData, setStatesData] = useState({ states: [], districts: {} });
+  const [statesLoading, setStatesLoading] = useState(true);
 
   useEffect(() => {
+    setStatesLoading(true);
+    axios.get('/states')
+      .then((response) => {
+        setStatesData(response.data);
+      })
+      .catch((error) => {
+        setStatesData({ states: [], districts: {} });
+        console.error('Failed to load states:', error);
+      })
+      .finally(() => {
+        setStatesLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
     axios.get(baseURL).then((response) => {
       setItems(response.data);
       setFilteredData(response.data);
@@ -136,6 +154,8 @@ const NewHome = () => {
         setSearchQuery(query);
         filterData(query, response.data);
       }
+    }).finally(() => {
+      setLoading(false);
     });
     ReactGA.send({ hitType: "pageview", page: window.location.pathname, title: "New Home Page" });
   }, [router.query.q]);
@@ -184,7 +204,7 @@ else
 
   if (state) {
     filteredResults = filteredResults.filter(item =>
-      item?.state?.toLowerCase() === state.label.toLowerCase()
+      item?.state?.toLowerCase() === state.toLowerCase()
     );
   }
 
@@ -261,7 +281,7 @@ const handleBrandChange = (event, newValue) => {
 
   const handleStateChange = (event, value) => {
     setSelectedState(value);
-    setSelectedDistrict(null);
+    setSelectedDistrict('');
     filterData(searchQuery, items);
   };
   const handleDistrictChange = (event, value) => {
@@ -330,6 +350,8 @@ const handleBrandChange = (event, newValue) => {
               filterData={filterData}
               items={items}
               searchQuery={searchQuery}
+              statesData={statesData}
+              statesLoading={statesLoading}
             />
           </Drawer>
         ) : (
@@ -346,6 +368,8 @@ const handleBrandChange = (event, newValue) => {
               filterData={filterData}
               items={items}
               searchQuery={searchQuery}
+              statesData={statesData}
+              statesLoading={statesLoading}
             />
           </Paper>
         )}
@@ -399,7 +423,22 @@ const handleBrandChange = (event, newValue) => {
           </Box>
           {/* Item Cards Grid */}
           <Container sx={{ py: 2, flex: 1 }}>
-            {filteredData.length === 0 ? (
+            {loading ? (
+              <Box sx={{
+                width: '100%',
+                minHeight: 300,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                py: 8,
+              }}>
+                <CircularProgress color="primary" size={56} thickness={4} />
+                <Typography variant="h6" color="primary" mt={2} fontWeight={600}>
+                  Loading...
+                </Typography>
+              </Box>
+            ) : filteredData.length === 0 ? (
               <Box textAlign="center" py={8}>
                 <SearchIcon sx={{ fontSize: 64, color: 'grey.400' }} />
                 <Typography variant="h5" color="text.secondary" mt={2}>
@@ -448,78 +487,78 @@ const handleBrandChange = (event, newValue) => {
                         )}
                       </Box>
                        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 1.5 }}>
-                    <Box>
-                      <Typography variant="subtitle1" fontWeight={700} color="#398378" gutterBottom noWrap sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {item.type === 'ENGINE' && item.model ? item.model : item.name}
-                        {item.makeYear && ` (${item.makeYear})`}
+                  <Box>
+                    <Typography variant="subtitle1" fontWeight={700} color="#398378" gutterBottom noWrap sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {item.type === 'ENGINE' && item.model ? item.model : item.name}
+                      {item.makeYear && ` (${item.makeYear})`}
+                    </Typography>
+                    {/* <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
+                      <MonetizationOnIcon color="success" fontSize="small" />
+                      <Typography variant="body2" color="success.main" fontWeight={700}>
+                        {item.price ? `₹${item.price.toLocaleString()}` : 'Price on enquiry'}
                       </Typography>
-                      {/* <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
-                        <MonetizationOnIcon color="success" fontSize="small" />
-                        <Typography variant="body2" color="success.main" fontWeight={700}>
-                          {item.price ? `₹${item.price.toLocaleString()}` : 'Price on enquiry'}
-                        </Typography>
-                      </Stack> */}
-                      <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
-                        <PlaceIcon color="primary" fontSize="small" />
-                        <Typography variant="body2" color="text.secondary">
-                          {item.district}, {item.state}
-                        </Typography>
-                      </Stack>
-                      <Stack direction="row" spacing={1} mb={0.5}>
-                        <Chip
-                          label={item.type || 'Equipment'}
-                          color="primary"
-                          size="small"
-                          sx={{ fontWeight: 600, fontSize: 12, borderRadius: 2 }}
-                        />
-                        {item.model && (
-                          <Chip
-                            label={item.model}
-                            color="default"
-                            size="small"
-                            sx={{ fontWeight: 500, fontSize: 12, borderRadius: 2 }}
-                          />
-                        )}
-                      </Stack>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 0.5, minHeight: 28, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}
-                      >
-                        {item.description}
+                    </Stack> */}
+                    <Stack direction="row" spacing={1} alignItems="center" mb={0.5}>
+                      <PlaceIcon color="primary" fontSize="small" />
+                      <Typography variant="body2" color="text.secondary">
+                        {item.district}, {item.state}
                       </Typography>
-                    </Box>
-                    <Stack direction="row" spacing={1} mt={1}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        fullWidth
-                        sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          router.push(`/buyer/product/item?id=${item.id}`);
-                        }}
-                      >
-                        More Details
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        fullWidth
-                        sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          setEnquiryItem(item);
-                          setEnquiryForm({ name: '', phone: '', address: '', city: '', state: '', zipCode: '' });
-                          setEnquiryOpen(true);
-                        }}
-                      >
-                        Contact Seller
-                      </Button>
                     </Stack>
-                  </CardContent>
+                    <Stack direction="row" spacing={1} mb={0.5}>
+                      <Chip
+                        label={item.type || 'Equipment'}
+                        color="primary"
+                        size="small"
+                        sx={{ fontWeight: 600, fontSize: 12, borderRadius: 2 }}
+                      />
+                      {item.model && (
+                        <Chip
+                          label={item.model}
+                          color="default"
+                          size="small"
+                          sx={{ fontWeight: 500, fontSize: 12, borderRadius: 2 }}
+                        />
+                      )}
+                    </Stack>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 0.5, minHeight: 28, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}
+                    >
+                      {item.description}
+                    </Typography>
+                  </Box>
+                  <Stack direction="row" spacing={1} mt={1}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      fullWidth
+                      sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
+                      onClick={e => {
+                        e.stopPropagation();
+                        router.push(`/buyer/product/item?id=${item.id}`);
+                      }}
+                    >
+                      More Details
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      fullWidth
+                      sx={{ borderRadius: 2, fontWeight: 600, minWidth: 0, px: 0.5 }}
+                      onClick={e => {
+                        e.stopPropagation();
+                        setEnquiryItem(item);
+                        setEnquiryForm({ name: '', phone: '', address: '', city: '', state: '', zipCode: '' });
+                        setEnquiryOpen(true);
+                      }}
+                    >
+                      Contact Seller
+                    </Button>
+                  </Stack>
+                </CardContent>
                     </Card>
                   </Grid>
                 ))}
@@ -664,7 +703,7 @@ const handleBrandChange = (event, newValue) => {
 };
 
 // SidebarContent component
-function SidebarContent({ selectedCategory, setSelectedCategory, selectedBrand, setSelectedBrand, selectedState, setSelectedState, selectedDistrict, setSelectedDistrict, filterData, items, searchQuery }) {
+function SidebarContent({ selectedCategory, setSelectedCategory, selectedBrand, setSelectedBrand, selectedState, setSelectedState, selectedDistrict, setSelectedDistrict, filterData, items, searchQuery, statesData, statesLoading }) {
   return (
     <Box sx={{ width: 240, p: 1 }}>
       <Typography variant="h6" fontWeight={700} color="#398378" mb={2}>
@@ -675,22 +714,39 @@ function SidebarContent({ selectedCategory, setSelectedCategory, selectedBrand, 
         State
       </Typography>
       <Autocomplete
-        options={states}
-        getOptionLabel={option => option.label}
+        options={Array.isArray(statesData.states) ? statesData.states : []}
+        getOptionLabel={option => option}
         value={selectedState}
         onChange={(e, value) => {
           setSelectedState(value);
-          setSelectedDistrict(null);
-          filterData(searchQuery, items, selectedCategory, selectedBrand, value, null);
+          setSelectedDistrict('');
+          filterData(searchQuery, items, selectedCategory, selectedBrand, value, '');
         }}
-        renderInput={(params) => <TextField {...params} label="State" variant="outlined" size="small" />}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="State"
+            variant="outlined"
+            size="small"
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {statesLoading ? <CircularProgress color="primary" size={18} /> : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
+          />
+        )}
         sx={{ mb: 2 }}
+        loading={statesLoading}
       />
       <Typography variant="subtitle2" fontWeight={600} mb={1}>
         District
       </Typography>
       <Autocomplete
-        options={selectedState ? selectedState.districts : []}
+        options={selectedState && statesData.districts[selectedState] ? statesData.districts[selectedState] : []}
         getOptionLabel={option => option}
         value={selectedDistrict}
         onChange={(e, value) => {
