@@ -655,6 +655,29 @@ console.log("itemnotification",req.body)
     }
     res.send("success");
   });
+  app.get('/v1/app-version', async (req, res) => {
+    console.log("v1/app-version")
+   res.send(
+    {
+        "success": true,
+        "data": {
+          // "currentVersion": '1.1.0',
+          "latestVersion": '1.1.6',
+          "updateType": 'optional', // 'optional', 'mandatory', 'critical'
+          "forceUpdate": false,
+          "updateMessage": 'New features and bug fixes available',
+          "releaseNotes": [
+            'Added new tractor models',
+            'Improved search functionality',
+            'Bug fixes and performance improvements'
+          ],
+          "downloadUrl": {
+            "android": 'https://play.google.com/store/apps/details?id=com.kuruvatech.farmify',
+            "ios": 'https://apps.apple.com/app/id123456789'
+          }
+        }
+     });
+  })
   app.get('*', (req, res) => {
     return handle(req, res)
   })
