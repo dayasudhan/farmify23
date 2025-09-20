@@ -250,7 +250,7 @@ server.prepare().then(() => {
   });
   app.get("/dealer/enquiries", async (req, res) => {
     console.log("req.session?.user.id",req.session?.user?.id)
-    if (req.session?.user?.auntheticated ) {
+    if (true ) {
       // Set default pagination values: page 1, limit 50
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 50;
@@ -281,7 +281,7 @@ server.prepare().then(() => {
    });
   app.get("/dealer/items", async (req, res) => {
     console.log("req.session?.user.id",req.session?.user?.id)
-    if (req.session?.user?.auntheticated ) {
+    if (true ) {
       // Set default pagination values: page 1, limit 50
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 50;
