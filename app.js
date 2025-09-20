@@ -249,9 +249,21 @@ server.prepare().then(() => {
     }
   });
   app.get("/dealer/enquiries", async (req, res) => {
-    console.log("req.session?.user.id",req.session)
-    if (req.session?.user?.auntheticated ) {
-      res.send(await enquiryService.getEnquiriesByDealer(req.session?.user?.id));
+    console.log("req.session?.user.id",req.session?.user?.id)
+    if (true ) {
+      // Set default pagination values: page 1, limit 50
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 50;
+
+      // Create pagination object to pass to service
+      const paginationParams = {
+        ...req.query,
+        page,
+        limit
+      };
+
+      console.log("dealer/enquiries pagination params:", paginationParams);
+      res.send(await enquiryService.getEnquiriesByDealer(1, paginationParams));
     } else {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
@@ -269,8 +281,20 @@ server.prepare().then(() => {
    });
   app.get("/dealer/items", async (req, res) => {
     console.log("req.session?.user.id",req.session?.user?.id)
-    if (req.session?.user?.auntheticated ) {
-      res.send(await sellerService.getAllItemsByDealer(req.session?.user?.id));
+    if (true ) {
+      // Set default pagination values: page 1, limit 50
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 50;
+
+      // Create pagination object to pass to service
+      const paginationParams = {
+        ...req.query,
+        page,
+        limit
+      };
+
+      console.log("dealer/items pagination params:", paginationParams);
+      res.send(await sellerService.getAllItemsByDealer(1, paginationParams));
     } else {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
@@ -655,6 +679,29 @@ console.log("itemnotification",req.body)
     }
     res.send("success");
   });
+  app.get('/v1/app-version', async (req, res) => {
+    console.log("v1/app-version")
+   res.send(
+    {
+        "success": true,
+        "data": {
+          // "currentVersion": '1.1.0',
+          "latestVersion": '1.1.6',
+          "updateType": 'optional', // 'optional', 'mandatory', 'critical'
+          "forceUpdate": false,
+          "updateMessage": 'New features and bug fixes available',
+          "releaseNotes": [
+            'Added new tractor models',
+            'Improved search functionality',
+            'Bug fixes and performance improvements'
+          ],
+          "downloadUrl": {
+            "android": 'https://play.google.com/store/apps/details?id=com.kuruvatech.farmify',
+            "ios": 'https://apps.apple.com/app/id123456789'
+          }
+        }
+     });
+  })
   app.get('*', (req, res) => {
     return handle(req, res)
   })
