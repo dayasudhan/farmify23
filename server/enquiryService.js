@@ -48,6 +48,9 @@ class EnquiryService {
       take: limit,
     });
     //console.log("Result equiries",result)
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
 //    return result;
     return {
       data: result,
