@@ -16,7 +16,21 @@ class EnquiryService {
     // console.log('result', result);
     return result;
   }
-  async getEnquiriesByDealer(dealerId) {
+    async getEnquiriesByDealer(dealerId, paginationParams = {}) {
+    const { page = 1, limit = 50, ...otherParams } = paginationParams;
+
+    // Calculate skip value for pagination
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination metadata
+   const totalCount = await this.db.enquiry.count({
+      where: {
+        item: {
+          dealerId: dealerId,
+          availability: true,
+        },
+      },
+    });
     const result = await this.db.enquiry.findMany({
       where: {
         item: {
@@ -30,9 +44,22 @@ class EnquiryService {
       orderBy: {
         id: 'desc', // Order the items by ID in descending order
       },
+      skip: skip,
+      take: limit,
     });
     //console.log("Result equiries",result)
-    return result;
+//    return result;
+    return {
+      data: result,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalCount: totalCount,
+        limit: limit,
+        hasNextPage: hasNextPage,
+        hasPrevPage: hasPrevPage,
+      }
+    };
   }
     async getEnquiriesByItem(id) {
       console.log("itemId",id);

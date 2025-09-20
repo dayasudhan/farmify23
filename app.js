@@ -249,9 +249,21 @@ server.prepare().then(() => {
     }
   });
   app.get("/dealer/enquiries", async (req, res) => {
-    console.log("req.session?.user.id",req.session)
+    console.log("req.session?.user.id",req.session?.user?.id)
     if (req.session?.user?.auntheticated ) {
-      res.send(await enquiryService.getEnquiriesByDealer(req.session?.user?.id));
+      // Set default pagination values: page 1, limit 50
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 50;
+
+      // Create pagination object to pass to service
+      const paginationParams = {
+        ...req.query,
+        page,
+        limit
+      };
+
+      console.log("dealer/enquiries pagination params:", paginationParams);
+      res.send(await enquiryService.getEnquiriesByDealer(req.session?.user?.id, paginationParams));
     } else {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
@@ -270,7 +282,19 @@ server.prepare().then(() => {
   app.get("/dealer/items", async (req, res) => {
     console.log("req.session?.user.id",req.session?.user?.id)
     if (req.session?.user?.auntheticated ) {
-      res.send(await sellerService.getAllItemsByDealer(req.session?.user?.id));
+      // Set default pagination values: page 1, limit 50
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 50;
+
+      // Create pagination object to pass to service
+      const paginationParams = {
+        ...req.query,
+        page,
+        limit
+      };
+
+      console.log("dealer/items pagination params:", paginationParams);
+      res.send(await sellerService.getAllItemsByDealer(req.session?.user?.id, paginationParams));
     } else {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
