@@ -170,7 +170,7 @@ const sortedResults = [...withDistance, ...withoutDistance];
     const updatedResult = paginatedResults.map(item => ({
       ...item,
       contact_phone: item.dealer?.id === 1 
-          ? item.phone  // If dealer ID is 1, use the item's phone
+          ? iitem.dealer?.phone  // If dealer ID is 1, use the item's phone
           : (item.dealer?.phone || item.phone) // Otherwise, use dealer's phone if available, else item's phone
       }));
 
@@ -221,7 +221,7 @@ const sortedResults = [...withDistance, ...withoutDistance];
       const updatedResult = result.map(item => ({
         ...item,
         contact_phone: item.dealer?.id === 1 
-            ? item.phone  // If dealer ID is 1, use the item's phone
+            ? item.dealer?.phone  // If dealer ID is 1, use the item's phone
             : (item.dealer?.phone || item.phone) // Otherwise, use dealer's phone if available, else item's phone
     }));
 
@@ -283,7 +283,7 @@ const sortedResults = [...withDistance, ...withoutDistance];
       const updatedResult = result.map(item => ({
         ...item,
         contact_phone: item.dealer?.id === 1 
-          ? item.phone  // If dealer ID is 1, use the item's phone
+          ? item.dealer?.phone  // If dealer ID is 1, use the item's phone
           : (item.dealer?.phone || item.phone) // Otherwise, use dealer's phone if available, else item's phone
       }));
   
