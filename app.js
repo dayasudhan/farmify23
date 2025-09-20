@@ -263,7 +263,7 @@ server.prepare().then(() => {
       };
 
       console.log("dealer/enquiries pagination params:", paginationParams);
-      res.send(await enquiryService.getEnquiriesByDealer(req.session?.user?.id, paginationParams));
+      res.send(await enquiryService.getEnquiriesByDealer(1, paginationParams));
     } else {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
@@ -294,7 +294,7 @@ server.prepare().then(() => {
       };
 
       console.log("dealer/items pagination params:", paginationParams);
-      res.send(await sellerService.getAllItemsByDealer(req.session?.user?.id, paginationParams));
+      res.send(await sellerService.getAllItemsByDealer(1, paginationParams));
     } else {
     res.status(403).send('Access Denied: You are not authenticated.');
     }
