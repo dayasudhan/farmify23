@@ -15,18 +15,50 @@ class SellerService {
     console.log('result', result[81]);
     return result.reverse();
   }
-  async getAllItemsByDealer(dealerId) {
+  async getAllItemsByDealer(dealerId, paginationParams = {}) {
+    const { page = 1, limit = 50, ...otherParams } = paginationParams;
+
+    // Calculate skip value for pagination
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination metadata
+    const totalCount = await this.db.item.count({
+      where: {
+        dealerId: dealerId,
+        availability: true
+      },
+    });
+
     const result = await this.db.item.findMany({
       where: {
           dealerId: dealerId,
-          availability:true
+          availability: true
       },
       orderBy: {
         id: 'desc', // Order the items by ID in descending order
       },
+      skip: skip,
+      take: limit,
     });
+
+    // Calculate pagination metadata
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
+
     //onsole.log("Result getAllItemsByDealer",result)
-    return result;
+    
+    return {
+      data: result,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalCount: totalCount,
+        limit: limit,
+        hasNextPage: hasNextPage,
+        hasPrevPage: hasPrevPage,
+      }
+    };
   }
   async getAllItemsByPhone(phone) {
     const result = await this.db.item.findMany({
