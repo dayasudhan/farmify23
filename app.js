@@ -703,7 +703,7 @@ console.log("itemnotification",req.body)
      });
   })
   app.get('*', (req, res) => {
-    const target = `https://d1ikv24j8maby4.cloudfront.net`;
+    const target = `https://agri.tractree.in`;
     res.redirect(301, target); 
   })
   app.listen(process.env.PORT, (err) => {
